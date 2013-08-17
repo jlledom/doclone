@@ -1,0 +1,20 @@
+Copyright (C)  2013 Joan Lledó.
+This file may be modified and/or distributed without restriction.
+
+This two compile units are examples of possible console frontends from libdoclone.
+One of them is written on C and the other in C++, using the C and C++ API of
+libdoclone respectively.
+
+How to compile them:
+
+		- doclone.c:
+			gcc -o doclone_c doclone.c -ldoclone
+			
+		- doclone.cc:
+			g++ -o doclone_cc doclone.cc -ldoclone
+
+
+Using the C and C++ APIs:
+You can read more details about the using of the libdoclone APIs either in the
+README file in the @prefix@/share/doc/@PACKAGE_TARNAME@ directory, or in the
+home page of the project: http://doclone.nongnu.org/#libdocs

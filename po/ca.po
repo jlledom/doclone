@@ -1,0 +1,528 @@
+# Catalan translations for doclone package.
+# Copyright (C) 2013 Joan Lledó
+# This file is distributed under the same license as the doclone package.
+# Joan Lledó <joanlluislledo@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: doclone 0.7.0\n"
+"Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
+"POT-Creation-Date: 2013-07-28 18:57+0200\n"
+"PO-Revision-Date: 2013-02-17 13:17+0100\n"
+"Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
+"Language-Team: Catalan\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TO TRANSLATORS: looks like "Transferred: 55%"
+#: src/ConsoleView/ConsoleView.cc:60 src/CursesView/ProgressScreen.cc:77
+msgid "Transferred:"
+msgstr "Transferit:"
+
+#: src/ConsoleView/ConsoleView.cc:77 src/CursesView/ActionPanel.cc:196
+msgid "Waiting for server..."
+msgstr "Esperant el servidor..."
+
+#: src/ConsoleView/ConsoleView.cc:82 src/CursesView/ActionPanel.cc:201
+msgid "Waiting for client/s..."
+msgstr "Esperant el/s client/s..."
+
+#: src/ConsoleView/ConsoleView.cc:87
+msgid "Transferring data..."
+msgstr "Tranferint les dades..."
+
+#. TO TRANSLATORS: looks like Partition table read on /dev/sdb
+#: src/ConsoleView/ConsoleView.cc:101
+msgid "Partition table read on"
+msgstr "S'ha llegit la taula de particions de"
+
+#. TO TRANSLATORS: looks like Disk label created on /dev/sdb
+#: src/ConsoleView/ConsoleView.cc:107
+msgid "Disk label created on"
+msgstr "S'ha creat una nova etiqueta de disc a"
+
+#. TO TRANSLATORS: looks like New partition created: /dev/sdb1
+#: src/ConsoleView/ConsoleView.cc:113
+msgid "New partition created:"
+msgstr "S'ha creat una nova partició:"
+
+#. TO TRANSLATORS: looks like Partition formated: /dev/sdb1
+#: src/ConsoleView/ConsoleView.cc:119
+msgid "Partition formated:"
+msgstr "S'ha formatat la partició:"
+
+#. TO TRANSLATORS: looks like Written the fs flags of /dev/sdb1
+#: src/ConsoleView/ConsoleView.cc:125
+msgid "Written the fs flags of"
+msgstr "S'han escrit els senyaladors de"
+
+#. TO TRANSLATORS: looks like Written the fs label of /dev/sdb1
+#: src/ConsoleView/ConsoleView.cc:131
+msgid "Written the fs label of"
+msgstr "S'ha escrit l'etiqueta de disc de"
+
+#. TO TRANSLATORS: looks like Written the fs uuid of /dev/sdb1
+#: src/ConsoleView/ConsoleView.cc:137
+msgid "Written the fs uuid of"
+msgstr "S'ha escrit l'UUID de"
+
+#. TO TRANSLATORS: looks like Data read from /dev/sdb1
+#: src/ConsoleView/ConsoleView.cc:143
+msgid "Data read from"
+msgstr "S'han llegit les dades des de"
+
+#. TO TRANSLATORS: looks like Data written to /dev/sdb1
+#: src/ConsoleView/ConsoleView.cc:149
+msgid "Data written to"
+msgstr "S'han escrit les dades a"
+
+#. TO TRANSLATORS: looks like Grub installed on /dev/sdb
+#: src/ConsoleView/ConsoleView.cc:155
+msgid "Grub installed on"
+msgstr "S'ha instal·lat el GRUB a"
+
+#. TO TRANSLATORS: looks like	New connection from 192.168.1.10
+#: src/ConsoleView/ConsoleView.cc:172 src/CursesView/ProgressScreen.cc:316
+msgid "New connection from"
+msgstr "Nova connexió des de"
+
+#: src/ConsoleView/ConsoleView.cc:410
+#, c-format
+msgid ""
+"Usage: %s FUNCTION [ -d, --device DEVICE ] [ -f, --file FILE ]\n"
+"\t[ -a, --address SERVER-IP-ADDRESS ] [ -n, --nodes NUMBER ]\n"
+"\t[ -e, --empty ] [ -F, --force]\n"
+" "
+msgstr ""
+"Ús: %s FUNCIÓ [ -d, --device DISPOSITIU ] [ -f, --file FITXER ]\n"
+"\t[ -a, --address IP-DEL-SERVIDOR ] [ -n, --nodes NOMBRE ]\n"
+"\t[ -e, --empty ] [ -F, --force]\n"
+" "
+
+#: src/ConsoleView/ConsoleView.cc:417
+#, c-format
+msgid ""
+"\n"
+"FUNCTION is made up of one of these specifications:\n"
+"\tFor local work: (All these options imply -d and -f)\n"
+"\t-c, --create\t\tCreates a doclone image.\n"
+"\t-r, --restore\t\tRestores a doclone image.\n"
+"\n"
+"\tFor work over the network: (All these options imply -d or -f)\n"
+"\tUnicast/Multicast:\n"
+"\t-S, --send\t\tSends server's data to receivers.\n"
+"\t\t\t\t(This function implies -n).\n"
+"\t-R, --receive\t\tReceives data from the server.\n"
+"\t\t\t\t(This option implies -a).\n"
+"\n"
+"\tLink mode:\n"
+"\t-s, --link-send\t\tSends data to the network.\n"
+"\t-l, --link-receive\tReceives data from the network.\n"
+msgstr ""
+"\n"
+"FUNCIÓ ha de ser una des les següents:\n"
+"\tPer al treball local: (Aquestes opcions necessiten -d  -f)\n"
+"\t-c, --create\t\tCrea una imatge doclone.\n"
+"\t-r, --restore\t\tRestaura una imatge doclone.\n"
+"\n"
+"\tPer al treball en xarxa: (Aquestes opcions necessiten -d o -f)\n"
+"\tUnicast/Multicast:\n"
+"\t-S, --send\t\tEnvia les dades als receptors.\n"
+"\t\t\t\t(Implica l'ús de -n).\n"
+"\t-R, --receive\t\tRep les dades des del servidor.\n"
+"\t\t\t\t(Aquesta funció necessita -a).\n"
+"\tLink mode:\n"
+"\t-s, --link-send\t\tEnvia les dades las receptors.\n"
+"\t-l, --link-receive\tRep les dades des de l'emissor.\n"
+
+#: src/ConsoleView/ConsoleView.cc:433
+#, c-format
+msgid ""
+"\n"
+"\tOthers:\n"
+"\t-h, --help\t\tShow this help.\n"
+"\t-v, --version\t\tShow doclone version.\n"
+msgstr ""
+"\n"
+"\tAltres:\n"
+"\t-h, --help\t\tMostra aquesta ajuda.\n"
+"\t-v, --version\t\tMostra la versió del doclone.\n"
+
+#: src/ConsoleView/ConsoleView.cc:442
+#, fuzzy, c-format
+msgid ""
+"doclone %s\n"
+"Written by Joan Lledó\n"
+"Copyright (C) 2013 Joan Lledó\n"
+"doclone comes with ABSOLUTELY NO WARRANTY,\n"
+"to the extent permitted by law. \n"
+"You may redistribute copies of doclone\n"
+"under the terms of the GNU General Public License.\n"
+"For more information about these matters,\n"
+"see the file named COPYING.\n"
+msgstr ""
+"doclone %s\n"
+"Escrit per Joan Lledó\n"
+"\n"
+"Copyright (C) 2013 Joan Lledó\n"
+"El doclone es distribueix SENSE CAP GARANTIA,\n"
+"en la mesura permesa per la llei. \n"
+"Podeu re distribuir còpies del doclone\n"
+"sota els termes de la llicència GNU General Public License.\n"
+"Per obtindre més informació sobre aquesta qüestió,\n"
+"vegeu el fitxer anomenat COPYING.\n"
+
+#. TO TRANSLATORS: looks like Read the partition table of /dev/sdb
+#: src/CursesView/ActionPanel.cc:137
+msgid "Read the partition table of"
+msgstr "Llegir la taula de particions de"
+
+#. TO TRANSLATORS: looks like Create disk label on /dev/sdb
+#: src/CursesView/ActionPanel.cc:143
+msgid "Create disk label on"
+msgstr "Crear l'etiqueta de disc a"
+
+#. TO TRANSLATORS: looks like Create partition: /dev/sdb1
+#: src/CursesView/ActionPanel.cc:149
+msgid "Create partition:"
+msgstr "Crear partició:"
+
+#. TO TRANSLATORS: looks like Format partition: /dev/sdb1
+#: src/CursesView/ActionPanel.cc:155
+msgid "Format partition:"
+msgstr "Formatar partició:"
+
+#. TO TRANSLATORS: looks like Write FS flags on /dev/sdb1
+#: src/CursesView/ActionPanel.cc:161
+msgid "Write FS flags on"
+msgstr "Escriure els senyaladors a"
+
+#. TO TRANSLATORS: looks like Write FS label on /dev/sdb1
+#: src/CursesView/ActionPanel.cc:167
+msgid "Write FS label on"
+msgstr "Escriure l'etiqueta a"
+
+#. TO TRANSLATORS: looks like Write fs uuid on /dev/sdb1
+#: src/CursesView/ActionPanel.cc:173
+msgid "Write the FS uuid on"
+msgstr "Escriure l'UUID a"
+
+#. TO TRANSLATORS: looks like Read data from /dev/sdb1
+#: src/CursesView/ActionPanel.cc:179
+msgid "Read data from"
+msgstr "Llegir les dades des de"
+
+#. TO TRANSLATORS: looks like Write data to /dev/sdb1
+#: src/CursesView/ActionPanel.cc:185
+msgid "Write data to"
+msgstr "Escriure les dades a"
+
+#. TO TRANSLATORS: looks like Install Grub on /dev/sdb
+#: src/CursesView/ActionPanel.cc:191
+msgid "Install Grub on"
+msgstr "Instal·lar el GRUB a"
+
+#: src/CursesView/ActionPanel.cc:206
+msgid "Transferring data"
+msgstr "Transferint les dades"
+
+#. TO TRANSLATORS: This is the title of the window
+#: src/CursesView/BaseScreen.cc:34
+msgid "doclone"
+msgstr "doclone"
+
+#. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
+#: src/CursesView/BaseScreen.cc:139
+msgid "<Go back>"
+msgstr "<Torna>"
+
+#: src/CursesView/BaseScreen.cc:143
+msgid "Go to the previous screen"
+msgstr "Torna a l'anterior pantalla"
+
+#. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
+#: src/CursesView/BaseScreen.cc:168
+msgid "<Continue>"
+msgstr "<Continua>"
+
+#: src/CursesView/BaseScreen.cc:172
+msgid "Continue to the next screen"
+msgstr "Continua cap a la següent pantalla"
+
+#. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
+#: src/CursesView/BaseScreen.cc:197
+msgid "<Cancel>"
+msgstr "<Cancel·la>"
+
+#: src/CursesView/BaseScreen.cc:201
+msgid "Cancel the current operation"
+msgstr "Cancel·la el treball actual"
+
+#. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
+#: src/CursesView/BaseScreen.cc:226
+msgid "<Close>"
+msgstr "<Tanca>"
+
+#: src/CursesView/BaseScreen.cc:230
+msgid "Close doclone"
+msgstr "Tanca el doclone"
+
+#. Refresh the text at the top bar
+#: src/CursesView/CursesView.cc:89 src/CursesView/InsertIpForm.cc:27
+#: src/CursesView/InsertNumOfClientsForm.cc:29 src/CursesView/LanMenu.cc:35
+#: src/CursesView/LanRoleMenu.cc:35 src/CursesView/LocalMenu.cc:35
+#: src/CursesView/ScopeMenu.cc:35 src/CursesView/SelectDeviceForm.cc:38
+#: src/CursesView/TargetMenu.cc:35
+msgid "Select the option and press [Enter] or push <Continue>."
+msgstr "Seleccioneu una opció i premeu [INTRO] o piqueu <Continua>."
+
+#: src/CursesView/CursesView.cc:91 src/CursesView/InsertFileForm.cc:46
+#: src/CursesView/InsertIpForm.cc:29
+#: src/CursesView/InsertNumOfClientsForm.cc:31 src/CursesView/LanMenu.cc:37
+#: src/CursesView/LanRoleMenu.cc:37 src/CursesView/LocalMenu.cc:37
+#: src/CursesView/ScopeMenu.cc:37 src/CursesView/SelectDeviceForm.cc:40
+#: src/CursesView/SelectFileForm.cc:47 src/CursesView/TargetMenu.cc:37
+msgid "Press [Tab] to move."
+msgstr "Premeu [Tab] per moure-vos."
+
+#. Refresh the text at the top bar
+#: src/CursesView/InsertFileForm.cc:44 src/CursesView/SelectFileForm.cc:45
+msgid "Select the directory and type the file name."
+msgstr "Seleccioneu el directori i escriviu el nom del fitxer."
+
+#: src/CursesView/InsertFileForm.cc:48
+msgid "Choose a directory:"
+msgstr "Trieu un directori:"
+
+#: src/CursesView/InsertFileForm.cc:52
+msgid "Insert the file name:"
+msgstr "Inseriu el nom del fitxer:"
+
+#: src/CursesView/InsertFileForm.cc:75
+msgid "Please, type image path."
+msgstr "Escriviu la ruta de la imatge."
+
+#. TO TRANLATORS: looks like	You must insert a filename ending with .doclone
+#: src/CursesView/InsertFileForm.cc:78
+msgid "Sorry, you must insert a filename ending with ."
+msgstr "Heu d'inserir una imatge acabada en ."
+
+#: src/CursesView/InsertFileForm.cc:210
+msgid "Sorry, you do not have permission to access this directory"
+msgstr "No teniu autorització per accedir a aquest directori"
+
+#. TO TRANSLATORS: looks like	Enter into /home
+#: src/CursesView/InsertFileForm.cc:232 src/CursesView/SelectFileForm.cc:231
+msgid "Enter into"
+msgstr "Entreu en"
+
+#: src/CursesView/InsertIpForm.cc:31
+msgid "Enter the IP address of the server:"
+msgstr "Introduïu l'adreça IP del servidor:"
+
+#: src/CursesView/InsertIpForm.cc:41
+msgid "Type an IP address."
+msgstr "Escriviu una adreça IP"
+
+#: src/CursesView/InsertIpForm.cc:43
+#: src/CursesView/InsertNumOfClientsForm.cc:45
+msgid "Red background means wrong format."
+msgstr "El fons vermell indica que el format és incorrecte."
+
+#: src/CursesView/InsertNumOfClientsForm.cc:33
+msgid "Enter the number of clients in the LAN:"
+msgstr "Introduïu el nombre de clients en la xarxa:"
+
+#: src/CursesView/InsertNumOfClientsForm.cc:43
+msgid "Type a number."
+msgstr "Escriviu un número."
+
+#: src/CursesView/LanMenu.cc:30
+msgid "Select the network mode:"
+msgstr "Trieu el mode de xarxa:"
+
+#: src/CursesView/LanMenu.cc:40
+msgid "Unicast/Multicast mode"
+msgstr "Mode Unicast/Multicast"
+
+#: src/CursesView/LanMenu.cc:41
+msgid "Link mode"
+msgstr "Mode cadena"
+
+#: src/CursesView/LanMenu.cc:45
+msgid "One TCP connection between the server and each client in the LAN"
+msgstr "Una connexió TCP entre el servidor i cada client de la xarxa"
+
+#: src/CursesView/LanMenu.cc:46
+msgid "Each chain in the link send data to the next one"
+msgstr "Cada baula de la cadena envia les dades a la següent"
+
+#: src/CursesView/LanRoleMenu.cc:30
+msgid "Select the role in the connection:"
+msgstr "Trieu el paper en la conexió:"
+
+#: src/CursesView/LanRoleMenu.cc:40
+msgid "Server"
+msgstr "Servidor"
+
+#: src/CursesView/LanRoleMenu.cc:41
+msgid "Client"
+msgstr "Client"
+
+#: src/CursesView/LanRoleMenu.cc:45
+msgid "Send data to clients"
+msgstr "Envia les dades als clients"
+
+#: src/CursesView/LanRoleMenu.cc:46
+msgid "Receive data from server"
+msgstr "Rep les dades des del servidor"
+
+#: src/CursesView/LocalMenu.cc:30
+msgid "Choose what you want to do:"
+msgstr "Trieu què voleu fer:"
+
+#: src/CursesView/LocalMenu.cc:40 src/CursesView/SummaryScreen.cc:49
+msgid "Create image"
+msgstr "Crear una imatge"
+
+#: src/CursesView/LocalMenu.cc:41 src/CursesView/SummaryScreen.cc:60
+msgid "Restore image"
+msgstr "Restaurar una imatge"
+
+#: src/CursesView/LocalMenu.cc:45
+msgid "Save the content of a device into a image file"
+msgstr "Deseu el contingut d'un dispositiu en una imatge"
+
+#: src/CursesView/LocalMenu.cc:46
+msgid "Restore the image file into a device"
+msgstr "Restaureu una imatge en un dispositiu"
+
+#. Refresh the text at the top bar
+#: src/CursesView/ProgressScreen.cc:40
+msgid "Working..."
+msgstr "Treballant..."
+
+#: src/CursesView/ProgressScreen.cc:42
+msgid "Actions remaining:"
+msgstr "Accions pendents:"
+
+#: src/CursesView/ProgressScreen.cc:46
+msgid "Alerts & events:"
+msgstr "Alertes i esdeveniments:"
+
+#: src/CursesView/ScopeMenu.cc:30
+#, fuzzy
+msgid "Indicate what scope you want to work at:"
+msgstr "Indiqueu en quin àmbit voleu treballar:"
+
+#: src/CursesView/ScopeMenu.cc:40
+msgid "Local work"
+msgstr "Àmbit local"
+
+#: src/CursesView/ScopeMenu.cc:41
+msgid "Work over LAN"
+msgstr "Treballar en xarxa"
+
+#: src/CursesView/ScopeMenu.cc:45
+msgid "All operations will be performed in this machine"
+msgstr "Totes les operacions es realitzaran en aquesta màquina"
+
+#: src/CursesView/ScopeMenu.cc:46
+msgid "Interact with other machines in the LAN"
+msgstr "Interactueu amb altres màquines de la xarxa"
+
+#: src/CursesView/SelectDeviceForm.cc:42
+msgid "Select the device:"
+msgstr "Trieu el dispositiu:"
+
+#: src/CursesView/SelectDeviceForm.cc:46
+msgid "Or type it manually:"
+msgstr "O escriviu la seva ruta directament:"
+
+#: src/CursesView/SelectDeviceForm.cc:69
+msgid "Please, type the path of the device"
+msgstr "Escriviu la ruta del dispositiu"
+
+#. TO TRANSLATORS: Looks like	Select /dev/sda1
+#: src/CursesView/SelectDeviceForm.cc:162
+msgid "Select"
+msgstr "Selecciona"
+
+#: src/CursesView/SelectFileForm.cc:49
+msgid "Current directory:"
+msgstr "Directori actual:"
+
+#: src/CursesView/SelectFileForm.cc:53
+msgid "Choose an image file:"
+msgstr "Trieu una imatge:"
+
+#: src/CursesView/SelectFileForm.cc:205
+msgid "You do not have permission to access this directory"
+msgstr "No teniu autorització per accedir a aquest directori"
+
+#. TO TRANSLATORS: looks like	Choose sda.doclone
+#: src/CursesView/SelectFileForm.cc:245
+msgid "Choose"
+msgstr "Tria"
+
+#: src/CursesView/SummaryScreen.cc:31
+msgid "Summary"
+msgstr "Resum"
+
+#. TO TRANSLATORS: Looks like	From: /dev/sda
+#: src/CursesView/SummaryScreen.cc:37
+msgid "From:"
+msgstr "Des de:"
+
+#. TO TRANSLATORS: Looks like	To: /dev/sda
+#: src/CursesView/SummaryScreen.cc:40
+msgid "To:"
+msgstr "A:"
+
+#: src/CursesView/SummaryScreen.cc:79
+msgid "Send to client/s"
+msgstr "Enviar al/s client/s"
+
+#. TO TRANSLATORS: Looks like	Number of receivers: 8
+#: src/CursesView/SummaryScreen.cc:90
+msgid "Number of receivers:"
+msgstr "Nombre de receptors:"
+
+#: src/CursesView/SummaryScreen.cc:97
+msgid "Receive from server"
+msgstr "Resbre des del servidor"
+
+#. TO TRANSLATORS: Looks like	Server's IP: 192.168.0.1
+#: src/CursesView/SummaryScreen.cc:103
+msgid "Server's IP:"
+msgstr "Adreça IP del servidor"
+
+#: src/CursesView/SummaryScreen.cc:118
+msgid "Send to chain"
+msgstr "Enviar a la cadena"
+
+#: src/CursesView/SummaryScreen.cc:125
+msgid "Receive from chain"
+msgstr "Rebre des de la cadena"
+
+#: src/CursesView/TargetMenu.cc:30
+msgid "Select the target:"
+msgstr "Seleccioneu una destinació:"
+
+#: src/CursesView/TargetMenu.cc:40
+msgid "Device"
+msgstr "Dispositiu"
+
+#: src/CursesView/TargetMenu.cc:41
+msgid "File"
+msgstr "Fitxer"
+
+#: src/CursesView/TargetMenu.cc:45
+msgid "The data origin/destination is a device"
+msgstr "L'origen o la destinació de les dades és un dispositiu"
+
+#: src/CursesView/TargetMenu.cc:46
+msgid "The data origin/destination is an image file"
+msgstr "L'origen o la destinació de les dades és un fitxer"

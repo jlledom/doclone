@@ -1,0 +1,217 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Joan Lledó
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: libdoclone 0.7.0\n"
+"Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
+"POT-Creation-Date: 2013-04-22 16:44+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: include/doclone/exception/AlignPartitionException.h:41
+msgid "The partition cannot be aligned to MiB"
+msgstr ""
+
+#: include/doclone/exception/BrokenPipeException.h:37
+msgid "The connection has been closed by other node"
+msgstr ""
+
+#: include/doclone/exception/CancelException.h:37
+msgid "The job was canceled by the user"
+msgstr ""
+
+#: include/doclone/exception/CloseConnectionException.h:37
+msgid "Can't close a network socket"
+msgstr ""
+
+#: include/doclone/exception/CloseFileException.h:37
+msgid "Can't close a file descriptor"
+msgstr ""
+
+#: include/doclone/exception/CommitException.h:37
+msgid "Committing changes to disk failed"
+msgstr ""
+
+#: include/doclone/exception/ConnectionException.h:37
+msgid "There was a connection error"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Cant' create file: /etc/mtab
+#: include/doclone/exception/CreateFileException.h:43
+msgid "Cant' create file:"
+msgstr ""
+
+#: include/doclone/exception/CreateImageException.h:37
+msgid "The image can't be created"
+msgstr ""
+
+#: include/doclone/exception/CreatePartitionException.h:37
+msgid "Can't create partition"
+msgstr ""
+
+#: include/doclone/exception/ErrorException.h:39
+msgid "Executed with errors"
+msgstr ""
+
+#: include/doclone/exception/Exception.h:75
+msgid "General error"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	File not found: /etc/mtab
+#: include/doclone/exception/FileNotFoundException.h:41
+msgid "File not found:"
+msgstr ""
+
+#: include/doclone/exception/FormatException.h:37
+msgid "Can't format partition"
+msgstr ""
+
+#: include/doclone/exception/GrubException.h:37
+msgid "Can't install GRUB bootloader"
+msgstr ""
+
+#: include/doclone/exception/InvalidImageException.h:39
+msgid "Invalid image"
+msgstr ""
+
+#: include/doclone/exception/MakeLabelException.h:37
+msgid "Can't create a new disk label"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't mount a partition: /dev/sdb1
+#: include/doclone/exception/MountException.h:41
+msgid "Can't mount a partition:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't access to device: /dev/sda
+#: include/doclone/exception/NoAccessToDeviceException.h:44
+msgid "Can't access to device:"
+msgstr ""
+
+#: include/doclone/exception/NoBlockDeviceException.h:39
+msgid "Not a block device"
+msgstr ""
+
+#: include/doclone/exception/NoDeviceDriverRecognizedException.h:45
+msgid ""
+"The library can't determine whether this device is SCSI or IDE. Using SCSI "
+"by default."
+msgstr ""
+
+#: include/doclone/exception/NoFitInDeviceException.h:40
+msgid "Image doesn't fit in device"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	A necessary tool to restore was not found: mke2fs
+#: include/doclone/exception/NoFsToolFoundException.h:42
+msgid "A necessary tool to restore was not found:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	The label will not be cloned for this file system: linux-swap
+#: include/doclone/exception/NoLabelSupportException.h:44
+msgid "The label will not be cloned for this file system:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	There is no support to mount this file system: xfs
+#: include/doclone/exception/NoMountSupportException.h:42
+msgid "There is no support to mount this file system:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	The uuid will not be cloned for this file system: linux-swap
+#: include/doclone/exception/NoUuidSupportException.h:44
+msgid "The uuid will not be cloned for this file system:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't open file: /home/user/sdb.doclone
+#: include/doclone/exception/OpenFileException.h:44
+msgid "Can't open file:"
+msgstr ""
+
+#: include/doclone/exception/ReadDataException.h:37
+msgid "Can't read data"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Some errors reading directory: /etc
+#: include/doclone/exception/ReadErrorsInDirectoryException.h:42
+msgid "Some errors reading directory:"
+msgstr ""
+
+#: include/doclone/exception/ReceiveDataException.h:37
+msgid "Can't receive data"
+msgstr ""
+
+#: include/doclone/exception/RestoreImageException.h:37
+msgid "The image can't be restored"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't send data to 192.168.1.10
+#: include/doclone/exception/SendDataException.h:39
+msgid "Can't send data to"
+msgstr ""
+
+#: include/doclone/exception/SigAbrtException.h:42
+msgid ""
+"\n"
+"The program has received a SIGABRT signal and is going to\n"
+"close immediately. If it were reading or writing data to a\n"
+"partition, it can not be properly unmounted. Please check\n"
+"that no partition is mounted on /tmp/doclone-******"
+msgstr ""
+
+#. TO TRANSLATORS: Some error signal caught: Aborted
+#: include/doclone/exception/SignalCaughtException.h:44
+msgid "Some error signal caught:"
+msgstr ""
+
+#.
+#. * TO TRANSLATORS: looks like	The image contains 19 partitions, but
+#. * this kernel can only handle up to 16.
+#.
+#: include/doclone/exception/TooMuchPartitionsException.h:55
+msgid "The image contains"
+msgstr ""
+
+#: include/doclone/exception/TooMuchPartitionsException.h:56
+msgid "partitions, but this kernel can only handle up to"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't unmount partition. Mounted in: /tmp/doclone-NgvlyF
+#: include/doclone/exception/UmountException.h:41
+msgid "Can't unmount partition. Mounted in:"
+msgstr ""
+
+#: include/doclone/exception/WarningException.h:39
+msgid "Executed with warnings"
+msgstr ""
+
+#: include/doclone/exception/WriteDataException.h:37
+msgid "Can't write data"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Some errors writing in directory: /etc
+#: include/doclone/exception/WriteErrorsInDirectoryException.h:42
+msgid "Some errors writing in directory:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't write label: /dev/sdb1
+#: include/doclone/exception/WriteLabelException.h:41
+msgid "Can't write label:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't write UUID: /dev/sdb1
+#: include/doclone/exception/WriteUuidException.h:41
+msgid "Can't write UUID:"
+msgstr ""
+
+#: include/doclone/exception/WrongImageTypeException.h:40
+msgid "Wrong image type"
+msgstr ""

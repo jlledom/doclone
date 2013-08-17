@@ -1,0 +1,30 @@
+dnl doClone - a library and front end for creating or restoring images of
+dnl GNU/Linux dnl systems.
+dnl Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+dnl
+dnl This file may be modified and/or distributed without restriction.
+
+AC_INIT([doclone],[0.7.0], [joanlluislledo@gmail.com])
+AM_INIT_AUTOMAKE([1.11 parallel-tests -Wall -Werror])
+AM_SILENT_RULES
+LT_INIT
+AC_PROG_CXX
+AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT([external])
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_HEADERS([config.h])
+
+AC_CONFIG_SUBDIRS([libdoclone])
+
+AC_CHECK_LIB([ncurses], [initscr], [], [AC_MSG_ERROR(libncurses is not installed.)])
+AC_CHECK_LIB([ncursesw], [initscr], [], [AC_MSG_ERROR(libncursesw is not installed.)])
+
+AC_CONFIG_FILES([
+	Makefile \
+	src/Makefile \
+	src/ConsoleView/Makefile \
+	src/CursesView/Makefile \
+	po/Makefile.in \
+	man/Makefile
+	])
+AC_OUTPUT

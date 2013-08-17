@@ -1,0 +1,9 @@
+2013-07-14  Joan Lledó  <joanlluislledo@gmail.com>
+
+        * *: This Project uses Git. You can clone the repository
+        by typing:
+        
+        	git clone git://git.savannah.nongnu.org/doclone.git
+        
+        For a detailed list of changes in the entire project,
+	    use 'git log' from the top level source directory.

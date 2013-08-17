@@ -1,0 +1,94 @@
+.TH DOCLONE 8 2012\-08\-11 "doclone 0.7.0"
+.SH NAME
+Doclone \- Tool to clone computers and make backups
+
+.SH SYNOPSIS
+.B doclone
+FUNCTION [ \-d, \-\-device DEVICE ] [ \-f, \-\-file FILE ]
+.br
+[ \-a, \-\-address SERVER\-IP\-ADDRESS ] [ \-n, \-\-nodes NUMBER ]
+.br
+[ \-e, \-\-empty ] [ \-F, \-\-force]
+
+.SH DESCRIPTION
+Doclone is a tool to create and restore backups of linux systems. It also
+lets you clone computers over the network.
+.PP
+You can make copies of computers using the Unicast/Multicast mode, which
+creates a direct connection between two or more machines, or using the
+link mode, which creates a chain of nodes that sends information like a
+bus\-topology net.
+.PP
+You can also make copies "on the fly", sending the data of a device
+directly to the network without creating a system image before.
+
+.SH OPTIONS
+.SS GENERAL OPTIONS:
+\-d, \-\-device	Path to the device.
+.br
+\-f, \-\-file	Path to the image file.
+.br
+
+\-a, \-\-address	Server IP address (Unicast/Multicast mode).
+.br
+\-e, \-\-empty	Don't send data, only partition table.
+.br
+\-F, \-\-force	Force the restoration of an image even if it doesn't fit in the device.
+
+.SS SPECIFIC OPTIONS:
+.SS For local work: (Implies the use of \-d and \-f)
+\-c, \-\-create	Create a disk or partition image.
+.br
+\-r, \-\-restore	Restore a disk or partition image.
+
+.SS For work over the network: (Implies the use of \-d or \-f)
+.SS Unicast/Multicast connection:
+\-S, \-\-send	Sends server's data to receivers.
+.br
+			(This function implies \-n).
+\-R, \-\-receive	Receives data from the server.
+.br
+				(This option implies \-a).
+
+.SS Link mode connection:
+\-s, \-\-link\-send	Sends data to the network.
+.br
+\-l, \-\-link\-receive	Receives data from the network.
+
+.SS Others:
+\-h, \-\-help	Show this help.
+.br
+\-v, \-\-version	Show version.
+
+.SH EXAMPLES
+.SS Create an image of /dev/sdb and save it in /home/user/sdb.doclone:
+doclone \-cd /dev/sdb \-f /home/user/sdb.doclone
+	
+.SS Restore an image saved in /home/user/sdb.doclone into /dev/sdb:
+doclone \-rd /dev/sdb \-f /home/joan/sdb.doclone
+
+.SS Send data on the fly to one recipient:
+doclone \-Sd /dev/sdb1
+.br
+or:
+.br
+doclone \-Sd /dev/sdb1 \-n 1
+
+.SS Send data on the fly to two recipients:
+doclone \-Sd /dev/sdb \-n 2
+	
+.SS Receive data from the server and restore it in /dev/sdb:
+doclone \-Rd /dev/sdb \-a 192.168.0.12
+
+.SS Listen for any server in the network, receive its data and restore it in /dev/sdb:
+doclone \-ld /dev/sdb
+
+.SS Send the data of /dev/sda to receivers listening on the network:
+doclone \-sd /dev/sda
+
+.SH MORE INFORMATION
+You can find the complete documentation of doclone in the link below:
+http://doclone.nongnu.org/
+
+.SH AUTHOR
+Doclone was written by Joan Lledó <joanlluislledo@gmail.com>
