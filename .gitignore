@@ -37,6 +37,7 @@ config.*
 configure
 depcomp
 src/doclone
+src/.libs/doclone
 install-sh
 intltool-*
 libtool
