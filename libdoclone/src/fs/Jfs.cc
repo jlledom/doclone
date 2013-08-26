@@ -18,12 +18,11 @@
 
 #include <doclone/fs/Jfs.h>
 #include <doclone/Logger.h>
+#include <doclone/Util.h>
 
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/WriteLabelException.h>
 #include <doclone/exception/WriteUuidException.h>
-
-#include <glibmm-2.4/glibmm.h>
 
 namespace Doclone {
 
@@ -65,7 +64,7 @@ void Jfs::checkSupport() {
 	this->_mountSupport = true;
 	
 	// Formatting support
-	if(Glib::find_program_in_path(this->_command) .empty()) {
+	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
 	}
 	else {
@@ -73,7 +72,7 @@ void Jfs::checkSupport() {
 	}
 	
 	// UUID and label support
-	if(Glib::find_program_in_path(this->_adminCommand) .empty()) {
+	if(Util::find_program_in_path(this->_adminCommand) .empty()) {
 		this->_uuidSupport = false;
 		this->_labelSupport = false;
 	}
@@ -104,8 +103,8 @@ void Jfs::writeLabel(const std::string &dev) const throw(Exception) {
 	.append(">/dev/null 2>&1");
 	
 	int exitValue;
-	Glib::spawn_command_line_sync( "sh -c '" + cmdline +
-										"'", 0, 0, &exitValue );
+	Util::spawn_command_line_sync(cmdline, &exitValue);
+
 	if (exitValue<0) {
 		WriteLabelException ex(dev);
 		throw ex;
@@ -133,8 +132,8 @@ void Jfs::writeUUID(const std::string &dev) const throw(Exception) {
 	.append(">/dev/null 2>&1");
 	
 	int exitValue;
-	Glib::spawn_command_line_sync( "sh -c '" + cmdline + 
-										"'", 0, 0, &exitValue );
+	Util::spawn_command_line_sync(cmdline, &exitValue);
+
 	if (exitValue<0) {
 		WriteUuidException ex(dev);
 		ex.logMsg();

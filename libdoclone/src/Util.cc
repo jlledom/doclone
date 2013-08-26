@@ -32,11 +32,14 @@
 #include <doclone/exception/SignalCaughtException.h>
 #include <doclone/exception/NoDeviceDriverRecognizedException.h>
 #include <doclone/exception/SigAbrtException.h>
+#include <doclone/exception/SpawnProcessException.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <mntent.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
@@ -629,7 +632,7 @@ bool Util::isUUIDRepeated(const char *uuid) throw(Exception) {
 	int blDev = blkid_probe_all(cache);
 	if(blDev != 0) {
 		log->debug("Util::isUUIDRepeated(retVal=>%d) end", retVal);
-		// Returning true to enforce the mounting/unmounting of the device, just in case.
+		// Returning true to enforce mounting/unmounting of the device, just in case.
 		return true;
 	}
 
@@ -738,6 +741,91 @@ void Util::signalHandler(int sig) throw(Exception) {
 	}
 
 	log->debug("Util::signalHandler() end");
+	return;
+}
+
+/**
+ * \brief Splits a string into an vector of strings
+ *
+ * \param string
+ * 		String to be splitted
+ * \delim
+ * 		Delimitator
+ * \elems
+ * 		Address of the vector where the strings will be written
+ */
+void Util::split(const std::string &string, char delim, std::vector<std::string> &elems) {
+	Logger *log = Logger::getInstance();
+	log->debug("Util::split(string=>%s, delim=>%c) start", string.c_str(), delim);
+
+	std::stringstream ss(string);
+	std::string item;
+
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+
+	log->debug("Util::split() end");
+	return;
+}
+
+/**
+ * \brief Finds out whether a program is available through the path.
+ *
+ *
+ * \param program
+ * 		name of the program
+ *
+ * \return The path of the program, or an empty string if not found
+ */
+std::string Util::find_program_in_path(const std::string &program) {
+	Logger *log = Logger::getInstance();
+	log->debug("Util::find_program_in_path(program=>%s) start", program.c_str());
+
+	std::string path = getenv("PATH");
+
+	std::vector<std::string> elems;
+	split(path, ':', elems);
+
+	std::string retVal = "";
+
+	for(unsigned int i=0; i< elems.size(); i++) {
+		std::string abPath = elems.at(i)+"/"+program;
+		if (access(abPath.c_str(), X_OK) == 0) {
+			retVal = abPath;
+		}
+	}
+
+	log->debug("Util::find_program_in_path(retVal=>%s) end", retVal.c_str());
+	return retVal;
+}
+
+void Util::spawn_command_line_sync(std::string &command, int *exitValue) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Util::spawn_command_line_sync(command=>%s) start", command.c_str());
+
+	pid_t pid;
+	int status;
+
+	pid = fork();
+	if (pid < 0) {
+		SpawnProcessException ex(command);
+		throw ex;
+	} else if (pid == 0) {
+		execlp("/bin/sh", "sh", "-c", command.c_str(), (void *)0);
+	} else if(waitpid(pid, &status, 0) != pid) {
+		SpawnProcessException ex(command);
+		throw ex;
+	}
+
+	if(WIFEXITED(status)) {
+		*exitValue = WEXITSTATUS(status);
+	} else {
+		SpawnProcessException ex(command);
+		throw ex;
+	}
+
+	log->debug("Util::spawn_command_line_sync() end");
 	return;
 }
 

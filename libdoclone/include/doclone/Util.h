@@ -119,6 +119,11 @@ public:
 
 	static void signalCapture();
 	static void signalHandler(int s) throw(Exception);
+
+	static void split(const std::string &string, char delim, std::vector<std::string> &elems);
+	static std::string find_program_in_path(const std::string &program);
+
+	static void spawn_command_line_sync(std::string &command, int *exitValue) throw(Exception);
 };
 
 }

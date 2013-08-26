@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2013-04-22 16:44+0200\n"
+"POT-Creation-Date: 2013-08-26 19:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -170,6 +170,11 @@ msgstr ""
 #. TO TRANSLATORS: Some error signal caught: Aborted
 #: include/doclone/exception/SignalCaughtException.h:44
 msgid "Some error signal caught:"
+msgstr ""
+
+#. TO TRANSLATORS: looks like	Can't spawn process: mkfs.ext4
+#: include/doclone/exception/SpawnProcessException.h:43
+msgid "Can't spawn process:"
 msgstr ""
 
 #.

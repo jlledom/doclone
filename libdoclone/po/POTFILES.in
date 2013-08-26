@@ -34,6 +34,7 @@ include/doclone/exception/RestoreImageException.h
 include/doclone/exception/SendDataException.h
 include/doclone/exception/SigAbrtException.h
 include/doclone/exception/SignalCaughtException.h
+include/doclone/exception/SpawnProcessException.h
 include/doclone/exception/TooMuchPartitionsException.h
 include/doclone/exception/UmountException.h
 include/doclone/exception/WarningException.h

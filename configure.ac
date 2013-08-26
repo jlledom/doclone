@@ -1,8 +1,7 @@
-dnl doClone - a library and front end for creating or restoring images of
-dnl GNU/Linux dnl systems.
+dnl doClone - a library and front end for creating or restoring images of GNU/Linux systems.
 dnl Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
 dnl
-dnl This file may be modified and/or distributed without restriction.
+dnl See the file COPYING for copying conditions.
 
 AC_INIT([doclone],[0.7.0], [joanlluislledo@gmail.com])
 AM_INIT_AUTOMAKE([1.11 parallel-tests -Wall -Werror])

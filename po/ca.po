@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: doclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
 "POT-Creation-Date: 2013-07-28 18:57+0200\n"
-"PO-Revision-Date: 2013-02-17 13:17+0100\n"
+"PO-Revision-Date: 2013-08-26 19:42+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -151,7 +151,7 @@ msgstr ""
 "\t-v, --version\t\tMostra la versió del doclone.\n"
 
 #: src/ConsoleView/ConsoleView.cc:442
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "doclone %s\n"
 "Written by Joan Lledó\n"
@@ -413,7 +413,6 @@ msgid "Alerts & events:"
 msgstr "Alertes i esdeveniments:"
 
 #: src/CursesView/ScopeMenu.cc:30
-#, fuzzy
 msgid "Indicate what scope you want to work at:"
 msgstr "Indiqueu en quin àmbit voleu treballar:"
 

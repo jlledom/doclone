@@ -20,12 +20,11 @@
 #include <doclone/Clone.h>
 #include <doclone/Operation.h>
 #include <doclone/Logger.h>
+#include <doclone/Util.h>
 
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/CancelException.h>
 #include <doclone/exception/GrubException.h>
-
-#include <glibmm-2.4/glibmm.h>
 
 #include <string>
 #include <fstream>
@@ -42,7 +41,7 @@ namespace Doclone {
  */
 Grub::Grub(const Disk *disk) throw(Exception) : _disk(disk) {
 	// Formatting support
-	if(Glib::find_program_in_path(GRUB_COMMAND).empty()) {
+	if(Util::find_program_in_path(GRUB_COMMAND).empty()) {
 		GrubException ex;
 		throw ex;
 	}
@@ -150,8 +149,7 @@ void Grub::install() throw(Exception) {
 				grub_install_cmdline.append(this->_disk->getPath());
 				grub_install_cmdline.append(" >/dev/null 2>&1");
 
-				Glib::spawn_command_line_sync( "sh -c '" + grub_install_cmdline +
-						"'", 0, 0, &exitValue );
+				Util::spawn_command_line_sync(grub_install_cmdline, &exitValue);
 			} catch (const CancelException &ex) {
 				part->doUmount();
 				throw;

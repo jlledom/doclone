@@ -24,7 +24,6 @@
 #include <doclone/exception/WriteLabelException.h>
 #include <doclone/exception/WriteUuidException.h>
 
-#include <glibmm-2.4/glibmm.h>
 #include <uuid/uuid.h>
 
 namespace Doclone {
@@ -67,7 +66,7 @@ void LinuxSwap::checkSupport() {
 	this->_mountSupport = false;
 	
 	// Formatting support
-	if(Glib::find_program_in_path(this->_command) .empty()) {
+	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
 	}
 	else {

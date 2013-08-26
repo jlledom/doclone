@@ -25,7 +25,8 @@
 #include <doclone/exception/WriteUuidException.h>
 
 #include <endian.h>
-#include <glibmm-2.4/glibmm.h>
+
+#include <algorithm>
 
 namespace Doclone {
 
@@ -64,7 +65,7 @@ void Ntfs::checkSupport() {
 	log->debug("Ntfs::checkSupport() start");
 	
 	// Mounting support
-	if(Glib::find_program_in_path("mount."+this->_mountName).empty()) {
+	if(Util::find_program_in_path("mount."+this->_mountName).empty()) {
 		this->_mountSupport = false;
 	}
 	else {
@@ -72,7 +73,7 @@ void Ntfs::checkSupport() {
 	}
 	
 	// Formatting support
-	if(Glib::find_program_in_path(this->_command).empty()) {
+	if(Util::find_program_in_path(this->_command).empty()) {
 		this->_formatSupport = false;
 	}
 	else {
@@ -83,7 +84,7 @@ void Ntfs::checkSupport() {
 	this->_uuidSupport = true;
 	
 	// Label support
-	if(Glib::find_program_in_path(this->_adminCommand).empty()) {
+	if(Util::find_program_in_path(this->_adminCommand).empty()) {
 		this->_labelSupport = false;
 	}
 	else {
@@ -112,8 +113,8 @@ void Ntfs::writeLabel(const std::string &dev) const throw(Exception) {
 	.append(">/dev/null 2>&1");
 	
 	int exitValue;
-	Glib::spawn_command_line_sync( "sh -c '" + cmdline +
-			"'", 0, 0, &exitValue );
+	Util::spawn_command_line_sync(cmdline, &exitValue);
+
 	if (exitValue<0) {
 		WriteLabelException ex(dev);
 		ex.logMsg();

@@ -43,7 +43,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <glibmm-2.4/glibmm.h>
 #include <blkid/blkid.h>
 
 #include <string>
@@ -399,7 +398,7 @@ void Partition::initUUID() throw(Exception) {
 /**
  * \brief Calculates the used space in partition
  *
- * \return used space in bytes
+ * \return Used space in bytes
  */
 uint64_t Partition::usedSpace() throw(Exception) {
 	Logger *log = Logger::getInstance();
@@ -481,7 +480,8 @@ void Partition::externalMount() throw(Exception) {
 	.append(">/dev/null 2>&1");
 			 
 	int exitValue;
-	Glib::spawn_command_line_sync( "sh -c '" + cmdline + "'", 0, 0, &exitValue );
+	Util::spawn_command_line_sync(cmdline, &exitValue);
+
 	if (exitValue<0) {
 		MountException ex(this->_path);
 		throw ex;
@@ -623,7 +623,8 @@ void Partition::format() const throw(Exception) {
 		" "+this->_path.c_str()+" >/dev/null 2>&1";
 
 	int exitValue;
-	Glib::spawn_command_line_sync( "sh -c '" + cmdline + "'", 0, 0, &exitValue );
+	Util::spawn_command_line_sync(cmdline, &exitValue);
+
 	if (exitValue<0) {
 		FormatException ex;
 		throw ex;

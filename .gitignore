@@ -19,6 +19,7 @@
 *.template
 *.pc
 *.tar.gz
+*.sig
 .cproject
 .csettings
 .deps

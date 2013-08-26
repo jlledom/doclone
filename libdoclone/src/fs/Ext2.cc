@@ -18,6 +18,7 @@
 
 #include <doclone/fs/Ext2.h>
 #include <doclone/Logger.h>
+#include <doclone/Util.h>
 
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/WriteLabelException.h>
@@ -25,7 +26,6 @@
 
 #include <ext2fs/ext2fs.h>
 #include <uuid/uuid.h>
-#include <glibmm-2.4/glibmm.h>
 
 namespace Doclone {
 
@@ -67,7 +67,7 @@ void Ext2::checkSupport() {
 	this->_mountSupport = true;
 	
 	// Formatting support
-	if(Glib::find_program_in_path(this->_command).empty()) {
+	if(Util::find_program_in_path(this->_command).empty()) {
 		this->_formatSupport = false;
 	}
 	else {

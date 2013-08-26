@@ -58,6 +58,7 @@ libdcexception_la_SOURCES= \
 	$(top_srcdir)/include/doclone/exception/SendDataException.h \
 	$(top_srcdir)/include/doclone/exception/SigAbrtException.h \
 	$(top_srcdir)/include/doclone/exception/SignalCaughtException.h \
+	$(top_srcdir)/include/doclone/exception/SpawnProcessException.h \
 	$(top_srcdir)/include/doclone/exception/TooMuchPartitionsException.h \
 	$(top_srcdir)/include/doclone/exception/UmountException.h \
 	$(top_srcdir)/include/doclone/exception/WarningException.h \
@@ -105,6 +106,7 @@ libdcexception_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/exception/SendDataException.h \
 	$(top_srcdir)/include/doclone/exception/SigAbrtException.h \
 	$(top_srcdir)/include/doclone/exception/SignalCaughtException.h \
+	$(top_srcdir)/include/doclone/exception/SpawnProcessException.h \
 	$(top_srcdir)/include/doclone/exception/TooMuchPartitionsException.h \
 	$(top_srcdir)/include/doclone/exception/UmountException.h \
 	$(top_srcdir)/include/doclone/exception/WarningException.h \

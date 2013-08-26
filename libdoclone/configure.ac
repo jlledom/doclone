@@ -1,7 +1,7 @@
 dnl doClone - a library to creating or restoring images of GNU/Linux systems.
 dnl Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
 dnl
-dnl This file may be modified and/or distributed without restriction.
+dnl See the file COPYING for copying conditions.
 
 AC_INIT([libdoclone],[0.7.0], [joanlluislledo@gmail.com])
 AM_INIT_AUTOMAKE([1.11 parallel-tests -Wall -Werror])
@@ -29,7 +29,6 @@ int main () {
 }
 ], [], AC_MSG_ERROR([The implementation is not IEEE-754 compliant]))
 
-PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4 >= 2.16])
 PKG_CHECK_MODULES([PARTED], [libparted >= 2.2])
 PKG_CHECK_MODULES([E2FS], [ext2fs >= 1.41.3])
 PKG_CHECK_MODULES([UUID], [uuid >= 1.41.3])

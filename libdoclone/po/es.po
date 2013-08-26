@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2013-04-22 16:44+0200\n"
-"PO-Revision-Date: 2013-02-17 13:25+0100\n"
+"POT-Creation-Date: 2013-08-26 19:26+0200\n"
+"PO-Revision-Date: 2013-08-26 19:37+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -26,7 +26,6 @@ msgid "The connection has been closed by other node"
 msgstr "Otro nodo ha cerrado la conexión"
 
 #: include/doclone/exception/CancelException.h:37
-#, fuzzy
 msgid "The job was canceled by the user"
 msgstr "El usuario ha cancelado la operación"
 
@@ -126,7 +125,6 @@ msgstr "La etiqueta no se clonará para esete sistema de ficheros:"
 
 #. TO TRANSLATORS: looks like	There is no support to mount this file system: xfs
 #: include/doclone/exception/NoMountSupportException.h:42
-#, fuzzy
 msgid "There is no support to mount this file system:"
 msgstr "No hay soporte para este sistema de ficheros:"
 
@@ -182,6 +180,11 @@ msgstr ""
 msgid "Some error signal caught:"
 msgstr "Se capturó la señal:"
 
+#. TO TRANSLATORS: looks like	Can't spawn process: mkfs.ext4
+#: include/doclone/exception/SpawnProcessException.h:43
+msgid "Can't spawn process:"
+msgstr "No se puede iniciar el proceso:"
+
 #.
 #. * TO TRANSLATORS: looks like	The image contains 19 partitions, but
 #. * this kernel can only handle up to 16.
@@ -191,7 +194,6 @@ msgid "The image contains"
 msgstr "La imagen contiene"
 
 #: include/doclone/exception/TooMuchPartitionsException.h:56
-#, fuzzy
 msgid "partitions, but this kernel can only handle up to"
 msgstr "particiones, pero este kernel sólo puede manejar hasta"
 
