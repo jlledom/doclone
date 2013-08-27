@@ -17,6 +17,14 @@
  */
 
 #include <doclone/Unicast.h>
+
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <endian.h>
+
 #include <doclone/Logger.h>
 #include <doclone/PartedDevice.h>
 #include <doclone/Clone.h>
@@ -25,7 +33,6 @@
 #include <doclone/DiskLabel.h>
 #include <doclone/DlFactory.h>
 #include <doclone/Image.h>
-
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/ConnectionException.h>
 #include <doclone/exception/ReadDataException.h>
@@ -36,13 +43,6 @@
 #include <doclone/exception/CreateImageException.h>
 #include <doclone/exception/RestoreImageException.h>
 #include <doclone/exception/CancelException.h>
-
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <endian.h>
 
 namespace Doclone {
 

@@ -19,12 +19,12 @@
 #ifndef EXCEPTION_H_
 #define EXCEPTION_H_
 
-#include <doclone/Logger.h>
-
 #include <libintl.h>
 
 #include <string>
 #include <exception>
+
+#include <doclone/Logger.h>
 
 #ifndef GETTEXT_DOMAIN
 #define GETTEXT_DOMAIN "libdoclone"

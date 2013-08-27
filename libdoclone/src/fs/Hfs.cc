@@ -17,6 +17,7 @@
  */
 
 #include <doclone/fs/Hfs.h>
+
 #include <doclone/Logger.h>
 #include <doclone/Util.h>
 

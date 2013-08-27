@@ -17,9 +17,9 @@
  */
 
 #include <doclone/FsFactory.h>
+
 #include <doclone/Logger.h>
 #include <doclone/Util.h>
-
 #include <doclone/fs/Ext2.h>
 #include <doclone/fs/Ext3.h>
 #include <doclone/fs/Ext4.h>

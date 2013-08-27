@@ -21,10 +21,6 @@
 
 #include <doclone/exception/ErrorException.h>
 
-#include <string.h>
-
-#include <string>
-
 namespace Doclone {
 
 /**
@@ -40,9 +36,9 @@ public:
 	SigAbrtException() throw() {
 		this->_msg =
 				D_("\nThe program has received a SIGABRT signal and is going to\n"
-				"close immediately. If it were reading or writing data to a\n"
-				"partition, it can not be properly unmounted. Please check\n"
-				"that no partition is mounted on /tmp/doclone-******");
+				"close immediately. If it was reading or writing data to a\n"
+				"partition, it won't be properly unmounted. Please check\n"
+				"whether any partition is mounted on /tmp/doclone-******");
 	}
 
 	~SigAbrtException() throw() {}

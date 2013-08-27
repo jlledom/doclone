@@ -19,9 +19,9 @@
 #ifndef NOFSTOOLSFOUNDEXCEPTION_H_
 #define NOFSTOOLSFOUNDEXCEPTION_H_
 
-#include <doclone/exception/ErrorException.h>
-
 #include <string>
+
+#include <doclone/exception/ErrorException.h>
 
 namespace Doclone {
 

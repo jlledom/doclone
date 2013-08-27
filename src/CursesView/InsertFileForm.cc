@@ -17,10 +17,6 @@
  */
 
 #include <CursesView/InsertFileForm.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
-
-#include <doclone/Clone.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -31,6 +27,11 @@
 #include <errno.h>
 
 #include <algorithm>
+
+#include <doclone/Clone.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
 
 InsertFileForm::InsertFileForm() {
 	char currentPath[256];

@@ -17,6 +17,7 @@
  */
 
 #include <CursesView/ScreenFactory.h>
+
 #include <CursesView/LanMenu.h>
 #include <CursesView/SelectDeviceForm.h>
 #include <CursesView/SelectFileForm.h>

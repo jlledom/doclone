@@ -19,10 +19,10 @@
 #ifndef ABSTRACTSUBJECT_H_
 #define ABSTRACTSUBJECT_H_
 
-#include <doclone/observer/AbstractObserver.h>
-
 #include <set>
 #include <string>
+
+#include <doclone/observer/AbstractObserver.h>
 
 namespace Doclone {
 

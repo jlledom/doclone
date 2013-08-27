@@ -19,11 +19,10 @@
 #ifndef LINK_H_
 #define LINK_H_
 
-#include <doclone/Net.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/Net.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

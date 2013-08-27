@@ -19,11 +19,10 @@
 #ifndef GRUB_H_
 #define GRUB_H_
 
-#include <doclone/Disk.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <map>
+
+#include <doclone/Disk.h>
+#include <doclone/exception/Exception.h>
 
 #ifndef GRUB_COMMAND
 /**

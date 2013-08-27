@@ -19,11 +19,11 @@
 #ifndef TEXTINPUT_H_
 #define TEXTINPUT_H_
 
-#include <CursesView/CursesWidget.h>
+#include <string>
 
 #include <form.h>
 
-#include <string>
+#include <CursesView/CursesWidget.h>
 
 /**
  * Regular expression that matches with a number

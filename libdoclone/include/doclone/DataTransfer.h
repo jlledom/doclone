@@ -19,13 +19,13 @@
 #ifndef DATATRANSFER_H_
 #define DATATRANSFER_H_
 
-#include <doclone/observer/AbstractSubject.h>
-#include <doclone/exception/Exception.h>
-
 #include <stdint.h>
 #include <sys/types.h>
 
 #include <map>
+
+#include <doclone/observer/AbstractSubject.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

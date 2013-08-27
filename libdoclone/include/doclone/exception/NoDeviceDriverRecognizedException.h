@@ -19,11 +19,11 @@
 #ifndef NODEVICEDRIVERRECOGNIZEDEXCEPTION_H_
 #define NODEVICEDRIVERRECOGNIZEDEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <stdint.h>
 
 #include <sstream>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

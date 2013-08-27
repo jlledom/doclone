@@ -18,10 +18,6 @@
 
 #include <ConsoleView/ConsoleView.h>
 
-#include <doclone/Clone.h>
-#include <doclone/DataTransfer.h>
-
-#include <config.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <libintl.h>
@@ -30,6 +26,11 @@
 #include <stdlib.h>
 
 #include <iostream>
+
+#include <config.h>
+
+#include <doclone/Clone.h>
+#include <doclone/DataTransfer.h>
 
 #define _(string) gettext(string)
 

@@ -17,11 +17,6 @@
  */
 
 #include <CursesView/SelectFileForm.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
-#include <CursesView/Util.h>
-
-#include <doclone/Clone.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,6 +27,12 @@
 #include <errno.h>
 
 #include <algorithm>
+
+#include <doclone/Clone.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
+#include <CursesView/Util.h>
 
 SelectFileForm::SelectFileForm() {
 	char currentPath[256];

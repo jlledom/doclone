@@ -17,10 +17,11 @@
  */
 
 #include <CursesView/BaseScreen.h>
-#include <CursesView/CursesView.h>
 
 #include <string.h>
 #include <libintl.h>
+
+#include <CursesView/CursesView.h>
 
 /**
  * Initializes the base screen

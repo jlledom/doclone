@@ -19,11 +19,11 @@
 #ifndef TOOMUCHOPARTITIONSEXCEPTION_H_
 #define TOOMUCHOPARTITIONSEXCEPTION_H_
 
-#include <doclone/exception/ErrorException.h>
-
 #include <stdint.h>
 
 #include <sstream>
+
+#include <doclone/exception/ErrorException.h>
 
 namespace Doclone {
 

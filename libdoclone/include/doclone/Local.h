@@ -19,9 +19,9 @@
 #ifndef LOCAL_H_
 #define LOCAL_H_
 
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

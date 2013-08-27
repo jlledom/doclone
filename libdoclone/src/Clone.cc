@@ -17,6 +17,13 @@
  */
 
 #include <doclone/Clone.h>
+
+#include <locale.h>
+#include <libintl.h>
+#include <pthread.h>
+
+#include <config.h>
+
 #include <doclone/Logger.h>
 #include <doclone/Local.h>
 #include <doclone/DataTransfer.h>
@@ -24,15 +31,8 @@
 #include <doclone/Util.h>
 #include <doclone/Unicast.h>
 #include <doclone/Link.h>
-
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/ErrorException.h>
-
-#include <config.h>
-
-#include <locale.h>
-#include <libintl.h>
-#include <pthread.h>
 
 namespace Doclone {
 

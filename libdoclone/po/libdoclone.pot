@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2013-08-26 19:26+0200\n"
+"POT-Creation-Date: 2013-08-27 18:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -158,13 +158,13 @@ msgstr ""
 msgid "Can't send data to"
 msgstr ""
 
-#: include/doclone/exception/SigAbrtException.h:42
+#: include/doclone/exception/SigAbrtException.h:38
 msgid ""
 "\n"
 "The program has received a SIGABRT signal and is going to\n"
-"close immediately. If it were reading or writing data to a\n"
-"partition, it can not be properly unmounted. Please check\n"
-"that no partition is mounted on /tmp/doclone-******"
+"close immediately. If it was reading or writing data to a\n"
+"partition, it won't be properly unmounted. Please check\n"
+"whether any partition is mounted on /tmp/doclone-******"
 msgstr ""
 
 #. TO TRANSLATORS: Some error signal caught: Aborted

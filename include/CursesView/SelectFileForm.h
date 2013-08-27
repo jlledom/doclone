@@ -19,12 +19,12 @@
 #ifndef SELECTFILEFORM_H_
 #define SELECTFILEFORM_H_
 
+#include <string>
+#include <vector>
+
 #include <CursesView/BaseScreen.h>
 #include <CursesView/Menu.h>
 #include <CursesView/TextInput.h>
-
-#include <string>
-#include <vector>
 
 /**
  * \addtogroup CursesView

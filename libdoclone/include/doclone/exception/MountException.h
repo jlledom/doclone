@@ -19,9 +19,9 @@
 #ifndef MOUNTEXCEPTION_H_
 #define MOUNTEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

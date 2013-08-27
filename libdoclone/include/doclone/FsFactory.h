@@ -19,9 +19,9 @@
 #ifndef FSFACTORY_H_
 #define FSFACTORY_H_
 
-#include <doclone/Filesystem.h>
-
 #include <string>
+
+#include <doclone/Filesystem.h>
 
 namespace Doclone {
 

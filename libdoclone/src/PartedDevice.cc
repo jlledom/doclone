@@ -17,15 +17,15 @@
  */
 
 #include <doclone/PartedDevice.h>
-#include <doclone/Logger.h>
-
-#include <doclone/exception/CommitException.h>
 
 #include <errno.h>
 #include <unistd.h>
 #include <pthread.h>
 
 #include <parted/parted.h>
+
+#include <doclone/Logger.h>
+#include <doclone/exception/CommitException.h>
 
 namespace Doclone {
 

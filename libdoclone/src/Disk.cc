@@ -17,6 +17,12 @@
  */
 
 #include <doclone/Disk.h>
+
+#include <sstream>
+#include <fstream>
+
+#include <parted/parted.h>
+
 #include <doclone/Clone.h>
 #include <doclone/Logger.h>
 #include <doclone/Partition.h>
@@ -24,7 +30,6 @@
 #include <doclone/DlFactory.h>
 #include <doclone/Grub.h>
 #include <doclone/Util.h>
-
 #include <doclone/exception/WarningException.h>
 #include <doclone/exception/CreatePartitionException.h>
 #include <doclone/exception/NoAccessToDeviceException.h>
@@ -32,11 +37,6 @@
 #include <doclone/exception/ReadDataException.h>
 #include <doclone/exception/FileNotFoundException.h>
 #include <doclone/exception/AlignPartitionException.h>
-
-#include <sstream>
-#include <fstream>
-
-#include <parted/parted.h>
 
 namespace Doclone {
 

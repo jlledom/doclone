@@ -19,14 +19,14 @@
 #ifndef BASESCREEN_H_
 #define BASESCREEN_H_
 
-#include <CursesView/CursesWidget.h>
-#include <CursesView/Menu.h>
+#include <vector>
 
 #include <ncurses.h>
 #include <panel.h>
 #include <menu.h>
 
-#include <vector>
+#include <CursesView/CursesWidget.h>
+#include <CursesView/Menu.h>
 
 /**
  * \addtogroup CursesView

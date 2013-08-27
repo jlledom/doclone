@@ -19,11 +19,10 @@
 #ifndef REISERFS_H_
 #define REISERFS_H_
 
-#include <doclone/UnixFS.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/UnixFS.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

@@ -17,10 +17,11 @@
  */
 
 #include <CursesView/Menu.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/BaseScreen.h>
 
 #include <string.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/BaseScreen.h>
 
 Menu::Menu() :
 	_menu(), _win(), _menuWin(), _menuSubWin(), _colorBack(), _colorFore(),

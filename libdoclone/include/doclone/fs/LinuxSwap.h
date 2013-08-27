@@ -19,11 +19,10 @@
 #ifndef LINUXSWAP_H_
 #define LINUXSWAP_H_
 
-#include <doclone/Filesystem.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/Filesystem.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

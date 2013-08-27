@@ -17,14 +17,16 @@
  */
 
 #include <CursesView/LanMenu.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
 
 #include <libintl.h>
-#include <curses.h>
 
 #include <vector>
 #include <string>
+
+#include <curses.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
 
 LanMenu::LanMenu() {
 	std::string notice=_("Select the network mode:");

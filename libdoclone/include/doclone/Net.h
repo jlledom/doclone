@@ -19,12 +19,12 @@
 #ifndef NET_H_
 #define NET_H_
 
-#include <doclone/exception/Exception.h>
-
 #include <arpa/inet.h>
 
 #include <string>
 #include <vector>
+
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

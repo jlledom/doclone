@@ -19,14 +19,13 @@
 #ifndef DOSFS_H_
 #define DOSFS_H_
 
-#include <doclone/Filesystem.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <stdint.h>
 #include <sys/types.h>
 
 #include <string>
+
+#include <doclone/Filesystem.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

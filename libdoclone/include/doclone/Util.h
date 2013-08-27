@@ -19,11 +19,11 @@
 #ifndef UTIL_H_
 #define UTIL_H_
 
-#include <doclone/exception/Exception.h>
-
 #include <stdint.h>
 
 #include <string>
+
+#include <doclone/exception/Exception.h>
 
 #ifndef IDE_MAJOR
 /**

@@ -21,11 +21,11 @@
 
 #include <pthread.h>
 
-#include <curses.h>
-#include <menu.h>
-
 #include <string>
 #include <vector>
+
+#include <curses.h>
+#include <menu.h>
 
 #define GN_EXTENSION "doclone"
 

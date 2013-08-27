@@ -17,9 +17,9 @@
  */
 
 #include <doclone/dl/Dvh.h>
+
 #include <doclone/PartedDevice.h>
 #include <doclone/Util.h>
-
 #include <doclone/exception/WarningException.h>
 
 namespace Doclone {

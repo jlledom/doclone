@@ -46,7 +46,10 @@
 
 #include <stdint.h>
 
-// Include this headers only in C++, C has its own API bellow
+/* Include this headers only in C++
+ *
+ * For C, libdoclone has another API defined bellow
+ */
 #ifdef __cplusplus
 
 #include <doclone/clone.h>

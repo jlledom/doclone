@@ -19,9 +19,9 @@
 #ifndef PARTEDDEVICE_H_
 #define PARTEDDEVICE_H_
 
-#include <parted/parted.h>
-
 #include <string>
+
+#include <parted/parted.h>
 
 namespace Doclone {
 

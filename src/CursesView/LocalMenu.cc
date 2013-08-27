@@ -17,14 +17,16 @@
  */
 
 #include <CursesView/LocalMenu.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
 
 #include <libintl.h>
-#include <curses.h>
 
 #include <vector>
 #include <string>
+
+#include <curses.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
 
 LocalMenu::LocalMenu() {
 	std::string notice=_("Choose what you want to do:");

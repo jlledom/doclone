@@ -17,18 +17,18 @@
  */
 
 #include <doclone/Grub.h>
-#include <doclone/Clone.h>
-#include <doclone/Operation.h>
-#include <doclone/Logger.h>
-#include <doclone/Util.h>
-
-#include <doclone/exception/Exception.h>
-#include <doclone/exception/CancelException.h>
-#include <doclone/exception/GrubException.h>
 
 #include <string>
 #include <fstream>
 #include <map>
+
+#include <doclone/Clone.h>
+#include <doclone/Operation.h>
+#include <doclone/Logger.h>
+#include <doclone/Util.h>
+#include <doclone/exception/Exception.h>
+#include <doclone/exception/CancelException.h>
+#include <doclone/exception/GrubException.h>
 
 namespace Doclone {
 

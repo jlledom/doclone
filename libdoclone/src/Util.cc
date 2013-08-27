@@ -17,9 +17,26 @@
  */
 
 #include <doclone/Util.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <mntent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
+#include <string.h>
+#include <regex.h>
+
+#include <sstream>
+#include <string>
+#include <fstream>
+
+#include <blkid/blkid.h>
+
 #include <doclone/Logger.h>
 #include <doclone/Clone.h>
-
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/WriteDataException.h>
 #include <doclone/exception/NoAccessToDeviceException.h>
@@ -33,22 +50,6 @@
 #include <doclone/exception/NoDeviceDriverRecognizedException.h>
 #include <doclone/exception/SigAbrtException.h>
 #include <doclone/exception/SpawnProcessException.h>
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <mntent.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <signal.h>
-#include <string.h>
-#include <regex.h>
-#include <blkid/blkid.h>
-
-#include <sstream>
-#include <string>
-#include <fstream>
 
 namespace Doclone {
 

@@ -17,11 +17,6 @@
  */
 
 #include <CursesView/ProgressScreen.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
-#include <doclone/DataTransfer.h>
-
-#include <doclone/Clone.h>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -33,6 +28,12 @@
 
 #include <sstream>
 #include <algorithm>
+
+#include <doclone/Clone.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
+#include <doclone/DataTransfer.h>
 
 ProgressScreen::ProgressScreen() : _actions(), _events(), _totalSize(),
 	_percent(), _percentTextPosX(), _thread() {

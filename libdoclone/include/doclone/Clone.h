@@ -19,15 +19,15 @@
 #ifndef CLONE_H_
 #define CLONE_H_
 
-#include <doclone/Operation.h>
-#include <doclone/observer/AbstractSubject.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <stdint.h>
 
 #include <string>
 #include <vector>
+
+#include <doclone/Operation.h>
+#include <doclone/observer/AbstractSubject.h>
+
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

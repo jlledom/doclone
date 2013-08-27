@@ -17,6 +17,7 @@
  */
 
 #include <CursesView/TextInput.h>
+
 #include <CursesView/CursesView.h>
 #include <CursesView/BaseScreen.h>
 #include <CursesView/Util.h>

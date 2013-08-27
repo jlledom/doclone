@@ -17,16 +17,16 @@
  */
 
 #include <doclone/fs/Fat16.h>
-#include <doclone/Logger.h>
-#include <doclone/Util.h>
-
-#include <doclone/exception/Exception.h>
-#include <doclone/exception/WriteLabelException.h>
-#include <doclone/exception/WriteUuidException.h>
 
 #include <endian.h>
 
 #include <algorithm>
+
+#include <doclone/Logger.h>
+#include <doclone/Util.h>
+#include <doclone/exception/Exception.h>
+#include <doclone/exception/WriteLabelException.h>
+#include <doclone/exception/WriteUuidException.h>
 
 namespace Doclone {
 

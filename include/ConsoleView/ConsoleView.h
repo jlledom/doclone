@@ -19,11 +19,11 @@
 #ifndef CONSOLEVIEW_H_
 #define CONSOLEVIEW_H_
 
-#include <doclone/Clone.h>
-
 #include <stdint.h>
 
 #include <string>
+
+#include <doclone/Clone.h>
 
 /**
  * \enum dcConsoleFunction

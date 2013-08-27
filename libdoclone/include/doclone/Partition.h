@@ -22,15 +22,15 @@
 #define TMP_PREFIX P_tmpdir "/doclone-XXXXXX"
 #define TMP_PREFIX_REGEXP "^/tmp/doclone-[a-zA-Z0-9]{6}$"
 
-#include <doclone/Filesystem.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <stdint.h>
 #include <sys/types.h>
-#include <parted/parted.h>
 
 #include <string>
+
+#include <parted/parted.h>
+
+#include <doclone/Filesystem.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

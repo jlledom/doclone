@@ -17,6 +17,7 @@
  */
 
 #include <doclone/Local.h>
+
 #include <doclone/Clone.h>
 #include <doclone/Image.h>
 #include <doclone/Operation.h>
@@ -24,7 +25,6 @@
 #include <doclone/DiskLabel.h>
 #include <doclone/DlFactory.h>
 #include <doclone/Util.h>
-
 #include <doclone/exception/NoBlockDeviceException.h>
 #include <doclone/exception/CreateImageException.h>
 #include <doclone/exception/RestoreImageException.h>

@@ -19,9 +19,9 @@
 #ifndef NOLABELSUPPORTEXCEPTION_H_
 #define NOLABELSUPPORTEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

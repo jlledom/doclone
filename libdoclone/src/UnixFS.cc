@@ -17,10 +17,26 @@
  */
 
 #include <doclone/UnixFS.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <string.h>
+#include <stdio.h>
+#include <utime.h>
+#include <errno.h>
+#include <endian.h>
+
+#include <string>
+#include <map>
+
+#include <selinux/selinux.h>
+
 #include <doclone/Logger.h>
 #include <doclone/DataTransfer.h>
 #include <doclone/Util.h>
-
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/FileNotFoundException.h>
 #include <doclone/exception/OpenFileException.h>
@@ -30,21 +46,6 @@
 #include <doclone/exception/WriteErrorsInDirectoryException.h>
 #include <doclone/exception/ReadErrorsInDirectoryException.h>
 #include <doclone/exception/RestoreImageException.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <selinux/selinux.h>
-#include <string.h>
-#include <stdio.h>
-#include <utime.h>
-#include <errno.h>
-#include <endian.h>
-
-#include <string>
-#include <map>
 
 namespace Doclone {
 

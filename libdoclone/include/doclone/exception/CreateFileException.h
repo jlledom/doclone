@@ -19,9 +19,9 @@
 #ifndef CREATEFILEEXCEPTION_H_
 #define CREATEFILEEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

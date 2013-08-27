@@ -19,9 +19,9 @@
 #ifndef NOMOUNTSUPPORTEXCEPTION_H_
 #define NOMOUNTSUPPORTEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

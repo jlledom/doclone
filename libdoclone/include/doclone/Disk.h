@@ -19,14 +19,13 @@
 #ifndef DISK_H_
 #define DISK_H_
 
-#include <doclone/Partition.h>
-
-#include <doclone/exception/Exception.h>
+#include <string>
+#include <vector>
 
 #include <parted/parted.h>
 
-#include <string>
-#include <vector>
+#include <doclone/Partition.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

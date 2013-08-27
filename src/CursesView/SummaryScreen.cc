@@ -17,12 +17,13 @@
  */
 
 #include <CursesView/SummaryScreen.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
+
+#include <sstream>
 
 #include <doclone/Clone.h>
 
-#include <sstream>
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
 
 SummaryScreen::SummaryScreen() {
 	CursesView *curView = CursesView::getInstance();

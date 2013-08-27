@@ -19,9 +19,9 @@
 #ifndef READERRORSINDIRECTORYEXCEPTION_H_
 #define READERRORSINDIRECTORYEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

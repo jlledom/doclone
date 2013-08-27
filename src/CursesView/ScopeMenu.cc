@@ -17,14 +17,16 @@
  */
 
 #include <CursesView/ScopeMenu.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
 
 #include <libintl.h>
-#include <curses.h>
 
 #include <vector>
 #include <string>
+
+#include <curses.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
 
 ScopeMenu::ScopeMenu() {
 	std::string notice=_("Indicate what scope you want to work at:");

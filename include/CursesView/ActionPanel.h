@@ -19,12 +19,12 @@
 #ifndef ACTIONPANEL_H_
 #define ACTIONPANEL_H_
 
+#include <string>
+#include <vector>
+
 #include <doclone/Operation.h>
 
 #include <CursesView/Menu.h>
-
-#include <string>
-#include <vector>
 
 /**
  * \addtogroup CursesView

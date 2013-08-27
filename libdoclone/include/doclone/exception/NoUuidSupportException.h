@@ -19,9 +19,9 @@
 #ifndef NOUUIDSUPPORTEXCEPTION_H_
 #define NOUUIDSUPPORTEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <doclone/Clone.h>
-
 #include <unistd.h>
 #include <getopt.h>
 #include <libintl.h>
@@ -26,6 +24,8 @@
 #include <stdlib.h>
 
 #include <iostream>
+
+#include <doclone/Clone.h>
 
 #define _(string) gettext(string)
 #define PACKAGE_VERSION "0.7.0"

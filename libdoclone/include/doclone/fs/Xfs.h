@@ -19,11 +19,10 @@
 #ifndef XFS_H_
 #define XFS_H_
 
-#include <doclone/UnixFS.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/UnixFS.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

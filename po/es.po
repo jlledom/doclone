@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2013-07-28 18:57+0200\n"
+"POT-Creation-Date: 2013-08-27 18:44+0200\n"
 "PO-Revision-Date: 2013-08-26 19:42+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Spanish\n"
@@ -18,78 +18,78 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TO TRANSLATORS: looks like "Transferred: 55%"
-#: src/ConsoleView/ConsoleView.cc:60 src/CursesView/ProgressScreen.cc:77
+#: src/ConsoleView/ConsoleView.cc:61 src/CursesView/ProgressScreen.cc:78
 msgid "Transferred:"
 msgstr "Transferido:"
 
-#: src/ConsoleView/ConsoleView.cc:77 src/CursesView/ActionPanel.cc:196
+#: src/ConsoleView/ConsoleView.cc:78 src/CursesView/ActionPanel.cc:196
 msgid "Waiting for server..."
 msgstr "Esperando al servidor..."
 
-#: src/ConsoleView/ConsoleView.cc:82 src/CursesView/ActionPanel.cc:201
+#: src/ConsoleView/ConsoleView.cc:83 src/CursesView/ActionPanel.cc:201
 msgid "Waiting for client/s..."
 msgstr "Esperando a los clientes..."
 
-#: src/ConsoleView/ConsoleView.cc:87
+#: src/ConsoleView/ConsoleView.cc:88
 msgid "Transferring data..."
 msgstr "Transfiriendo los datos..."
 
 #. TO TRANSLATORS: looks like Partition table read on /dev/sdb
-#: src/ConsoleView/ConsoleView.cc:101
+#: src/ConsoleView/ConsoleView.cc:102
 msgid "Partition table read on"
 msgstr "Se ha leído la tabla de particiones de"
 
 #. TO TRANSLATORS: looks like Disk label created on /dev/sdb
-#: src/ConsoleView/ConsoleView.cc:107
+#: src/ConsoleView/ConsoleView.cc:108
 msgid "Disk label created on"
 msgstr "Se ha creado la etiqueta de disco en"
 
 #. TO TRANSLATORS: looks like New partition created: /dev/sdb1
-#: src/ConsoleView/ConsoleView.cc:113
+#: src/ConsoleView/ConsoleView.cc:114
 msgid "New partition created:"
 msgstr "Nueva partición creada:"
 
 #. TO TRANSLATORS: looks like Partition formated: /dev/sdb1
-#: src/ConsoleView/ConsoleView.cc:119
+#: src/ConsoleView/ConsoleView.cc:120
 msgid "Partition formated:"
 msgstr "Partición formateada:"
 
 #. TO TRANSLATORS: looks like Written the fs flags of /dev/sdb1
-#: src/ConsoleView/ConsoleView.cc:125
+#: src/ConsoleView/ConsoleView.cc:126
 msgid "Written the fs flags of"
 msgstr "Escritas las opciones de"
 
 #. TO TRANSLATORS: looks like Written the fs label of /dev/sdb1
-#: src/ConsoleView/ConsoleView.cc:131
+#: src/ConsoleView/ConsoleView.cc:132
 msgid "Written the fs label of"
 msgstr "Escrita la etiqueta de"
 
 #. TO TRANSLATORS: looks like Written the fs uuid of /dev/sdb1
-#: src/ConsoleView/ConsoleView.cc:137
+#: src/ConsoleView/ConsoleView.cc:138
 msgid "Written the fs uuid of"
 msgstr "Escrito el UUID de"
 
 #. TO TRANSLATORS: looks like Data read from /dev/sdb1
-#: src/ConsoleView/ConsoleView.cc:143
+#: src/ConsoleView/ConsoleView.cc:144
 msgid "Data read from"
 msgstr "Datos leídos desde"
 
 #. TO TRANSLATORS: looks like Data written to /dev/sdb1
-#: src/ConsoleView/ConsoleView.cc:149
+#: src/ConsoleView/ConsoleView.cc:150
 msgid "Data written to"
 msgstr "Datos escritos en"
 
 #. TO TRANSLATORS: looks like Grub installed on /dev/sdb
-#: src/ConsoleView/ConsoleView.cc:155
+#: src/ConsoleView/ConsoleView.cc:156
 msgid "Grub installed on"
 msgstr "GRUB instalado en"
 
 #. TO TRANSLATORS: looks like	New connection from 192.168.1.10
-#: src/ConsoleView/ConsoleView.cc:172 src/CursesView/ProgressScreen.cc:316
+#: src/ConsoleView/ConsoleView.cc:173 src/CursesView/ProgressScreen.cc:317
 msgid "New connection from"
 msgstr "Nueva conexión desde"
 
-#: src/ConsoleView/ConsoleView.cc:410
+#: src/ConsoleView/ConsoleView.cc:411
 #, c-format
 msgid ""
 "Usage: %s FUNCTION [ -d, --device DEVICE ] [ -f, --file FILE ]\n"
@@ -102,7 +102,7 @@ msgstr ""
 "\t[ -e, --empty ] [ -F, --force]\n"
 " "
 
-#: src/ConsoleView/ConsoleView.cc:417
+#: src/ConsoleView/ConsoleView.cc:418
 #, c-format
 msgid ""
 "\n"
@@ -138,7 +138,7 @@ msgstr ""
 "\t-s, --link-send\t\tEnvía datos a la cadena.\n"
 "\t-l, --link-receive\tRecibe datos de la cadena.\n"
 
-#: src/ConsoleView/ConsoleView.cc:433
+#: src/ConsoleView/ConsoleView.cc:434
 #, c-format
 msgid ""
 "\n"
@@ -151,7 +151,7 @@ msgstr ""
 "\t-h, --help\t\tMuestra esta ayuda.\n"
 "\t-v, --version\t\tMuestra la versión de doclone.\n"
 
-#: src/ConsoleView/ConsoleView.cc:442
+#: src/ConsoleView/ConsoleView.cc:443
 #, c-format
 msgid ""
 "doclone %s\n"
@@ -230,299 +230,299 @@ msgid "Transferring data"
 msgstr "Transfiriendo datos"
 
 #. TO TRANSLATORS: This is the title of the window
-#: src/CursesView/BaseScreen.cc:34
+#: src/CursesView/BaseScreen.cc:35
 msgid "doclone"
 msgstr "doclone"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:139
+#: src/CursesView/BaseScreen.cc:140
 msgid "<Go back>"
 msgstr "<Volver>"
 
-#: src/CursesView/BaseScreen.cc:143
+#: src/CursesView/BaseScreen.cc:144
 msgid "Go to the previous screen"
 msgstr "Volver a la pantalla anterior"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:168
+#: src/CursesView/BaseScreen.cc:169
 msgid "<Continue>"
 msgstr "<Continuar>"
 
-#: src/CursesView/BaseScreen.cc:172
+#: src/CursesView/BaseScreen.cc:173
 msgid "Continue to the next screen"
 msgstr "continuar hacia la siguiente pantalla"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:197
+#: src/CursesView/BaseScreen.cc:198
 msgid "<Cancel>"
 msgstr "<Cancelar>"
 
-#: src/CursesView/BaseScreen.cc:201
+#: src/CursesView/BaseScreen.cc:202
 msgid "Cancel the current operation"
 msgstr "Cancela la operación actual"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:226
+#: src/CursesView/BaseScreen.cc:227
 msgid "<Close>"
 msgstr "<Cerrar>"
 
-#: src/CursesView/BaseScreen.cc:230
+#: src/CursesView/BaseScreen.cc:231
 msgid "Close doclone"
 msgstr "Cierra doclone"
 
 #. Refresh the text at the top bar
-#: src/CursesView/CursesView.cc:89 src/CursesView/InsertIpForm.cc:27
-#: src/CursesView/InsertNumOfClientsForm.cc:29 src/CursesView/LanMenu.cc:35
-#: src/CursesView/LanRoleMenu.cc:35 src/CursesView/LocalMenu.cc:35
-#: src/CursesView/ScopeMenu.cc:35 src/CursesView/SelectDeviceForm.cc:38
-#: src/CursesView/TargetMenu.cc:35
+#: src/CursesView/CursesView.cc:90 src/CursesView/InsertIpForm.cc:28
+#: src/CursesView/InsertNumOfClientsForm.cc:30 src/CursesView/LanMenu.cc:37
+#: src/CursesView/LanRoleMenu.cc:37 src/CursesView/LocalMenu.cc:37
+#: src/CursesView/ScopeMenu.cc:37 src/CursesView/SelectDeviceForm.cc:40
+#: src/CursesView/TargetMenu.cc:37
 msgid "Select the option and press [Enter] or push <Continue>."
 msgstr "Seleccione una opción y pulse [Intro] o presione <Continuar>"
 
-#: src/CursesView/CursesView.cc:91 src/CursesView/InsertFileForm.cc:46
-#: src/CursesView/InsertIpForm.cc:29
-#: src/CursesView/InsertNumOfClientsForm.cc:31 src/CursesView/LanMenu.cc:37
-#: src/CursesView/LanRoleMenu.cc:37 src/CursesView/LocalMenu.cc:37
-#: src/CursesView/ScopeMenu.cc:37 src/CursesView/SelectDeviceForm.cc:40
-#: src/CursesView/SelectFileForm.cc:47 src/CursesView/TargetMenu.cc:37
+#: src/CursesView/CursesView.cc:92 src/CursesView/InsertFileForm.cc:47
+#: src/CursesView/InsertIpForm.cc:30
+#: src/CursesView/InsertNumOfClientsForm.cc:32 src/CursesView/LanMenu.cc:39
+#: src/CursesView/LanRoleMenu.cc:39 src/CursesView/LocalMenu.cc:39
+#: src/CursesView/ScopeMenu.cc:39 src/CursesView/SelectDeviceForm.cc:42
+#: src/CursesView/SelectFileForm.cc:48 src/CursesView/TargetMenu.cc:39
 msgid "Press [Tab] to move."
 msgstr "Pulse [Tab] para moverse."
 
 #. Refresh the text at the top bar
-#: src/CursesView/InsertFileForm.cc:44 src/CursesView/SelectFileForm.cc:45
+#: src/CursesView/InsertFileForm.cc:45 src/CursesView/SelectFileForm.cc:46
 msgid "Select the directory and type the file name."
 msgstr "Selecione el directorio y escriba el nombre del fichero."
 
-#: src/CursesView/InsertFileForm.cc:48
+#: src/CursesView/InsertFileForm.cc:49
 msgid "Choose a directory:"
 msgstr "Escoja un directorio:"
 
-#: src/CursesView/InsertFileForm.cc:52
+#: src/CursesView/InsertFileForm.cc:53
 msgid "Insert the file name:"
 msgstr "Introduza el nombre del fichero:"
 
-#: src/CursesView/InsertFileForm.cc:75
+#: src/CursesView/InsertFileForm.cc:76
 msgid "Please, type image path."
 msgstr "Introduzca la ruta hacia la imagen"
 
 #. TO TRANLATORS: looks like	You must insert a filename ending with .doclone
-#: src/CursesView/InsertFileForm.cc:78
+#: src/CursesView/InsertFileForm.cc:79
 msgid "Sorry, you must insert a filename ending with ."
 msgstr "Debe introducir un nombre terminado en ."
 
-#: src/CursesView/InsertFileForm.cc:210
+#: src/CursesView/InsertFileForm.cc:211
 msgid "Sorry, you do not have permission to access this directory"
 msgstr "No tiene permiso para acceder a este directorio"
 
 #. TO TRANSLATORS: looks like	Enter into /home
-#: src/CursesView/InsertFileForm.cc:232 src/CursesView/SelectFileForm.cc:231
+#: src/CursesView/InsertFileForm.cc:233 src/CursesView/SelectFileForm.cc:232
 msgid "Enter into"
 msgstr "Entrar en"
 
-#: src/CursesView/InsertIpForm.cc:31
+#: src/CursesView/InsertIpForm.cc:32
 msgid "Enter the IP address of the server:"
 msgstr "Introduzca la dirección IP del servidor:"
 
-#: src/CursesView/InsertIpForm.cc:41
+#: src/CursesView/InsertIpForm.cc:42
 msgid "Type an IP address."
 msgstr "Escriba una dirección IP."
 
-#: src/CursesView/InsertIpForm.cc:43
-#: src/CursesView/InsertNumOfClientsForm.cc:45
+#: src/CursesView/InsertIpForm.cc:44
+#: src/CursesView/InsertNumOfClientsForm.cc:46
 msgid "Red background means wrong format."
 msgstr "El fondo rojo indica formato inválido."
 
-#: src/CursesView/InsertNumOfClientsForm.cc:33
+#: src/CursesView/InsertNumOfClientsForm.cc:34
 msgid "Enter the number of clients in the LAN:"
 msgstr "Introduzca el número de clientes en la red:"
 
-#: src/CursesView/InsertNumOfClientsForm.cc:43
+#: src/CursesView/InsertNumOfClientsForm.cc:44
 msgid "Type a number."
 msgstr "Escriba un número"
 
-#: src/CursesView/LanMenu.cc:30
+#: src/CursesView/LanMenu.cc:32
 msgid "Select the network mode:"
 msgstr "Seleccione el modo de red:"
 
-#: src/CursesView/LanMenu.cc:40
+#: src/CursesView/LanMenu.cc:42
 msgid "Unicast/Multicast mode"
 msgstr "Modo Unicast/Multicast"
 
-#: src/CursesView/LanMenu.cc:41
+#: src/CursesView/LanMenu.cc:43
 msgid "Link mode"
 msgstr "Modo cadena"
 
-#: src/CursesView/LanMenu.cc:45
+#: src/CursesView/LanMenu.cc:47
 msgid "One TCP connection between the server and each client in the LAN"
 msgstr "Ona conexión TCP entre el servidor i cada cliente de la red"
 
-#: src/CursesView/LanMenu.cc:46
+#: src/CursesView/LanMenu.cc:48
 msgid "Each chain in the link send data to the next one"
 msgstr "Cada eslabón de la cadena envía datos al siguiente"
 
-#: src/CursesView/LanRoleMenu.cc:30
+#: src/CursesView/LanRoleMenu.cc:32
 msgid "Select the role in the connection:"
 msgstr "Seleccione el papel en la conexión:"
 
-#: src/CursesView/LanRoleMenu.cc:40
+#: src/CursesView/LanRoleMenu.cc:42
 msgid "Server"
 msgstr "Servidor"
 
-#: src/CursesView/LanRoleMenu.cc:41
+#: src/CursesView/LanRoleMenu.cc:43
 msgid "Client"
 msgstr "Cliente"
 
-#: src/CursesView/LanRoleMenu.cc:45
+#: src/CursesView/LanRoleMenu.cc:47
 msgid "Send data to clients"
 msgstr "Envía datos a los clientes"
 
-#: src/CursesView/LanRoleMenu.cc:46
+#: src/CursesView/LanRoleMenu.cc:48
 msgid "Receive data from server"
 msgstr "Recibe datos del servidor"
 
-#: src/CursesView/LocalMenu.cc:30
+#: src/CursesView/LocalMenu.cc:32
 msgid "Choose what you want to do:"
 msgstr "Escoja qué desea hacer:"
 
-#: src/CursesView/LocalMenu.cc:40 src/CursesView/SummaryScreen.cc:49
+#: src/CursesView/LocalMenu.cc:42 src/CursesView/SummaryScreen.cc:50
 msgid "Create image"
 msgstr "Crear imagen"
 
-#: src/CursesView/LocalMenu.cc:41 src/CursesView/SummaryScreen.cc:60
+#: src/CursesView/LocalMenu.cc:43 src/CursesView/SummaryScreen.cc:61
 msgid "Restore image"
 msgstr "Restaurar imagen"
 
-#: src/CursesView/LocalMenu.cc:45
+#: src/CursesView/LocalMenu.cc:47
 msgid "Save the content of a device into a image file"
 msgstr "Guardar el contenido de un dispositivo en una imagen"
 
-#: src/CursesView/LocalMenu.cc:46
+#: src/CursesView/LocalMenu.cc:48
 msgid "Restore the image file into a device"
 msgstr "Restaurar una imagen en un dispositivo"
 
 #. Refresh the text at the top bar
-#: src/CursesView/ProgressScreen.cc:40
+#: src/CursesView/ProgressScreen.cc:41
 msgid "Working..."
 msgstr "Trabajando..."
 
-#: src/CursesView/ProgressScreen.cc:42
+#: src/CursesView/ProgressScreen.cc:43
 msgid "Actions remaining:"
 msgstr "Acciones restantes:"
 
-#: src/CursesView/ProgressScreen.cc:46
+#: src/CursesView/ProgressScreen.cc:47
 msgid "Alerts & events:"
 msgstr "Alertas y eventos:"
 
-#: src/CursesView/ScopeMenu.cc:30
+#: src/CursesView/ScopeMenu.cc:32
 msgid "Indicate what scope you want to work at:"
 msgstr "Indique en qué ámbito desea trabajar:"
 
-#: src/CursesView/ScopeMenu.cc:40
+#: src/CursesView/ScopeMenu.cc:42
 msgid "Local work"
 msgstr "Ámbito local"
 
-#: src/CursesView/ScopeMenu.cc:41
+#: src/CursesView/ScopeMenu.cc:43
 msgid "Work over LAN"
 msgstr "Trabajo en red"
 
-#: src/CursesView/ScopeMenu.cc:45
+#: src/CursesView/ScopeMenu.cc:47
 msgid "All operations will be performed in this machine"
 msgstr "Todas las operaciones se realizarán en este ordenador"
 
-#: src/CursesView/ScopeMenu.cc:46
+#: src/CursesView/ScopeMenu.cc:48
 msgid "Interact with other machines in the LAN"
 msgstr "Interactuar con otros ordenadores de la red"
 
-#: src/CursesView/SelectDeviceForm.cc:42
+#: src/CursesView/SelectDeviceForm.cc:44
 msgid "Select the device:"
 msgstr "Seleccione un dispositivo:"
 
-#: src/CursesView/SelectDeviceForm.cc:46
+#: src/CursesView/SelectDeviceForm.cc:48
 msgid "Or type it manually:"
 msgstr "O escriba su ruta directamente:"
 
-#: src/CursesView/SelectDeviceForm.cc:69
+#: src/CursesView/SelectDeviceForm.cc:71
 msgid "Please, type the path of the device"
 msgstr "Escriba la ruta al dispositivo"
 
 #. TO TRANSLATORS: Looks like	Select /dev/sda1
-#: src/CursesView/SelectDeviceForm.cc:162
+#: src/CursesView/SelectDeviceForm.cc:164
 msgid "Select"
 msgstr "Seleccionar"
 
-#: src/CursesView/SelectFileForm.cc:49
+#: src/CursesView/SelectFileForm.cc:50
 msgid "Current directory:"
 msgstr "Directorio actual:"
 
-#: src/CursesView/SelectFileForm.cc:53
+#: src/CursesView/SelectFileForm.cc:54
 msgid "Choose an image file:"
 msgstr "Escoja una imagen:"
 
-#: src/CursesView/SelectFileForm.cc:205
+#: src/CursesView/SelectFileForm.cc:206
 msgid "You do not have permission to access this directory"
 msgstr "Usted no tiene permisos para acceder a este directorio"
 
 #. TO TRANSLATORS: looks like	Choose sda.doclone
-#: src/CursesView/SelectFileForm.cc:245
+#: src/CursesView/SelectFileForm.cc:246
 msgid "Choose"
 msgstr "Escojer"
 
-#: src/CursesView/SummaryScreen.cc:31
+#: src/CursesView/SummaryScreen.cc:32
 msgid "Summary"
 msgstr "Resumen"
 
 #. TO TRANSLATORS: Looks like	From: /dev/sda
-#: src/CursesView/SummaryScreen.cc:37
+#: src/CursesView/SummaryScreen.cc:38
 msgid "From:"
 msgstr "Desde:"
 
 #. TO TRANSLATORS: Looks like	To: /dev/sda
-#: src/CursesView/SummaryScreen.cc:40
+#: src/CursesView/SummaryScreen.cc:41
 msgid "To:"
 msgstr "A:"
 
-#: src/CursesView/SummaryScreen.cc:79
+#: src/CursesView/SummaryScreen.cc:80
 msgid "Send to client/s"
 msgstr "Enviar a los clientes:"
 
 #. TO TRANSLATORS: Looks like	Number of receivers: 8
-#: src/CursesView/SummaryScreen.cc:90
+#: src/CursesView/SummaryScreen.cc:91
 msgid "Number of receivers:"
 msgstr "Número de receptores:"
 
-#: src/CursesView/SummaryScreen.cc:97
+#: src/CursesView/SummaryScreen.cc:98
 msgid "Receive from server"
 msgstr "Recibir del servidor"
 
 #. TO TRANSLATORS: Looks like	Server's IP: 192.168.0.1
-#: src/CursesView/SummaryScreen.cc:103
+#: src/CursesView/SummaryScreen.cc:104
 msgid "Server's IP:"
 msgstr "IP del servidor:"
 
-#: src/CursesView/SummaryScreen.cc:118
+#: src/CursesView/SummaryScreen.cc:119
 msgid "Send to chain"
 msgstr "Enviar a la cadena"
 
-#: src/CursesView/SummaryScreen.cc:125
+#: src/CursesView/SummaryScreen.cc:126
 msgid "Receive from chain"
 msgstr "Recibir de la cadena"
 
-#: src/CursesView/TargetMenu.cc:30
+#: src/CursesView/TargetMenu.cc:32
 msgid "Select the target:"
 msgstr "Seleccione un destino:"
 
-#: src/CursesView/TargetMenu.cc:40
+#: src/CursesView/TargetMenu.cc:42
 msgid "Device"
 msgstr "Dispositivo"
 
-#: src/CursesView/TargetMenu.cc:41
+#: src/CursesView/TargetMenu.cc:43
 msgid "File"
 msgstr "Fichero"
 
-#: src/CursesView/TargetMenu.cc:45
+#: src/CursesView/TargetMenu.cc:47
 msgid "The data origin/destination is a device"
 msgstr "El origen/destino es un dispositivo"
 
-#: src/CursesView/TargetMenu.cc:46
+#: src/CursesView/TargetMenu.cc:48
 msgid "The data origin/destination is an image file"
 msgstr "El origen/destino es una imagen"

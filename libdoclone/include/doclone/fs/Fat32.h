@@ -19,11 +19,10 @@
 #ifndef FAT32_H_
 #define FAT32_H_
 
-#include <doclone/DosFS.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/DosFS.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

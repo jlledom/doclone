@@ -17,9 +17,9 @@
  */
 
 #include <doclone/fs/Jfs.h>
+
 #include <doclone/Logger.h>
 #include <doclone/Util.h>
-
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/WriteLabelException.h>
 #include <doclone/exception/WriteUuidException.h>

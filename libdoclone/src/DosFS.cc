@@ -17,17 +17,6 @@
  */
 
 #include <doclone/DosFS.h>
-#include <doclone/Logger.h>
-#include <doclone/DataTransfer.h>
-#include <doclone/Util.h>
-
-#include <doclone/exception/FileNotFoundException.h>
-#include <doclone/exception/CreateFileException.h>
-#include <doclone/exception/ReadDataException.h>
-#include <doclone/exception/InvalidImageException.h>
-#include <doclone/exception/WriteErrorsInDirectoryException.h>
-#include <doclone/exception/ReadErrorsInDirectoryException.h>
-#include <doclone/exception/RestoreImageException.h>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -38,6 +27,17 @@
 #include <endian.h>
 
 #include <string>
+
+#include <doclone/Logger.h>
+#include <doclone/DataTransfer.h>
+#include <doclone/Util.h>
+#include <doclone/exception/FileNotFoundException.h>
+#include <doclone/exception/CreateFileException.h>
+#include <doclone/exception/ReadDataException.h>
+#include <doclone/exception/InvalidImageException.h>
+#include <doclone/exception/WriteErrorsInDirectoryException.h>
+#include <doclone/exception/ReadErrorsInDirectoryException.h>
+#include <doclone/exception/RestoreImageException.h>
 
 namespace Doclone {
 

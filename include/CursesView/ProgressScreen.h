@@ -19,15 +19,15 @@
 #ifndef PROGRESSSCREEN_H_
 #define PROGRESSSCREEN_H_
 
-#include <doclone/observer/AbstractObserver.h>
-
-#include <CursesView/BaseScreen.h>
-#include <CursesView/ActionPanel.h>
-
 #include <pthread.h>
 
 #include <string>
 #include <vector>
+
+#include <doclone/observer/AbstractObserver.h>
+
+#include <CursesView/BaseScreen.h>
+#include <CursesView/ActionPanel.h>
 
 /**
  * \addtogroup CursesView

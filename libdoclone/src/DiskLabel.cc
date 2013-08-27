@@ -17,8 +17,8 @@
  */
 
 #include <doclone/DiskLabel.h>
-#include <doclone/PartedDevice.h>
 
+#include <doclone/PartedDevice.h>
 #include <doclone/exception/MakeLabelException.h>
 
 namespace Doclone {

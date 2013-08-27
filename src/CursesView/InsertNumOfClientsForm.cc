@@ -17,12 +17,13 @@
  */
 
 #include <CursesView/InsertNumOfClientsForm.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
+
+#include <stdlib.h>
 
 #include <doclone/Clone.h>
 
-#include <stdlib.h>
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
 
 InsertNumOfClientsForm::InsertNumOfClientsForm() {
 	// Refresh the text at the top bar

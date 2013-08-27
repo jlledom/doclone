@@ -19,17 +19,16 @@
 #ifndef IMAGE_H_
 #define IMAGE_H_
 
-#include <doclone/Util.h>
-#include <doclone/DiskLabel.h>
-#include <doclone/Partition.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <stdint.h>
 #include <sys/types.h>
 
 #include <string>
 #include <vector>
+
+#include <doclone/Util.h>
+#include <doclone/DiskLabel.h>
+#include <doclone/Partition.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

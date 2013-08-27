@@ -19,14 +19,14 @@
 #ifndef SELECTDEVICEFORM_H_
 #define SELECTDEVICEFORM_H_
 
-#include <CursesView/BaseScreen.h>
-#include <CursesView/TextInput.h>
-#include <CursesView/Menu.h>
+#include <string>
+#include <vector>
 
 #include <form.h>
 
-#include <string>
-#include <vector>
+#include <CursesView/BaseScreen.h>
+#include <CursesView/TextInput.h>
+#include <CursesView/Menu.h>
 
 /**
  * Regular expression that matches with the lines in /proc/partitions containing

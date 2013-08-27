@@ -19,12 +19,12 @@
 #ifndef SIGNALCAUGHTEXCEPTION_H_
 #define SIGNALCAUGHTEXCEPTION_H_
 
-#include <doclone/exception/ErrorException.h>
-
 #include <signal.h>
 #include <string.h>
 
 #include <string>
+
+#include <doclone/exception/ErrorException.h>
 
 namespace Doclone {
 

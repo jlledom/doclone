@@ -17,12 +17,14 @@
  */
 
 #include <doclone/Filesystem.h>
-#include <doclone/Logger.h>
 
 #include <string.h>
-#include <blkid/blkid.h>
 
 #include <string>
+
+#include <blkid/blkid.h>
+
+#include <doclone/Logger.h>
 
 namespace Doclone {
 

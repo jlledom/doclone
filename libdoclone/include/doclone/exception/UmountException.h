@@ -19,9 +19,9 @@
 #ifndef UMOUNTEXCEPTION_H_
 #define UMOUNTEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

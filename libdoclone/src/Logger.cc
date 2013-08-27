@@ -21,6 +21,8 @@
 #include <stdarg.h>
 #include <pthread.h>
 
+#include <config.h>
+
 #include <log4cpp/BasicLayout.hh>
 
 namespace Doclone {

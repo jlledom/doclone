@@ -17,19 +17,19 @@
  */
 
 #include <doclone/DataTransfer.h>
-#include <doclone/Logger.h>
-
-#include <doclone/exception/ReadDataException.h>
-#include <doclone/exception/WriteDataException.h>
-#include <doclone/exception/ReceiveDataException.h>
-#include <doclone/exception/SendDataException.h>
-#include <doclone/exception/BrokenPipeException.h>
 
 #include <stdint.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <pthread.h>
+
+#include <doclone/Logger.h>
+#include <doclone/exception/ReadDataException.h>
+#include <doclone/exception/WriteDataException.h>
+#include <doclone/exception/ReceiveDataException.h>
+#include <doclone/exception/SendDataException.h>
+#include <doclone/exception/BrokenPipeException.h>
 
 namespace Doclone {
 

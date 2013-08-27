@@ -17,12 +17,21 @@
  */
 
 #include <doclone/Image.h>
+
+#include <stdint.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <endian.h>
+
+#include <sstream>
+#include <string>
+
 #include <doclone/Clone.h>
 #include <doclone/Logger.h>
 #include <doclone/Operation.h>
 #include <doclone/DataTransfer.h>
 #include <doclone/DlFactory.h>
-
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/ErrorException.h>
 #include <doclone/exception/WarningException.h>
@@ -34,15 +43,6 @@
 #include <doclone/exception/NoMountSupportException.h>
 #include <doclone/exception/NoFitInDeviceException.h>
 #include <doclone/exception/TooMuchPartitionsException.h>
-
-#include <stdint.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <endian.h>
-
-#include <sstream>
-#include <string>
 
 namespace Doclone {
 

@@ -19,9 +19,9 @@
 #ifndef FAT16_H_
 #define FAT16_H_
 
-#include <doclone/DosFS.h>
-
 #include <string>
+
+#include <doclone/DosFS.h>
 
 namespace Doclone {
 

@@ -19,9 +19,9 @@
 #ifndef WRITEERRORSINDIRECTORYEXCEPTION_H_
 #define WRITEERRORSINDIRECTORYEXCEPTION_H_
 
-#include <doclone/exception/WarningException.h>
-
 #include <string>
+
+#include <doclone/exception/WarningException.h>
 
 namespace Doclone {
 

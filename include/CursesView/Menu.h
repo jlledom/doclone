@@ -19,13 +19,13 @@
 #ifndef MENU_H_
 #define MENU_H_
 
-#include <CursesView/CursesWidget.h>
+#include <string>
+#include <vector>
 
 #include <ncurses.h>
 #include <menu.h>
 
-#include <string>
-#include <vector>
+#include <CursesView/CursesWidget.h>
 
 /**
  * \addtogroup CursesView

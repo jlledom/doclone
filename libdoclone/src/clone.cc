@@ -16,11 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <doclone/Clone.h>
-
-#include <doclone/clone.h>
-
 #include <string.h>
+
+#include <doclone/Clone.h>
+#include <doclone/clone.h>
 
 /**
  * \ingroup CWrapperAPI

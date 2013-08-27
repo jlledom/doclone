@@ -17,8 +17,8 @@
  */
 
 #include <doclone/DlFactory.h>
-#include <doclone/PartedDevice.h>
 
+#include <doclone/PartedDevice.h>
 #include <doclone/dl/Aix.h>
 #include <doclone/dl/Amiga.h>
 #include <doclone/dl/Bsd.h>

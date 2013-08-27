@@ -19,14 +19,14 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
+#include <string>
+#include <vector>
+
 #include <log4cpp/Category.hh>
 #include <log4cpp/RollingFileAppender.hh>
 #include <log4cpp/PatternLayout.hh>
 
 #include <doclone/observer/AbstractSubject.h>
-
-#include <string>
-#include <vector>
 
 namespace Doclone {
 

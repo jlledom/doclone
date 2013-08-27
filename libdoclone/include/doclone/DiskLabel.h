@@ -20,7 +20,6 @@
 #define DISKLABEL_H_
 
 #include <doclone/Disk.h>
-
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {

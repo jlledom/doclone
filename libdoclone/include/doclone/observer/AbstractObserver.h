@@ -19,11 +19,11 @@
 #ifndef ABSTRACTOBSERVER_H_
 #define ABSTRACTOBSERVER_H_
 
-#include <doclone/Operation.h>
-
 #include <stdint.h>
 
 #include <string>
+
+#include <doclone/Operation.h>
 
 namespace Doclone {
 

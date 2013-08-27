@@ -17,13 +17,13 @@
  */
 
 #include <doclone/Net.h>
+
+#include <unistd.h>
+
 #include <doclone/Logger.h>
 #include <doclone/Clone.h>
 #include <doclone/DataTransfer.h>
-
 #include <doclone/exception/CloseConnectionException.h>
-
-#include <unistd.h>
 
 namespace Doclone {
 

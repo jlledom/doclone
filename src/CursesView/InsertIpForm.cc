@@ -17,10 +17,11 @@
  */
 
 #include <CursesView/InsertIpForm.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
 
 #include <doclone/Clone.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
 
 InsertIpForm::InsertIpForm() {
 	// Refresh the text at the top bar

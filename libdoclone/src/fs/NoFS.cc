@@ -17,6 +17,7 @@
  */
 
 #include <doclone/fs/NoFS.h>
+
 #include <doclone/Logger.h>
 
 namespace Doclone {

@@ -19,9 +19,9 @@
 #ifndef FILESYSTEM_H_
 #define FILESYSTEM_H_
 
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 

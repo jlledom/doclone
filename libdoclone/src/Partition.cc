@@ -17,22 +17,6 @@
  */
 
 #include <doclone/Partition.h>
-#include <doclone/Clone.h>
-#include <doclone/Logger.h>
-#include <doclone/PartedDevice.h>
-#include <doclone/FsFactory.h>
-#include <doclone/Util.h>
-
-#include <doclone/exception/CancelException.h>
-#include <doclone/exception/ReadDataException.h>
-#include <doclone/exception/WriteDataException.h>
-#include <doclone/exception/ReceiveDataException.h>
-#include <doclone/exception/SendDataException.h>
-#include <doclone/exception/FormatException.h>
-#include <doclone/exception/MountException.h>
-#include <doclone/exception/UmountException.h>
-#include <doclone/exception/InvalidImageException.h>
-#include <doclone/exception/FileNotFoundException.h>
 
 #include <stdlib.h>
 #include <sys/mount.h>
@@ -43,9 +27,25 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <string>
+
 #include <blkid/blkid.h>
 
-#include <string>
+#include <doclone/Clone.h>
+#include <doclone/Logger.h>
+#include <doclone/PartedDevice.h>
+#include <doclone/FsFactory.h>
+#include <doclone/Util.h>
+#include <doclone/exception/CancelException.h>
+#include <doclone/exception/ReadDataException.h>
+#include <doclone/exception/WriteDataException.h>
+#include <doclone/exception/ReceiveDataException.h>
+#include <doclone/exception/SendDataException.h>
+#include <doclone/exception/FormatException.h>
+#include <doclone/exception/MountException.h>
+#include <doclone/exception/UmountException.h>
+#include <doclone/exception/InvalidImageException.h>
+#include <doclone/exception/FileNotFoundException.h>
 
 namespace Doclone {
 

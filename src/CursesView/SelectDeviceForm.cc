@@ -17,19 +17,21 @@
  */
 
 #include <CursesView/SelectDeviceForm.h>
-#include <CursesView/CursesView.h>
-#include <CursesView/ScreenFactory.h>
-#include <CursesView/Util.h>
-
-#include <doclone/Clone.h>
 
 #include <sys/types.h>
 #include <regex.h>
 #include <libintl.h>
-#include <curses.h>
 #include <string.h>
 
 #include <fstream>
+
+#include <curses.h>
+
+#include <doclone/Clone.h>
+
+#include <CursesView/CursesView.h>
+#include <CursesView/ScreenFactory.h>
+#include <CursesView/Util.h>
 
 SelectDeviceForm::SelectDeviceForm() {
 	this->detectDevices();

@@ -19,11 +19,10 @@
 #ifndef UNICAST_H_
 #define UNICAST_H_
 
-#include <doclone/Net.h>
-
-#include <doclone/exception/Exception.h>
-
 #include <string>
+
+#include <doclone/Net.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 
