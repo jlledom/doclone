@@ -45,7 +45,7 @@ CursesView* CursesView::getInstance() {
 /**
  * \brief Initializes ncurses.
  */
-CursesView::CursesView(): _mode(), _role(), _target() {
+CursesView::CursesView(): _topBar(), _bottomBar(), _mode(), _role(), _target() {
 	initscr();
 
 	nonl();

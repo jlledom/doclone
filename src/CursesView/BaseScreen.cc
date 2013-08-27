@@ -26,7 +26,8 @@
 /**
  * Initializes the base screen
  */
-BaseScreen::BaseScreen() : _listWidgets(), _it(), _topBarNotice() {
+BaseScreen::BaseScreen() : _listWidgets(), _it(), _win(), _panel(), _menuBack(),
+		_menuContinue(), _menuCancel(), _menuClose(), _topBarNotice() {
 	this->_win = newwin(BaseScreen::WIN_HEIGHT, BaseScreen::WIN_WIDTH, 2, 3);
 	wbkgd(this->_win, COLOR_PAIR(CursesView::WIN_BKGD));
 	box(this->_win, 0, 0);
