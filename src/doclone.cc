@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <ConsoleView/ConsoleView.h>
-#include <CursesView/CursesView.h>
-
 #include <config.h>
+
+#include <ConsoleView/ConsoleView.h>
+#ifdef HAVE_NCURSES
+#include <CursesView/CursesView.h>
+#endif
 
 #include <locale.h>
 #include <libintl.h>
@@ -33,9 +35,14 @@ int main(int argc, char** argv) {
 		ConsoleView view;
 		view.initView(argc, argv);
 	} else {
+#ifdef HAVE_NCURSES
 		CursesView *curView = CursesView::getInstance();
 
 		curView->flowControl();
+#else
+		ConsoleView view;
+		view.initView(argc, argv);
+#endif
 	}
 
 	return 0;

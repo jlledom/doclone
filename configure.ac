@@ -15,9 +15,13 @@ AC_CONFIG_HEADERS([config.h])
 
 AC_CONFIG_SUBDIRS([libdoclone])
 
-AC_CHECK_LIB([ncurses], [initscr], [], [AC_MSG_ERROR(libncurses is not installed.)])
-AC_CHECK_LIB([ncursesw], [initscr], [], [AC_MSG_ERROR(libncursesw is not installed.)])
+AC_CHECK_LIB([ncurses], [initscr], [HAVE_NCURSES=1], [HAVE_NCURSES=0])
+AC_CHECK_LIB([ncursesw], [initscr], [HAVE_NCURSES=1], [HAVE_NCURSES=0])
 
+AM_CONDITIONAL([USE_NCURSES], [test "$HAVE_NCURSES" -eq 1])
+AM_COND_IF([USE_NCURSES], [AC_DEFINE([HAVE_NCURSES], [1], [Define if using libncurses.])],
+           [AC_MSG_WARN(Libncurses is not installed. The curses GUI will not be built.)])
+           
 AC_CONFIG_FILES([
 	Makefile \
 	src/Makefile \

@@ -749,9 +749,9 @@ void Util::signalHandler(int sig) throw(Exception) {
  *
  * \param string
  * 		String to be splitted
- * \delim
+ * \param delim
  * 		Delimitator
- * \elems
+ * \param elems
  * 		Address of the vector where the strings will be written
  */
 void Util::split(const std::string &string, char delim, std::vector<std::string> &elems) {
@@ -800,6 +800,14 @@ std::string Util::find_program_in_path(const std::string &program) {
 	return retVal;
 }
 
+/**
+ * \brief Spawns a new process
+ *
+ * \param command
+ * 		The command line to be executed
+ * \param exitValue
+ * 		Pointer to an integer where the exit status will be written
+ */
 void Util::spawn_command_line_sync(std::string &command, int *exitValue) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::spawn_command_line_sync(command=>%s) start", command.c_str());
