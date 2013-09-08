@@ -37,6 +37,7 @@ libdcexception_la_SOURCES= \
 	$(top_srcdir)/include/doclone/exception/NoFsToolFoundException.h \
 	$(top_srcdir)/include/doclone/exception/NoLabelSupportException.h \
 	$(top_srcdir)/include/doclone/exception/NoMountSupportException.h \
+	$(top_srcdir)/include/doclone/exception/NoSelinuxSupportException.h \
 	$(top_srcdir)/include/doclone/exception/NoUuidSupportException.h \
 	$(top_srcdir)/include/doclone/exception/OpenFileException.h \
 	$(top_srcdir)/include/doclone/exception/ReadDataException.h \
@@ -85,6 +86,7 @@ libdcexception_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/exception/NoFsToolFoundException.h \
 	$(top_srcdir)/include/doclone/exception/NoLabelSupportException.h \
 	$(top_srcdir)/include/doclone/exception/NoMountSupportException.h \
+	$(top_srcdir)/include/doclone/exception/NoSelinuxSupportException.h \
 	$(top_srcdir)/include/doclone/exception/NoUuidSupportException.h \
 	$(top_srcdir)/include/doclone/exception/OpenFileException.h \
 	$(top_srcdir)/include/doclone/exception/ReadDataException.h \
@@ -195,8 +197,11 @@ libdoclone_la_LIBADD = \
 	fs/libdcfilesystem.la \
 	dl/libdcdisklabel.la \
 	$(PARTED_LIBS) \
-	$(SELINUX_LIBS) \
 	$(GLIBMM_LIBS) \
 	$(LOG4CPP_LIBS) \
 	$(LIBINTL)
+
+if USE_SELINUX
+libdoclone_la_LIBADD += $(SELINUX_LIBS)
+endif
 

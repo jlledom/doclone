@@ -25,6 +25,7 @@ include/doclone/exception/NoFitInDeviceException.h
 include/doclone/exception/NoFsToolFoundException.h
 include/doclone/exception/NoLabelSupportException.h
 include/doclone/exception/NoMountSupportException.h
+include/doclone/exception/NoSelinuxSupportException.h
 include/doclone/exception/NoUuidSupportException.h
 include/doclone/exception/OpenFileException.h
 include/doclone/exception/ReadDataException.h

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2013-08-27 18:44+0200\n"
+"POT-Creation-Date: 2013-09-08 18:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,6 +124,12 @@ msgstr ""
 #. TO TRANSLATORS: looks like	There is no support to mount this file system: xfs
 #: include/doclone/exception/NoMountSupportException.h:42
 msgid "There is no support to mount this file system:"
+msgstr ""
+
+#: include/doclone/exception/NoSelinuxSupportException.h:39
+msgid ""
+"Selinux attributes will not be cloned due to Doclone was built without "
+"support for Selinux"
 msgstr ""
 
 #. TO TRANSLATORS: looks like	The uuid will not be cloned for this file system: linux-swap

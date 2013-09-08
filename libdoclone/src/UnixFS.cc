@@ -32,7 +32,10 @@
 #include <string>
 #include <map>
 
+#include <config.h>
+#ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
+#endif
 
 #include <doclone/Logger.h>
 #include <doclone/DataTransfer.h>
@@ -70,7 +73,6 @@ void UnixFS::readRegularFile(const std::string &path, const struct stat &filesta
 	log->loopDebug("UnixFS::readRegularFile(path=>%s, filestat=>0x%x) start", path.c_str(), &filestat);
 	
 	Doclone::unixFile file = {};
-	security_context_t context;	// Selinux context of this file
 	DataTransfer *trns = DataTransfer::getInstance();
 
 	std::string fileName = basename(path.c_str());
@@ -82,13 +84,18 @@ void UnixFS::readRegularFile(const std::string &path, const struct stat &filesta
 	file.atime = filestat.st_atime;
 	file.mtime = filestat.st_mtime;
 
+#ifdef HAVE_SELINUX
 	// Selinux extended attributes
+	security_context_t context;	// Selinux context of this file
 	if(getfilecon (path.c_str(), &context)<0) {
 		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
 		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 	}
+#else
+	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+#endif
 	
 	int fdfile;
 
@@ -117,7 +124,6 @@ void UnixFS::readDevice(const std::string &path, const struct stat &filestat) co
 	log->loopDebug("UnixFS::readDevice(path=>%s, filestat=>0x%x) start", path.c_str(), &filestat);
 	
 	Doclone::unixFile file = {};
-	security_context_t context;
 
 	std::string fileName = basename(path.c_str());
 	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
@@ -129,13 +135,18 @@ void UnixFS::readDevice(const std::string &path, const struct stat &filestat) co
 	file.mtime = filestat.st_mtime;
 	file.dev = filestat.st_rdev;
 	
+#ifdef HAVE_SELINUX
 	// Selinux extended attributes
+	security_context_t context;
 	if(getfilecon (path.c_str(), &context)<0) {
 		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
 		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 	}
+#else
+	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+#endif
 
 	this->writeFileHeader(file);
 	
@@ -157,7 +168,6 @@ void UnixFS::readSymlink(const std::string &path, const struct stat &filestat) c
 	
 	char linkPath[4096]  = {};
 	Doclone::unixFile file  = {};
-	security_context_t context;
 	int size = 0;
 	
 	// Read link
@@ -174,12 +184,18 @@ void UnixFS::readSymlink(const std::string &path, const struct stat &filestat) c
 	file.gid = filestat.st_gid;
 	file.atime = filestat.st_atime;
 	file.mtime = filestat.st_mtime;
+
+#ifdef HAVE_SELINUX
+	security_context_t context;
 	if(lgetfilecon (path.c_str(), &context)<0) {
 		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
 		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 	}
+#else
+	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+#endif
 
 	this->writeFileHeader(file);
 
@@ -204,7 +220,6 @@ void UnixFS::readHardLink(const std::string &path, const struct stat &filestat) 
 	log->loopDebug("UnixFS::readHardLink(path=>%s, filestat=>0x%x) start", path.c_str(), &filestat);
 	
 	Doclone::unixFile file = {};
-	security_context_t context;
 	std::map<ino_t, std::string>::iterator it;
 	DataTransfer *trns = DataTransfer::getInstance();
 
@@ -217,13 +232,18 @@ void UnixFS::readHardLink(const std::string &path, const struct stat &filestat) 
 	file.atime = filestat.st_atime;
 	file.mtime = filestat.st_mtime;
 
+#ifdef HAVE_SELINUX
 	// Selinux extended attributes
+	security_context_t context;
 	if(getfilecon (path.c_str(), &context)<0) {
 		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
 		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 	}
+#else
+	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+#endif
 	
 	it = this->_hardLinks.find(filestat.st_ino);
 	
@@ -271,7 +291,6 @@ void UnixFS::readPipe(const std::string &path, const struct stat &filestat) cons
 	log->loopDebug("UnixFS::readPipe(path=>%s, filestat=>0x%x) start", path.c_str(), &filestat);
 	
 	Doclone::unixFile file = {};
-	security_context_t context;
 
 	std::string fileName = basename(path.c_str());
 	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
@@ -282,13 +301,18 @@ void UnixFS::readPipe(const std::string &path, const struct stat &filestat) cons
 	file.atime = filestat.st_atime;
 	file.mtime = filestat.st_mtime;
 	
+#ifdef HAVE_SELINUX
 	// Selinux extended attributes
+	security_context_t context;
 	if(getfilecon (path.c_str(), &context)<0) {
 		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
 		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 	}
+#else
+	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+#endif
 
 	this->writeFileHeader(file);
 	
@@ -333,7 +357,6 @@ void UnixFS::readDir(const std::string &path) throw(Exception) {
 			case S_IFDIR: {
 				if (strcmp (".", d_file->d_name) && strcmp ("..", d_file->d_name)) {
 					Doclone::unixFile file = {};
-					security_context_t context;
 
 					// write the dir in fd
 					strncpy (reinterpret_cast<char*>(file.name),
@@ -344,14 +367,18 @@ void UnixFS::readDir(const std::string &path) throw(Exception) {
 					file.size = 0;
 					file.atime = filestat.st_atime;
 					file.mtime = filestat.st_mtime;
+#ifdef HAVE_SELINUX
 					// Selinux extended attributes
-					if(getfilecon (abPath.c_str(), &context)<0) {
-						strncpy(reinterpret_cast<char*>(file.se_xattr),
-								"", 0);
-					} else {
-						strncpy (reinterpret_cast<char*>(file.se_xattr),
-								context, 128);
+					security_context_t context;
+					if(getfilecon (path.c_str(), &context)<0) {
+						strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 					}
+					else {
+						strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
+					}
+#else
+					strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+#endif
 
 					this->writeFileHeader(file);
 
@@ -456,8 +483,10 @@ void UnixFS::writeRegularFile(const std::string &path, Doclone::unixFile &file) 
 	chown (path.c_str(), file.uid, file.gid);
 	utime (path.c_str(), &time);
 	chmod (path.c_str(), file.mode);
-	
+
+#ifdef HAVE_SELINUX
 	setfilecon (path.c_str(), reinterpret_cast<char*>(file.se_xattr));
+#endif
 
 	/*
 	 * If this file cannot be transferred for any reason, we need its
@@ -509,8 +538,9 @@ void UnixFS::writeDevice(const std::string &path, Doclone::unixFile &file) const
 	chown (path.c_str(), file.uid, file.gid);
 	utime (path.c_str(), &time);
 	
+#ifdef HAVE_SELINUX
 	setfilecon (path.c_str(), reinterpret_cast<char*>(file.se_xattr));
-	
+#endif
 	log->loopDebug("UnixFS::writeDevice() end");
 }
 
@@ -544,8 +574,9 @@ void UnixFS::writeSymlink(const std::string &path, Doclone::unixFile &file) cons
 	
 	lchown (path.c_str(), file.uid, file.gid);
 	
+#ifdef HAVE_SELINUX
 	lsetfilecon (path.c_str(), reinterpret_cast<char*>(file.se_xattr));
-
+#endif
 	delete[] linkPath;
 	
 	log->loopDebug("UnixFS::writeSymlink() end");
@@ -595,8 +626,9 @@ void UnixFS::writeHardLink(const std::string &path, Doclone::unixFile &file) con
 		throw ex;
 	}
 	
+#ifdef HAVE_SELINUX
 	lsetfilecon (path.c_str(), reinterpret_cast<char*>(file.se_xattr));
-	
+#endif
 	log->loopDebug("UnixFS::writeHardLink() end");
 }
 
@@ -622,8 +654,9 @@ void UnixFS::writePipe(const std::string &path, Doclone::unixFile &file) const t
 	chown (path.c_str(), file.uid, file.gid);
 	utime (path.c_str(), &time);
 	
+#ifdef HAVE_SELINUX
 	setfilecon (path.c_str(), reinterpret_cast<char*>(file.se_xattr));
-	
+#endif
 	log->loopDebug("UnixFS::writePipe() end");
 }
 
@@ -662,8 +695,9 @@ void UnixFS::writeDir(const std::string &path) throw(Exception) {
 				utime (abPath.c_str(), &time);
 				chmod (abPath.c_str(), file.mode);
 
-				setfilecon (abPath.c_str(), reinterpret_cast<char*>(file.se_xattr));
-
+#ifdef HAVE_SELINUX
+				setfilecon (path.c_str(), reinterpret_cast<char*>(file.se_xattr));
+#endif
 				abPath.append("/");
 				this->writeDir (abPath);	// enter the directory
 				break;

@@ -32,9 +32,13 @@ int main () {
 PKG_CHECK_MODULES([PARTED], [libparted >= 2.2])
 PKG_CHECK_MODULES([E2FS], [ext2fs >= 1.41.3])
 PKG_CHECK_MODULES([UUID], [uuid >= 1.41.3])
-PKG_CHECK_MODULES([SELINUX], [libselinux >= 2.0.65])
+PKG_CHECK_MODULES([SELINUX], [libselinux >= 2.0.65], [HAVE_SELINUX=1], [HAVE_SELINUX=0])
 PKG_CHECK_MODULES([BLKID], [blkid >= 1.41.3])
 PKG_CHECK_MODULES([LOG4CPP], [log4cpp >= 1.0])
+
+AM_CONDITIONAL([USE_SELINUX], [test "$HAVE_SELINUX" -eq 1])
+AM_COND_IF([USE_SELINUX], [AC_DEFINE([HAVE_SELINUX], [1], [Define if using libselinux.])],
+           [AC_MSG_WARN(Libselinux is not installed. Selinux attributes will not be cloned.)])
 
 # Allow alternate log directory
 logdir="${localstatedir}/log/libdoclone"

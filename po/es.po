@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2013-08-27 18:44+0200\n"
+"POT-Creation-Date: 2013-08-27 19:01+0200\n"
 "PO-Revision-Date: 2013-08-26 19:42+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Spanish\n"
@@ -230,43 +230,43 @@ msgid "Transferring data"
 msgstr "Transfiriendo datos"
 
 #. TO TRANSLATORS: This is the title of the window
-#: src/CursesView/BaseScreen.cc:35
+#: src/CursesView/BaseScreen.cc:36
 msgid "doclone"
 msgstr "doclone"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:140
+#: src/CursesView/BaseScreen.cc:141
 msgid "<Go back>"
 msgstr "<Volver>"
 
-#: src/CursesView/BaseScreen.cc:144
+#: src/CursesView/BaseScreen.cc:145
 msgid "Go to the previous screen"
 msgstr "Volver a la pantalla anterior"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:169
+#: src/CursesView/BaseScreen.cc:170
 msgid "<Continue>"
 msgstr "<Continuar>"
 
-#: src/CursesView/BaseScreen.cc:173
+#: src/CursesView/BaseScreen.cc:174
 msgid "Continue to the next screen"
 msgstr "continuar hacia la siguiente pantalla"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:198
+#: src/CursesView/BaseScreen.cc:199
 msgid "<Cancel>"
 msgstr "<Cancelar>"
 
-#: src/CursesView/BaseScreen.cc:202
+#: src/CursesView/BaseScreen.cc:203
 msgid "Cancel the current operation"
 msgstr "Cancela la operación actual"
 
 #. TO TRANSLATORS: Button of the ncurses window. Please, do not delete the "<>"
-#: src/CursesView/BaseScreen.cc:227
+#: src/CursesView/BaseScreen.cc:228
 msgid "<Close>"
 msgstr "<Cerrar>"
 
-#: src/CursesView/BaseScreen.cc:231
+#: src/CursesView/BaseScreen.cc:232
 msgid "Close doclone"
 msgstr "Cierra doclone"
 

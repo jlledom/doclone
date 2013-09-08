@@ -27,6 +27,8 @@
 #include <sstream>
 #include <string>
 
+#include <config.h>
+
 #include <doclone/Clone.h>
 #include <doclone/Logger.h>
 #include <doclone/Operation.h>
@@ -41,6 +43,7 @@
 #include <doclone/exception/NoUuidSupportException.h>
 #include <doclone/exception/NoLabelSupportException.h>
 #include <doclone/exception/NoMountSupportException.h>
+#include <doclone/exception/NoSelinuxSupportException.h>
 #include <doclone/exception/NoFitInDeviceException.h>
 #include <doclone/exception/TooMuchPartitionsException.h>
 
@@ -503,6 +506,11 @@ bool Image::canCreateCheck() const throw(Exception) {
 
 	bool retValue = true;
 
+#ifndef HAVE_SELINUX
+	NoSelinuxSupportException selinuxEx;
+	selinuxEx.logMsg();
+#endif
+
 	try {
 		// For each partition
 		for(unsigned int i = 0;i<this->_partitions.size()
@@ -562,6 +570,11 @@ bool Image::canRestoreCheck(const std::string &device, uint64_t size) const thro
 	log->debug("Image::canRestoreCheck(device=>%s, size=>%d) start", device.c_str(), size);
 
 	bool retValue = true;
+
+#ifndef HAVE_SELINUX
+	NoSelinuxSupportException selinuxEx;
+	selinuxEx.logMsg();
+#endif
 
 	try {
 		switch(this->_type) {

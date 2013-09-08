@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2013-08-27 18:44+0200\n"
-"PO-Revision-Date: 2013-08-27 18:44+0100\n"
+"POT-Creation-Date: 2013-09-08 18:43+0200\n"
+"PO-Revision-Date: 2013-09-08 18:44+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -102,8 +102,12 @@ msgid "Not a block device"
 msgstr "No es un dispotivo de bloques"
 
 #: include/doclone/exception/NoDeviceDriverRecognizedException.h:45
-msgid "The library can't determine whether this device is SCSI or IDE. Using SCSI by default."
-msgstr "La librería no puede determinar si se trata de un disco IDE o SCSI. Se asume que es SCSI"
+msgid ""
+"The library can't determine whether this device is SCSI or IDE. Using SCSI "
+"by default."
+msgstr ""
+"La librería no puede determinar si se trata de un disco IDE o SCSI. Se asume "
+"que es SCSI"
 
 #: include/doclone/exception/NoFitInDeviceException.h:40
 msgid "Image doesn't fit in device"
@@ -123,6 +127,14 @@ msgstr "La etiqueta no se clonará para esete sistema de ficheros:"
 #: include/doclone/exception/NoMountSupportException.h:42
 msgid "There is no support to mount this file system:"
 msgstr "No hay soporte para este sistema de ficheros:"
+
+#: include/doclone/exception/NoSelinuxSupportException.h:39
+msgid ""
+"Selinux attributes will not be cloned due to Doclone was built without "
+"support for Selinux"
+msgstr ""
+"Los atributos de Selinux no serán clonados, debido a que Doclone se compiló "
+"sin soporte para Selinux"
 
 #. TO TRANSLATORS: looks like	The uuid will not be cloned for this file system: linux-swap
 #: include/doclone/exception/NoUuidSupportException.h:44
