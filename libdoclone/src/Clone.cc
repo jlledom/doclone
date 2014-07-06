@@ -16,13 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <doclone/Clone.h>
 
 #include <locale.h>
 #include <libintl.h>
 #include <pthread.h>
-
-#include <config.h>
 
 #include <doclone/Logger.h>
 #include <doclone/Local.h>

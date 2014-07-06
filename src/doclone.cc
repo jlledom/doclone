@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <locale.h>
 #include <libintl.h>
-
-#include <config.h>
 
 #include <ConsoleView/ConsoleView.h>
 #ifdef HAVE_NCURSES
