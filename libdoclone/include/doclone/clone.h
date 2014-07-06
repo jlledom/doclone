@@ -52,7 +52,6 @@
  */
 #ifdef __cplusplus
 
-#include <doclone/clone.h>
 #include <doclone/DataTransfer.h>
 #include <doclone/Logger.h>
 #include <doclone/observer/AbstractObserver.h>

@@ -351,7 +351,7 @@ ssize_t DataTransfer::recvData (int s, void *buf, size_t len) throw (Exception) 
  * Transfers [len] bytes of data from [buf] to [s]
  *
  * \param s
- * 		Destiny descriptor
+ * 		Destination descriptor
  * \param buf
  * 		Buffer of data
  * \param len
@@ -376,7 +376,7 @@ ssize_t DataTransfer::writeBytes (int s, const void *buf, size_t len) throw (Exc
  * Transfers [len] bytes of data from [buf] to [s]
  *
  * \param s
- * 		Destiny descriptor
+ * 		Destination descriptor
  * \param buf
  * 		Buffer of data
  * \param len
@@ -473,7 +473,7 @@ void DataTransfer::initSocketRead() {
 }
 
 /**
- * \brief Sets getNbytes to execute writeBytes
+ * \brief Sets putNbytes to execute writeBytes
  */
 void DataTransfer::initFileWrite() {
 	Logger *log = Logger::getInstance();

@@ -605,7 +605,11 @@ bool Util::isLiveFile(const char *path) {
 	log->debug("Util::isLiveFile(path=>%s) start", path);
 
 	Clone *dcl = Clone::getInstance();
+
+	//The image that is being created must not be cloned.
 	bool retVal = !strcmp (dcl->getImage().c_str(), path);
+
+	//FIXME: Add live folders as /proc, /dev...
 
 	log->debug("Util::isLiveFile(retVal=>%d) end", retVal);
 	return retVal;

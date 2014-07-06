@@ -25,6 +25,7 @@
 .deps
 .intltool-merge-cache
 .project
+.settings/*
 .xml2po.mo
 INSTALL
 Makefile

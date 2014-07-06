@@ -27,6 +27,9 @@
 #include <curses.h>
 #include <menu.h>
 
+/**
+ * \brief The extension of the image files that the selection form will show.
+ */
 #define GN_EXTENSION "doclone"
 
 /**
