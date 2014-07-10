@@ -190,6 +190,7 @@ libdoclone_la_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-DLOCALEDIR=\"$(localedir)\" \
 	-DLOGDIR=\"$(logdir)\" \
+	-D_FILE_OFFSET_BITS=64 \
 	$(GLIBMM_CFLAGS) \
 	$(LOG4CPP_CFLAGS)
 
