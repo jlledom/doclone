@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -109,6 +109,7 @@ public:
 
 	static std::string intToString(int num) throw(Exception);
 
+	static bool isMountPoint(const std::string &path) throw(Exception);
 	static bool isVirtualDirectory(const char *path);
 	static bool isLiveFile(const char *path);
 
@@ -123,7 +124,7 @@ public:
 	static void split(const std::string &string, char delim, std::vector<std::string> &elems);
 	static std::string find_program_in_path(const std::string &program);
 
-	static void spawn_command_line_sync(std::string &command, int *exitValue) throw(Exception);
+	static void spawn_command_line_sync(const std::string &command, int *exitValue, std::string *output) throw(Exception);
 };
 
 }

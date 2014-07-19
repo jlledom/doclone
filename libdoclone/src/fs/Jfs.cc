@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ void Jfs::writeLabel(const std::string &dev) const throw(Exception) {
 	.append(">/dev/null 2>&1");
 	
 	int exitValue;
-	Util::spawn_command_line_sync(cmdline, &exitValue);
+	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
 	if (exitValue<0) {
 		WriteLabelException ex(dev);
@@ -132,7 +132,7 @@ void Jfs::writeUUID(const std::string &dev) const throw(Exception) {
 	.append(">/dev/null 2>&1");
 	
 	int exitValue;
-	Util::spawn_command_line_sync(cmdline, &exitValue);
+	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
 	if (exitValue<0) {
 		WriteUuidException ex(dev);

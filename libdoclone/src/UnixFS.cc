@@ -383,9 +383,11 @@ void UnixFS::readDir(const std::string &path) throw(Exception) {
 					this->writeFileHeader(file);
 
 					/*
-					 * If the current folder is a virtual one, bypass
+					 * If the current folder is a virtual one or is the mount
+					 * point of another partition, bypass it.
 					 */
-					if(Util::isVirtualDirectory(abPath.c_str())) {
+					if(Util::isVirtualDirectory(abPath.c_str())
+						|| Util::isMountPoint(abPath)) {
 						/*
 						 * Write a empty unixFile object that indicates the end
 						 * of the virtual folder

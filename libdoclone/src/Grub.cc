@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@ void Grub::install() throw(Exception) {
 				grub_install_cmdline.append(this->_disk->getPath());
 				grub_install_cmdline.append(" >/dev/null 2>&1");
 
-				Util::spawn_command_line_sync(grub_install_cmdline, &exitValue);
+				Util::spawn_command_line_sync(grub_install_cmdline, &exitValue, 0);
 			} catch (const CancelException &ex) {
 				part->doUmount();
 				throw;

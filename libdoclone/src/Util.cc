@@ -568,6 +568,42 @@ std::string Util::intToString(int num) throw(Exception) {
 }
 
 /**
+ * \brief Checks whether the passed folder is a mount point
+ *
+ * \param path
+ * 		The path of the folder
+ */
+bool Util::isMountPoint(const std::string &path) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Util::isMountPoint(path=>%s) start", path.c_str());
+
+	bool retVal = false;
+
+	FILE *fp;
+	struct mntent *tmp;
+
+	fp = setmntent("/etc/mtab","r");
+
+	if(fp == 0) {
+		FileNotFoundException ex("/etc/mtab");
+		ex.logMsg();
+	}
+
+	// Read all the mount points of the system
+	while( (tmp = getmntent(fp)) != 0) {
+		// if it matches, return true
+		if(path.compare(tmp->mnt_dir) == 0) {
+			retVal = true;
+		}
+	}
+
+	endmntent(fp);
+
+	log->debug("Util::isMountPoint(retVal=>%d) end", retVal);
+	return retVal;
+}
+
+/**
  * \brief Determines whether the given folder is virtual or not
  *
  * \param path
@@ -577,7 +613,7 @@ std::string Util::intToString(int num) throw(Exception) {
  */
 bool Util::isVirtualDirectory(const char *path) {
 	Logger *log = Logger::getInstance();
-	log->debug("Util::isVirtualDirectory(path=>%s) start", path);
+	log->loopDebug("Util::isVirtualDirectory(path=>%s) start", path);
 
 	bool retVal = !(strcmp ("/dev", path)
 			&& strcmp ("/proc",path)
@@ -588,7 +624,7 @@ bool Util::isVirtualDirectory(const char *path) {
 			&& strcmp ("/sys",path)
 			&& strcmp ("/run",path));
 
-	log->debug("Util::isVirtualDirectory(retVal=>%d) end", retVal);
+	log->loopDebug("Util::isVirtualDirectory(retVal=>%d) end", retVal);
 	return retVal;
 }
 
@@ -602,16 +638,14 @@ bool Util::isVirtualDirectory(const char *path) {
  */
 bool Util::isLiveFile(const char *path) {
 	Logger *log = Logger::getInstance();
-	log->debug("Util::isLiveFile(path=>%s) start", path);
+	log->loopDebug("Util::isLiveFile(path=>%s) start", path);
 
 	Clone *dcl = Clone::getInstance();
 
 	//The image that is being created must not be cloned.
 	bool retVal = !strcmp (dcl->getImage().c_str(), path);
 
-	//FIXME: Add live folders as /proc, /dev...
-
-	log->debug("Util::isLiveFile(retVal=>%d) end", retVal);
+	log->loopDebug("Util::isLiveFile(retVal=>%d) end", retVal);
 	return retVal;
 }
 
@@ -813,18 +847,32 @@ std::string Util::find_program_in_path(const std::string &program) {
  * \param exitValue
  * 		Pointer to an integer where the exit status will be written
  */
-void Util::spawn_command_line_sync(std::string &command, int *exitValue) throw(Exception) {
+void Util::spawn_command_line_sync(const std::string &command, int *exitValue, std::string *output) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::spawn_command_line_sync(command=>%s) start", command.c_str());
 
 	pid_t pid;
 	int status;
+	int fds[2]; //pipe ends
+
+	//If output is not null, we must use a pipe for redirecting the child's output
+	if(output && pipe(fds)) {
+		SpawnProcessException ex(command);
+		throw ex;
+	}
 
 	pid = fork();
 	if (pid < 0) {
 		SpawnProcessException ex(command);
 		throw ex;
-	} else if (pid == 0) {
+	} else if (pid == 0) { //Child process
+		//Child's output must be connected to the write end of the pipe.
+		if(output) {
+			close(fds[0]);
+			dup2(fds[1], STDOUT_FILENO);
+		}
+
+		//Launch the new process
 		execlp("/bin/sh", "sh", "-c", command.c_str(), (void *)0);
 	} else if(waitpid(pid, &status, 0) != pid) {
 		SpawnProcessException ex(command);
@@ -836,6 +884,17 @@ void Util::spawn_command_line_sync(std::string &command, int *exitValue) throw(E
 	} else {
 		SpawnProcessException ex(command);
 		throw ex;
+	}
+
+	//Save the output in the std::string
+	if(output) {
+		char buff[4096] = {};
+		int retVal = 0;
+
+		do {
+			retVal = read(fds[0], buff, 4096);
+			*output += buff;
+		} while(retVal == 4096);
 	}
 
 	log->debug("Util::spawn_command_line_sync() end");

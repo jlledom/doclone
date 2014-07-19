@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -424,7 +424,7 @@ uint64_t Partition::usedSpace() throw(Exception) {
 	
 	this->doUmount();
 	
-	uint64_t retValue = used_blocks * info.f_bsize;
+	uint64_t retValue = used_blocks * info.f_frsize;
 	
 	log->debug("Partition::usedSpace(retValue=>%d) end", retValue);
 	return retValue;
@@ -480,7 +480,7 @@ void Partition::externalMount() throw(Exception) {
 	.append(">/dev/null 2>&1");
 			 
 	int exitValue;
-	Util::spawn_command_line_sync(cmdline, &exitValue);
+	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
 	if (exitValue<0) {
 		MountException ex(this->_path);
@@ -623,7 +623,7 @@ void Partition::format() const throw(Exception) {
 		" "+this->_path.c_str()+" >/dev/null 2>&1";
 
 	int exitValue;
-	Util::spawn_command_line_sync(cmdline, &exitValue);
+	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
 	if (exitValue<0) {
 		FormatException ex;
