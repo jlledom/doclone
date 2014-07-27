@@ -87,6 +87,7 @@ typedef ssize_t (*writeFunction) (int, const void*, size_t);
  */
 class DataTransfer : public AbstractSubject {
 public:
+	~DataTransfer();
 	static DataTransfer* getInstance();
 
 	uint64_t transferAllFrom(int fd) throw(Exception);

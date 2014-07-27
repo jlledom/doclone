@@ -42,6 +42,13 @@ DataTransfer::DataTransfer()
 }
 
 /**
+ * \brief Clear this->_fdd map
+ */
+DataTransfer::~DataTransfer() {
+	this->_fdd.clear();
+}
+
+/**
  * \brief Singleton stuff
  *
  * \return Pointer to a DataTransfer object

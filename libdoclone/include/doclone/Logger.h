@@ -60,6 +60,8 @@ namespace Doclone {
  */
 class Logger : public AbstractSubject {
 public:
+	~Logger();
+
 	static Logger* getInstance();
 	
 	void loopDebug(const std::string &msg, ...) const;

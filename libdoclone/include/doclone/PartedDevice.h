@@ -35,7 +35,7 @@ namespace Doclone {
  */
 class PartedDevice {
 public:
-	virtual ~PartedDevice();
+	~PartedDevice();
 	
 	static PartedDevice* getInstance();
 	

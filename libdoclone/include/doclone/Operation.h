@@ -84,6 +84,7 @@ enum dcOperationType {
 class Operation {
 public:
 	Operation(dcOperationType type, const std::string &target);
+	~Operation() {}
 
 	void setType(dcOperationType type);
 	dcOperationType getType() const;

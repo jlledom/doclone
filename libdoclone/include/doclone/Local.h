@@ -35,6 +35,7 @@ namespace Doclone {
 class Local {
 public:
 	Local(const std::string &image, const std::string &device);
+	~Local(){}
 
 	void create() const throw(Exception);
 	void restore() const throw(Exception);

@@ -75,6 +75,7 @@ struct unixFile {
 class UnixFS : public Filesystem {
 public:
 	UnixFS();
+	~UnixFS();
 
 	void readDir(const std::string &path) throw(Exception);
 	void writeDir(const std::string &path) throw(Exception);

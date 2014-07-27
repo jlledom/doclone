@@ -71,6 +71,7 @@ Image::~Image() {
 	}
 
 	this->_partitions.clear();
+	this->_partsInfo.clear();
 }
 
 /**

@@ -50,6 +50,13 @@ Grub::Grub(const Disk *disk) throw(Exception) : _disk(disk) {
 }
 
 /**
+ * \brief Clears _grubParts map
+ */
+Grub::~Grub() {
+	this->_grubParts.clear();
+}
+
+/**
  * \brief Finds out the grub files in the disk
  */
 void Grub::searchPartition() throw(Exception) {

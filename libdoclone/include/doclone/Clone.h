@@ -241,7 +241,7 @@ namespace Doclone {
 class Clone : public AbstractSubject {
 public:
 	static Clone* getInstance();
-	virtual ~Clone();
+	~Clone();
 
 	void create() throw(Exception);
 	void restore() throw(Exception);

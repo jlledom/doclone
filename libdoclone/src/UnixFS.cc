@@ -60,6 +60,13 @@ UnixFS::UnixFS()
 }
 
 /**
+ * \brief Clears the map of hard links
+ */
+UnixFS::~UnixFS() {
+	this->_hardLinks.clear();
+}
+
+/**
  * \brief Reads the data and metadata of a regular file in a unix filesystem and
  * transfers it to the destination.
  *

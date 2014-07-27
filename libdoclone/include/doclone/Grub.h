@@ -43,6 +43,7 @@ namespace Doclone {
 class Grub {
 public:
 	Grub(const Disk *disk) throw(Exception);
+	~Grub();
 	void install() throw(Exception);
 	
 private:

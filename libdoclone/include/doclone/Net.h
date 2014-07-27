@@ -134,6 +134,7 @@ const dcCommand C_RECEIVER_OK = 1 << 4;
 class Net {
 public:
 	Net();
+	virtual ~Net() {}
 
 protected:
 	void closeConnection() const throw(Exception);
