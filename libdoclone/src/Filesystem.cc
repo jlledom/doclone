@@ -116,6 +116,7 @@ std::string Filesystem::readLabel(const std::string &dev) const throw(Exception)
 		}
 	}
 	blkid_tag_iterate_end(iter);
+	blkid_put_cache(cache);
 
 	log->debug("Filesystem::readLabel(label=>%s) end", label.c_str());
 	return label;
@@ -149,6 +150,7 @@ std::string Filesystem::readUUID(const std::string &dev) const throw(Exception) 
 		}
 	}
 	blkid_tag_iterate_end(iter);
+	blkid_put_cache(cache);
 
 	log->debug("Filesystem::readUUID(uuid=>%s) end", uuid.c_str());
 	return uuid;

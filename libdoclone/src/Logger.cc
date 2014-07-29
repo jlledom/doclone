@@ -73,15 +73,7 @@ Logger::Logger() : _app(0), _layout(0), _cat(0), _backTrace() {
 Logger::~Logger() {
 	this->_backTrace.clear();
 
-	if(this->_layout != 0) {
-		delete this->_layout;
-		this->_layout = 0;
-	}
-
-	if(this->_app != 0) {
-		delete this->_app;
-		this->_app = 0;
-	}
+	log4cpp::Category::shutdown();
 }
 
 /**

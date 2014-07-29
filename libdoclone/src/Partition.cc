@@ -233,6 +233,7 @@ void Partition::initFS() throw(Exception) {
 		}
 		blkid_tag_iterate_end(iter);
 	}
+	blkid_put_cache(cache);
 	
 	this->_fs = FsFactory::createFilesystem(info);
 

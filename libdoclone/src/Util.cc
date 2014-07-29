@@ -685,6 +685,7 @@ bool Util::isUUIDRepeated(const char *uuid) throw(Exception) {
 		numDevRep++;
 	}
 	blkid_dev_iterate_end(iter);
+	blkid_put_cache(cache);
 
 	retVal = numDevRep > 1;
 	log->debug("Util::isUUIDRepeated(retVal=>%d) end", retVal);
