@@ -3,7 +3,7 @@ dnl Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
 dnl
 dnl See the file COPYING for copying conditions.
 
-AC_INIT([libdoclone],[0.7.0], [joanlluislledo@gmail.com])
+AC_INIT([libdoclone],[0.7.1], [joanlluislledo@gmail.com])
 AM_INIT_AUTOMAKE([1.11 parallel-tests -Wall -Werror])
 AM_SILENT_RULES
 LT_INIT

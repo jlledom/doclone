@@ -530,7 +530,7 @@ bool Util::match(const std::string &str, const std::string &regEx) {
 	log->debug("Util::match(str=>%s, regEx=>%s) start", str.c_str(), regEx.c_str());
 	bool retVal = false;
 
-	regex_t preg ;
+	regex_t preg;
 	int nmatch = 1 ;
 	regmatch_t pmatch[  nmatch ] ;
 	int rc = regcomp( &preg, regEx.c_str(), REG_EXTENDED | REG_ICASE | REG_NEWLINE ) ;
