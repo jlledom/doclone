@@ -670,6 +670,7 @@ bool Util::isUUIDRepeated(const char *uuid) throw(Exception) {
 	blkid_get_cache(&cache, "/dev/null"); //Do not use blkid cache
 	int blDev = blkid_probe_all(cache);
 	if(blDev != 0) {
+		blkid_put_cache(cache);
 		log->debug("Util::isUUIDRepeated(retVal=>%d) end", retVal);
 		// Returning true to enforce mounting/unmounting of the device, just in case.
 		return true;

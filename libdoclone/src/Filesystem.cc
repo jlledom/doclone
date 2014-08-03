@@ -106,6 +106,8 @@ std::string Filesystem::readLabel(const std::string &dev) const throw(Exception)
 	blkid_get_cache(&cache, "/dev/null"); //Do not use blkid cache
 	blkid_dev blDev = blkid_get_dev(cache, dev.c_str(), BLKID_DEV_NORMAL);
 	if(!blDev) {
+		blkid_put_cache(cache);
+		log->debug("Filesystem::readLabel(label=>) end");
 		return "";
 	}
 	blkid_tag_iterate iter = blkid_tag_iterate_begin(blDev);
@@ -139,6 +141,7 @@ std::string Filesystem::readUUID(const std::string &dev) const throw(Exception) 
 	blkid_get_cache(&cache, "/dev/null"); //Do not use blkid cache
 	blkid_dev blDev = blkid_get_dev(cache, dev.c_str(), BLKID_DEV_NORMAL);
 	if(!blDev) {
+		blkid_put_cache(cache);
 		log->debug("Filesystem::readUUID(uuid=>) end");
 		return "";
 	}
