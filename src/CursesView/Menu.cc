@@ -1,6 +1,6 @@
 /*
  * doclone - a frontend for libdoclone
- * Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ * Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -258,7 +258,7 @@ void Menu::setContent(const std::vector<std::string> &options,
 	for(it = tmpOptions.begin(); it != tmpOptions.end(); ++it, i++) {
 		int length=(*it).length()+1;
 		this->_options[i]=new char[length];
-		strncpy(this->_options[i], (*it).c_str(), length);
+		snprintf(this->_options[i], length, "%s", (*it).c_str());
 	}
 
 	int j = 0;
@@ -267,7 +267,7 @@ void Menu::setContent(const std::vector<std::string> &options,
 	for(it2 = tmpDescriptions.begin(); it2 != tmpDescriptions.end(); ++it2, j++) {
 		int length=(*it2).length()+1;
 		this->_descriptions[j]=new char[length];
-		strncpy(this->_descriptions[j], (*it2).c_str(),length);
+		snprintf(this->_descriptions[j], length, "%s", (*it2).c_str());
 	}
 
 	this->_options[i]=0;

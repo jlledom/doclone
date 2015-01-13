@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,8 +75,8 @@ enum dcOperationEvent {
 /**
  * \class AbstractObserver
  *
- * Stuff for the observer pattern, if the user of the library extends this class
- * and overloads its methods, will get the events in runtime.
+ * Stuff for the observer pattern. Libdoclone users that extend this class
+ * and overload its methods will get the events in runtime.
  *
  * \date September, 2011
  */

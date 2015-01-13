@@ -1,6 +1,6 @@
 /*
  * doclone - a frontend for libdoclone
- * Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ * Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <doclone/Clone.h>
 
 #define _(string) gettext(string)
-#define PACKAGE_VERSION "0.7.0"
+#define PACKAGE_VERSION "0.7.1"
 
 typedef enum dcConsoleFunction {
 	CONSOLE_NONE,

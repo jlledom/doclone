@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -112,11 +112,15 @@ void LinuxSwap::writeUUID(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("LinuxSwap::writeUUID(dev=>%s) start", dev.c_str());
 
+	uuid_t binUuid;
+
+	// Convert to binary UUID
+	if (uuid_parse(this->_uuid.c_str(), binUuid)<0) {
+		WriteUuidException ex(dev);
+		ex.logMsg();
+	}
+
 	try {
-		uuid_t binUuid;
-
-		uuid_parse(this->_uuid.c_str(), binUuid);
-
 		Util::writeBinData(dev, &binUuid, 0x40C, 16);
 	}
 	catch(const Exception &e) {

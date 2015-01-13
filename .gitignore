@@ -53,3 +53,4 @@ stamp-*
 xmldocs.make
 Rules-quot
 */examples/README
+libdoclone/compile

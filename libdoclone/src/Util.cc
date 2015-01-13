@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2014, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -901,6 +901,25 @@ void Util::spawn_command_line_sync(const std::string &command, int *exitValue, s
 
 	log->debug("Util::spawn_command_line_sync() end");
 	return;
+}
+
+/**
+ * \brief Calls strncpy and adds a line terminator '/0' at end
+ *
+ * \param dest Destination  pointer
+ *
+ */
+char *Util::safe_strncpy(char *dest, const char *src, size_t n) {
+	Logger *log = Logger::getInstance();
+		log->loopDebug("Util::safe_strncpy(dest=>%s, src=>%s, n=>%d) start", dest, src, n);
+
+	strncpy(dest, src, n);
+	if (n > 0) {
+		dest[n - 1]= '\0';
+	}
+
+	log->loopDebug("Util::safe_strncpy(dest=>%s) end", dest);
+	return dest;
 }
 
 }

@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,7 +83,8 @@ void UnixFS::readRegularFile(const std::string &path, const struct stat &filesta
 	DataTransfer *trns = DataTransfer::getInstance();
 
 	std::string fileName = basename(path.c_str());
-	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.name),
+			fileName.c_str(), 512);
 	file.mode = filestat.st_mode;
 	file.uid = filestat.st_uid;
 	file.gid = filestat.st_gid;
@@ -95,13 +96,14 @@ void UnixFS::readRegularFile(const std::string &path, const struct stat &filesta
 	// Selinux extended attributes
 	security_context_t context;	// Selinux context of this file
 	if(getfilecon (path.c_str(), &context)<0) {
-		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+		Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
-		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
+		Util::safe_strncpy (reinterpret_cast<char*>(file.se_xattr),
+				context, 128);
 	}
 #else
-	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 #endif
 	
 	int fdfile;
@@ -133,7 +135,8 @@ void UnixFS::readDevice(const std::string &path, const struct stat &filestat) co
 	Doclone::unixFile file = {};
 
 	std::string fileName = basename(path.c_str());
-	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.name),
+			fileName.c_str(), 512);
 	file.mode = filestat.st_mode;
 	file.uid = filestat.st_uid;
 	file.gid = filestat.st_gid;
@@ -146,13 +149,14 @@ void UnixFS::readDevice(const std::string &path, const struct stat &filestat) co
 	// Selinux extended attributes
 	security_context_t context;
 	if(getfilecon (path.c_str(), &context)<0) {
-		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+		Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
-		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
+		Util::safe_strncpy (reinterpret_cast<char*>(file.se_xattr),
+				context, 128);
 	}
 #else
-	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 #endif
 
 	this->writeFileHeader(file);
@@ -184,7 +188,8 @@ void UnixFS::readSymlink(const std::string &path, const struct stat &filestat) c
 	}
 	
 	std::string fileName = basename(path.c_str());
-	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.name),
+			fileName.c_str(), 512);
 	file.size = size;
 	file.mode = filestat.st_mode;
 	file.uid = filestat.st_uid;
@@ -195,13 +200,14 @@ void UnixFS::readSymlink(const std::string &path, const struct stat &filestat) c
 #ifdef HAVE_SELINUX
 	security_context_t context;
 	if(lgetfilecon (path.c_str(), &context)<0) {
-		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+		Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
-		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
+		Util::safe_strncpy (reinterpret_cast<char*>(file.se_xattr),
+				context, 128);
 	}
 #else
-	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 #endif
 
 	this->writeFileHeader(file);
@@ -231,7 +237,7 @@ void UnixFS::readHardLink(const std::string &path, const struct stat &filestat) 
 	DataTransfer *trns = DataTransfer::getInstance();
 
 	std::string fileName = basename(path.c_str());
-	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
 	file.mode = filestat.st_mode;
 	file.uid = filestat.st_uid;
 	file.gid = filestat.st_gid;
@@ -243,13 +249,13 @@ void UnixFS::readHardLink(const std::string &path, const struct stat &filestat) 
 	// Selinux extended attributes
 	security_context_t context;
 	if(getfilecon (path.c_str(), &context)<0) {
-		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+		Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
-		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
+		Util::safe_strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 	}
 #else
-	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 #endif
 	
 	it = this->_hardLinks.find(filestat.st_ino);
@@ -300,7 +306,7 @@ void UnixFS::readPipe(const std::string &path, const struct stat &filestat) cons
 	Doclone::unixFile file = {};
 
 	std::string fileName = basename(path.c_str());
-	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
 	file.mode = filestat.st_mode;
 	file.uid = filestat.st_uid;
 	file.gid = filestat.st_gid;
@@ -312,13 +318,13 @@ void UnixFS::readPipe(const std::string &path, const struct stat &filestat) cons
 	// Selinux extended attributes
 	security_context_t context;
 	if(getfilecon (path.c_str(), &context)<0) {
-		strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+		Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 	}
 	else {
-		strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
+		Util::safe_strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 	}
 #else
-	strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 #endif
 
 	this->writeFileHeader(file);
@@ -366,7 +372,7 @@ void UnixFS::readDir(const std::string &path) throw(Exception) {
 					Doclone::unixFile file = {};
 
 					// write the dir in fd
-					strncpy (reinterpret_cast<char*>(file.name),
+					Util::safe_strncpy (reinterpret_cast<char*>(file.name),
 							d_file->d_name, 512);
 					file.mode = filestat.st_mode;
 					file.uid = filestat.st_uid;
@@ -378,13 +384,13 @@ void UnixFS::readDir(const std::string &path) throw(Exception) {
 					// Selinux extended attributes
 					security_context_t context;
 					if(getfilecon (path.c_str(), &context)<0) {
-						strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+						Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 					}
 					else {
-						strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
+						Util::safe_strncpy (reinterpret_cast<char*>(file.se_xattr), context, 128);
 					}
 #else
-					strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
+					Util::safe_strncpy(reinterpret_cast<char*>(file.se_xattr), "", 0);
 #endif
 
 					this->writeFileHeader(file);
@@ -494,7 +500,7 @@ void UnixFS::writeRegularFile(const std::string &path, Doclone::unixFile &file) 
 	chmod (path.c_str(), file.mode);
 
 #ifdef HAVE_SELINUX
-	setfilecon (path.c_str(), reinterpret_cast<char*>(file.se_xattr));
+	setfilecon (path.c_str(), reinterpret_cast<security_context_t>(file.se_xattr));
 #endif
 
 	/*

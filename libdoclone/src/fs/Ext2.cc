@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ void Ext2::writeLabel(const std::string &dev) const throw(Exception) {
 	}
 
 	memset(sb->s_volume_name, 0, sizeof(sb->s_volume_name));
-	strncpy(sb->s_volume_name, this->_label.c_str(),
+	Util::safe_strncpy(sb->s_volume_name, this->_label.c_str(),
 			sizeof(sb->s_volume_name));
 
 	if (set_csum) {
@@ -179,7 +179,7 @@ void Ext2::writeUUID(const std::string &dev) const throw(Exception) {
 			set_csum = 1;
 	}
 	
-	 // Write the uuid
+	// Write the uuid
 	if (uuid_parse (this->_uuid.c_str(), sb->s_uuid)<0) {
 		WriteUuidException ex(dev);
 		ex.logMsg();

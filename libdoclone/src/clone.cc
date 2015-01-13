@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -297,7 +297,7 @@ void doclone_subscribe_to_notifications(dc_doclone *dc_obj,
  */
 void doclone_set_image(dc_doclone *dc_obj, const char *image) {
 	char *dst = reinterpret_cast<char *>(dc_obj->_image);
-	strncpy(dst, image, sizeof(dc_obj->_image));
+	snprintf(dst, sizeof(dc_obj->_image), "%s", image);
 }
 
 /**
@@ -306,7 +306,7 @@ void doclone_set_image(dc_doclone *dc_obj, const char *image) {
  */
 void doclone_set_device(dc_doclone *dc_obj, const char *device) {
 	char *dst = reinterpret_cast<char *>(dc_obj->_device);
-	strncpy(dst, device, sizeof(dc_obj->_device));
+	snprintf(dst, sizeof(dc_obj->_device), "%s", device);
 }
 
 /**
@@ -315,7 +315,7 @@ void doclone_set_device(dc_doclone *dc_obj, const char *device) {
  */
 void doclone_set_address(dc_doclone *dc_obj, const char *address) {
 	char *dst = reinterpret_cast<char *>(dc_obj->_address);
-	strncpy(dst, address, sizeof(dc_obj->_address));
+	snprintf(dst, sizeof(dc_obj->_address), "%s", address);
 }
 
 /**

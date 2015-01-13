@@ -122,20 +122,20 @@ void ConsoleView::notify(Doclone::dcOperationEvent event,
 		break;
 	}
 	case Doclone::OP_WRITE_PARTITION_FLAGS: {
-		// TO TRANSLATORS: looks like Written the fs flags of /dev/sdb1
-		std::cout << _("Written the fs flags of") << " " << target << std::endl;
+		// TO TRANSLATORS: looks like FS flags written: /dev/sdb1
+		std::cout << _("FS flags written:") << " " << target << std::endl;
 
 		break;
 	}
 	case Doclone::OP_WRITE_FS_LABEL: {
-		// TO TRANSLATORS: looks like Written the fs label of /dev/sdb1
-		std::cout << _("Written the fs label of") << " " << target << std::endl;
+		// TO TRANSLATORS: looks like FS label written: /dev/sdb1
+		std::cout << _("FS label written:") << " " << target << std::endl;
 
 		break;
 	}
 	case Doclone::OP_WRITE_FS_UUID: {
-		// TO TRANSLATORS: looks like Written the fs uuid of /dev/sdb1
-		std::cout << _("Written the fs uuid of") << " " << target << std::endl;
+		// TO TRANSLATORS: looks like FS UUID written: /dev/sdb1
+		std::cout << _("FS UUID written:") << " " << target << std::endl;
 
 		break;
 	}

@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,7 +58,8 @@ void DosFS::readRegularFile(const std::string &path, const struct stat &filestat
 	DataTransfer *trns = DataTransfer::getInstance();
 
 	std::string fileName = basename(path.c_str());
-	strncpy(reinterpret_cast<char*>(file.name), fileName.c_str(), 512);
+	Util::safe_strncpy(reinterpret_cast<char*>(file.name),
+			fileName.c_str(), 512);
 	file.mode = filestat.st_mode;
 	file.size = filestat.st_size;
 	file.atime = filestat.st_atime;
@@ -117,7 +118,7 @@ void DosFS::readDir(const std::string &path) throw(Exception) {
 					Doclone::dosFile file = {};
 
 					// Write the directory on descriptor
-					strncpy (reinterpret_cast<char*>(file.name),
+					Util::safe_strncpy(reinterpret_cast<char*>(file.name),
 							d_file->d_name, 512);
 					file.mode = filestat.st_mode;
 					file.size = 0;

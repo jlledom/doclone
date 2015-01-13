@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ namespace Doclone {
 /**
  * \class AbstractSubject
  *
- * Base class for the subjects observer pattern, when other class extends this
- * one, can notify new events to the possible observers.
+ * Base class for the subjects of the observer pattern. When other class extends
+ * this one, it can notify new events to the observers.
  *
  * \date September, 2011
  */

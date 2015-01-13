@@ -1,6 +1,6 @@
 /*
  * doclone - a frontend for libdoclone
- * Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ * Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -258,7 +258,7 @@ void ActionPanel::setContent(const std::vector<std::string> &labels){
 	for(i = 0; it != tmpLabels.end(); ++it, ++it2, i++) {
 		int length=(*it).length()+1;
 		this->_options[i]=new char[length];
-		strncpy(this->_options[i], (*it).c_str(), length);
+		snprintf(this->_options[i], length, "%s", (*it).c_str());
 		items[i] = new_item(this->_options[i], this->_options[i]);
 
 		if((*it2).getCompleted() == true) {

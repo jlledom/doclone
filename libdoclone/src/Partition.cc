@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2014, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -654,9 +654,12 @@ void Partition::createPartInfo() throw(Exception) {
 	this->_partition.used_part = *tmpUsedPart;
 
 	this->_partition.flags = this->_flags;
-	strncpy(reinterpret_cast<char*>(this->_partition.fsName), this->_fs->getdocloneName().c_str(), 32);
-	strncpy(reinterpret_cast<char*>(this->_partition.label), this->_label.c_str(), 28);
-	strncpy(reinterpret_cast<char*>(this->_partition.uuid), this->_uuid.c_str(), 37);
+	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.fsName),
+			this->_fs->getdocloneName().c_str(), 32);
+	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.label),
+			this->_label.c_str(), 28);
+	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.uuid),
+			this->_uuid.c_str(), 37);
 	
 	log->debug("Partition::createPartInfo() end");
 }

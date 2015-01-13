@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2014, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -125,6 +125,8 @@ public:
 	static std::string find_program_in_path(const std::string &program);
 
 	static void spawn_command_line_sync(const std::string &command, int *exitValue, std::string *output) throw(Exception);
+
+	static char * safe_strncpy(char *dest, const char *src, size_t n);
 };
 
 }

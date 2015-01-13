@@ -1,6 +1,6 @@
 /*
  * doclone - a frontend for libdoclone
- * Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ * Copyright (C) 2013, 2014, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <doclone/clone.h>
 
 #define _(string) gettext(string)
-#define PACKAGE_VERSION "0.7.0"
+#define PACKAGE_VERSION "0.7.1"
 
 typedef enum dcConsoleFunction {
 	CONSOLE_NONE,
@@ -327,24 +327,22 @@ int main(int argc, char **argv) {
 		}
 		case 'f': {
 			if (!strrchr (optarg, '/'))	{ // If it is a relative path 
-				char tmp[512];
-				snprintf (tmp, sizeof(tmp), "./%s", optarg);
-				strncpy(image, tmp, sizeof(image));
+				snprintf (image, sizeof(image), "./%s", optarg);
 				doclone_set_image(dc_obj, image);
 			}
 			else {
-				strncpy(image, optarg, sizeof(image));
+				snprintf(image, sizeof(image), "%s", optarg);
 				doclone_set_image(dc_obj, image);
 			}
 			break;
 		}
 		case 'd': {
-			strncpy(device, optarg, sizeof(device));
+			snprintf(device, sizeof(device), "%s", optarg);
 			doclone_set_device(dc_obj, device);
 			break;
 		}
 		case 'a': {
-			strncpy(address, optarg, sizeof(address));
+			snprintf(address, sizeof(address), "%s", optarg);
 			doclone_set_address(dc_obj, address);
 			break;
 		}

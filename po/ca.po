@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2014-07-31 19:57+0200\n"
-"PO-Revision-Date: 2013-08-26 19:42+0100\n"
+"POT-Creation-Date: 2015-01-11 21:12+0100\n"
+"PO-Revision-Date: 2015-01-11 21:21+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -17,15 +17,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. TO TRANSLATORS: looks like "Transferred: 55%"
-#: src/ConsoleView/ConsoleView.cc:61 src/CursesView/ProgressScreen.cc:78
+#: src/ConsoleView/ConsoleView.cc:61
+#: src/CursesView/ProgressScreen.cc:78
 msgid "Transferred:"
 msgstr "Transferit:"
 
-#: src/ConsoleView/ConsoleView.cc:78 src/CursesView/ActionPanel.cc:196
+#: src/ConsoleView/ConsoleView.cc:78
+#: src/CursesView/ActionPanel.cc:196
 msgid "Waiting for server..."
 msgstr "Esperant el servidor..."
 
-#: src/ConsoleView/ConsoleView.cc:83 src/CursesView/ActionPanel.cc:201
+#: src/ConsoleView/ConsoleView.cc:83
+#: src/CursesView/ActionPanel.cc:201
 msgid "Waiting for client/s..."
 msgstr "Esperant el/s client/s..."
 
@@ -53,20 +56,20 @@ msgstr "S'ha creat una nova partició:"
 msgid "Partition formated:"
 msgstr "S'ha formatat la partició:"
 
-#. TO TRANSLATORS: looks like Written the fs flags of /dev/sdb1
+#. TO TRANSLATORS: looks like FS flags written: /dev/sdb1
 #: src/ConsoleView/ConsoleView.cc:126
-msgid "Written the fs flags of"
-msgstr "S'han escrit els senyaladors de"
+msgid "FS flags written:"
+msgstr "S'han escrit els senyaladors:"
 
-#. TO TRANSLATORS: looks like Written the fs label of /dev/sdb1
+#. TO TRANSLATORS: looks like FS label written: /dev/sdb1
 #: src/ConsoleView/ConsoleView.cc:132
-msgid "Written the fs label of"
-msgstr "S'ha escrit l'etiqueta de disc de"
+msgid "FS label written:"
+msgstr "S'ha escrit l'etiqueta:"
 
-#. TO TRANSLATORS: looks like Written the fs uuid of /dev/sdb1
+#. TO TRANSLATORS: looks like FS UUID written: /dev/sdb1
 #: src/ConsoleView/ConsoleView.cc:138
-msgid "Written the fs uuid of"
-msgstr "S'ha escrit l'UUID de"
+msgid "FS UUID written:"
+msgstr "S'ha escrit l'UUID:"
 
 #. TO TRANSLATORS: looks like Data read from /dev/sdb1
 #: src/ConsoleView/ConsoleView.cc:144
@@ -84,7 +87,8 @@ msgid "Grub installed on"
 msgstr "S'ha instal·lat el GRUB a"
 
 #. TO TRANSLATORS: looks like	New connection from 192.168.1.10
-#: src/ConsoleView/ConsoleView.cc:173 src/CursesView/ProgressScreen.cc:317
+#: src/ConsoleView/ConsoleView.cc:173
+#: src/CursesView/ProgressScreen.cc:317
 msgid "New connection from"
 msgstr "Nova connexió des de"
 
@@ -270,25 +274,35 @@ msgid "Close doclone"
 msgstr "Tanca el doclone"
 
 #. Refresh the text at the top bar
-#: src/CursesView/CursesView.cc:90 src/CursesView/InsertIpForm.cc:28
-#: src/CursesView/InsertNumOfClientsForm.cc:30 src/CursesView/LanMenu.cc:37
-#: src/CursesView/LanRoleMenu.cc:37 src/CursesView/LocalMenu.cc:37
-#: src/CursesView/ScopeMenu.cc:37 src/CursesView/SelectDeviceForm.cc:40
+#: src/CursesView/CursesView.cc:90
+#: src/CursesView/InsertIpForm.cc:28
+#: src/CursesView/InsertNumOfClientsForm.cc:30
+#: src/CursesView/LanMenu.cc:37
+#: src/CursesView/LanRoleMenu.cc:37
+#: src/CursesView/LocalMenu.cc:37
+#: src/CursesView/ScopeMenu.cc:37
+#: src/CursesView/SelectDeviceForm.cc:40
 #: src/CursesView/TargetMenu.cc:37
 msgid "Select the option and press [Enter] or push <Continue>."
 msgstr "Seleccioneu una opció i premeu [INTRO] o piqueu <Continua>."
 
-#: src/CursesView/CursesView.cc:92 src/CursesView/InsertFileForm.cc:47
+#: src/CursesView/CursesView.cc:92
+#: src/CursesView/InsertFileForm.cc:47
 #: src/CursesView/InsertIpForm.cc:30
-#: src/CursesView/InsertNumOfClientsForm.cc:32 src/CursesView/LanMenu.cc:39
-#: src/CursesView/LanRoleMenu.cc:39 src/CursesView/LocalMenu.cc:39
-#: src/CursesView/ScopeMenu.cc:39 src/CursesView/SelectDeviceForm.cc:42
-#: src/CursesView/SelectFileForm.cc:48 src/CursesView/TargetMenu.cc:39
+#: src/CursesView/InsertNumOfClientsForm.cc:32
+#: src/CursesView/LanMenu.cc:39
+#: src/CursesView/LanRoleMenu.cc:39
+#: src/CursesView/LocalMenu.cc:39
+#: src/CursesView/ScopeMenu.cc:39
+#: src/CursesView/SelectDeviceForm.cc:42
+#: src/CursesView/SelectFileForm.cc:48
+#: src/CursesView/TargetMenu.cc:39
 msgid "Press [Tab] to move."
 msgstr "Premeu [Tab] per moure-vos."
 
 #. Refresh the text at the top bar
-#: src/CursesView/InsertFileForm.cc:45 src/CursesView/SelectFileForm.cc:46
+#: src/CursesView/InsertFileForm.cc:45
+#: src/CursesView/SelectFileForm.cc:46
 msgid "Select the directory and type the file name."
 msgstr "Seleccioneu el directori i escriviu el nom del fitxer."
 
@@ -314,7 +328,8 @@ msgid "Sorry, you do not have permission to access this directory"
 msgstr "No teniu autorització per accedir a aquest directori"
 
 #. TO TRANSLATORS: looks like	Enter into /home
-#: src/CursesView/InsertFileForm.cc:233 src/CursesView/SelectFileForm.cc:232
+#: src/CursesView/InsertFileForm.cc:233
+#: src/CursesView/SelectFileForm.cc:232
 msgid "Enter into"
 msgstr "Entreu en"
 
@@ -383,11 +398,13 @@ msgstr "Rep les dades des del servidor"
 msgid "Choose what you want to do:"
 msgstr "Trieu què voleu fer:"
 
-#: src/CursesView/LocalMenu.cc:42 src/CursesView/SummaryScreen.cc:50
+#: src/CursesView/LocalMenu.cc:42
+#: src/CursesView/SummaryScreen.cc:50
 msgid "Create image"
 msgstr "Crear una imatge"
 
-#: src/CursesView/LocalMenu.cc:43 src/CursesView/SummaryScreen.cc:61
+#: src/CursesView/LocalMenu.cc:43
+#: src/CursesView/SummaryScreen.cc:61
 msgid "Restore image"
 msgstr "Restaurar una imatge"
 
@@ -525,3 +542,12 @@ msgstr "L'origen o la destinació de les dades és un dispositiu"
 #: src/CursesView/TargetMenu.cc:48
 msgid "The data origin/destination is an image file"
 msgstr "L'origen o la destinació de les dades és un fitxer"
+
+#~ msgid "Written the fs flags of"
+#~ msgstr "S'han escrit els senyaladors de"
+
+#~ msgid "Written the fs label of"
+#~ msgstr "S'ha escrit l'etiqueta de disc de"
+
+#~ msgid "Written the fs uuid of"
+#~ msgstr "S'ha escrit l'UUID de"
