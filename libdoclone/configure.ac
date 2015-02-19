@@ -1,5 +1,5 @@
 dnl doClone - a library to creating or restoring images of GNU/Linux systems.
-dnl Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+dnl Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
 dnl
 dnl See the file COPYING for copying conditions.
 
@@ -34,6 +34,7 @@ PKG_CHECK_MODULES([E2FS], [ext2fs >= 1.41.3])
 PKG_CHECK_MODULES([UUID], [uuid >= 1.41.3])
 PKG_CHECK_MODULES([SELINUX], [libselinux >= 2.0.65], [HAVE_SELINUX=1], [HAVE_SELINUX=0])
 PKG_CHECK_MODULES([BLKID], [blkid >= 1.41.3])
+PKG_CHECK_MODULES([XERCESC], [xerces-c >= 3.1.1])
 PKG_CHECK_MODULES([LOG4CPP], [log4cpp >= 1.0])
 
 AM_CONDITIONAL([USE_SELINUX], [test "$HAVE_SELINUX" -eq 1])
@@ -54,8 +55,9 @@ AC_SUBST(logdir)
 AC_CONFIG_FILES([
 	Makefile \
 	src/Makefile  \
-	src/fs/Makefile \
 	src/dl/Makefile \
+	src/fs/Makefile \
+	src/xml/Makefile \
 	po/Makefile.in \
 	examples/Makefile \
 	examples/README \

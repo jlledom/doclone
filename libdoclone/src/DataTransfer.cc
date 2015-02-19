@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013-2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -167,7 +167,7 @@ uint64_t DataTransfer::transferFrom(const void *buff, uint64_t count) throw(Exce
  * If this->_fdd is not null, sends a copy of data through it (for link mode).
  *
  * \param fd
- * 		Descriptor of the destiny
+ * 		Descriptor of the destination
  * \return Number of bytes sent
  */
 uint64_t DataTransfer::transferAllTo(int fd) throw(Exception) {
@@ -207,7 +207,7 @@ uint64_t DataTransfer::transferAllTo(int fd) throw(Exception) {
  * If this->_fdd is not null, sends a copy of data through it (for link mode).
  *
  * \param fd
- * 		Descriptor of the destiny
+ * 		Descriptor of the destination
  * \param count
  * 		Number of bytes that will be sent
  * \return Number of bytes sent
@@ -270,12 +270,12 @@ uint64_t DataTransfer::transferTo(int fd, uint64_t count) throw(Exception) {
 }
 
 /**
- * \brief Transfers [count] bytes of data from this->_fdo to the given pointer.
+ * \brief Transfers [count] bytes of data from this->_fdo to [buff].
  *
  * If this->_fdd is not null, sends a copy of data over it (for link mode).
  *
- * \param fd
- * 		Descriptor of the destiny
+ * \param buff
+ * 		Destination data buffer
  * \param count
  * 		Number of bytes that will be sent
  * \return Number of bytes sent

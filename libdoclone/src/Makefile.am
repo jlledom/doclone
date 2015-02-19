@@ -1,9 +1,9 @@
 # doClone - a library and front end for creating or restoring images of GNU/Linux systems.
-# Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+# Copyright (C) 2013-2015 Joan Lledó <joanlluislledo@gmail.com>
 #
 # See the file COPYING for copying conditions.
 
-SUBDIRS = fs dl .
+SUBDIRS = dl fs xml .
 
 noinst_LTLIBRARIES= \
 	libdcexception.la \
@@ -197,6 +197,7 @@ libdoclone_la_CPPFLAGS = \
 libdoclone_la_LIBADD = \
 	fs/libdcfilesystem.la \
 	dl/libdcdisklabel.la \
+	xml/libdcxml.la \
 	$(PARTED_LIBS) \
 	$(GLIBMM_LIBS) \
 	$(LOG4CPP_LIBS) \

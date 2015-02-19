@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -352,7 +352,7 @@ void Link::linkClient() throw(Exception) {
 			throw ex;
 		}
 
-		// Set the destiny descriptor
+		// Set the destination descriptor
 		trns->setFdd(fdd, inet_ntoa (host_receiver.sin_addr));
 	}
 	
