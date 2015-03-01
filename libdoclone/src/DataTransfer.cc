@@ -30,6 +30,7 @@
 #include <doclone/exception/ReceiveDataException.h>
 #include <doclone/exception/SendDataException.h>
 #include <doclone/exception/BrokenPipeException.h>
+#include <doclone/exception/InitializationException.h>
 
 namespace Doclone {
 
@@ -37,15 +38,14 @@ namespace Doclone {
  * \brief Initializes the attributes
  */
 DataTransfer::DataTransfer()
-	:  getNbytes(0), putNbytes(0), _fdo(0), _fdd(), _totalSize(0),
-	   _transferredBytes(0) {
+	:  getNbytes(0), putNbytes(0), _totalSize(0), _transferredBytes(0) {
 }
 
 /**
  * \brief Clear this->_fdd map
  */
 DataTransfer::~DataTransfer() {
-	this->_fdd.clear();
+	//this->_fdd.clear();
 }
 
 /**
@@ -65,24 +65,63 @@ DataTransfer* DataTransfer::getInstance() {
 	return &instance;
 }
 
-/**
- * \brief Transfers all the data from the descriptor passed as parameter to
- * this->_fdd
- *
- * \param fd
- * 		Origin file Descriptor
- *
- * \return Number of bytes sent
- */
-uint64_t DataTransfer::transferAllFrom(int fd) throw(Exception) {
+uint64_t DataTransfer::archiveToBuf(struct archive *arIn, std::string &target) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::transferAllFrom(fd=>%d) start", fd);
+	log->loopDebug("DataTransfer::archiveToBuf(arIn=>0x%x, buff=>%s) start", arIn, target.c_str());
 
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = Doclone::BUFFER_SIZE;
+	target = "";
+
+	while ((nbytes = archive_read_data(arIn, buf, Doclone::BUFFER_SIZE)) > 0) {
+		target.append(buf);
+
+		this->_transferredBytes += nbytes;
+
+		// Every certain amount of Mbytes, notify the views
+		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
+					this->_transferredBytes);
+		}
+	}
+
+	// If the transfer stopped due to an error
+	if(nbytes < 0) {
+		ReadDataException ex;
+		throw ex;
+	}
+
+	log->loopDebug("DataTransfer::archiveToBuf(_transferredBytes=>%d) end", this->_transferredBytes);
+	return this->_transferredBytes;
+}
+
+uint64_t DataTransfer::bufToArchive(const std::string &source, struct archive *arOut) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::bufToArchive(source=>%s, arOut=>0x%x) start", source.c_str(), arOut);
+
+	archive_write_data(arOut, source.c_str(), source.length());
+
+	this->_transferredBytes += source.length();
+
+	// Every certain amount of Mbytes, notify the views
+	if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+		this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
+				this->_transferredBytes);
+	}
+
+	log->loopDebug("DataTransfer::bufToArchive(_transferredBytes=>%d) end", this->_transferredBytes);
+	return this->_transferredBytes;
+}
+
+uint64_t DataTransfer::fdToArchive(int fd, struct archive *arOut) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::transferFile(fd=>%d, arOut=>0x%x) start", fd, arOut);
+
+	char buf[Doclone::BUFFER_SIZE];
+	unsigned int nbytes = 0;
 
 	while ((nbytes = (*this->getNbytes) (fd, buf, Doclone::BUFFER_SIZE)) > 0) {
-		(*this->putNbytes) ((*this->_fdd.begin()).first, buf, nbytes);
+		archive_write_data(arOut, buf, nbytes);
 
 		this->_transferredBytes += nbytes;
 
@@ -93,100 +132,74 @@ uint64_t DataTransfer::transferAllFrom(int fd) throw(Exception) {
 		}
 	}
 
-	log->loopDebug("DataTransfer::transferAllFrom(_transferredBytes=>%d) end", this->_transferredBytes);
+	log->loopDebug("DataTransfer::fdToArchive(_transferredBytes=>%d) end", this->_transferredBytes);
 	return this->_transferredBytes;
 }
 
 /**
- * \brief Transfers [count] bytes of data from the descriptor passed as
- * paramater to this->_fdd
+ * \brief Transfers all the data from fdin to fdout.
  *
- * \param fd
- * 		Origin file descriptor
- * \param count
- * 		Number of bytes to send
+ * \param fdin
+ * 		Origin descriptor
+ * \param fdout
+ * 		Destinarion descriptor
+ *
  * \return Number of bytes sent
  */
-uint64_t DataTransfer::transferFrom(int fd, uint64_t count) throw(Exception) {
+uint64_t DataTransfer::copyData(struct archive *arIn, struct archive *arOut) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::transferFrom(fd=>%d, count=>%d) start", fd, count);
+	log->loopDebug("DataTransfer::copyData(arIn=>0x%x, arOut=>0x%x) start", arIn, arOut);
 
-	char buf[Doclone::BUFFER_SIZE];
-	uint64_t nbytes = 0;
-	uint64_t written_bytes = 0;
+	int r;
+	const void *buff;
+	size_t size;
+	off_t offset;
 
-	while (written_bytes < count) {
-		nbytes = Doclone::BUFFER_SIZE;
-
-		if(written_bytes+nbytes>count) {
-			nbytes = count-written_bytes;
+	while ((r = archive_read_data_block(arIn, &buff, &size, &offset)) != ARCHIVE_EOF) {
+		if (r < ARCHIVE_OK) {
+			ReadDataException ex;
+			throw ex;
 		}
 
-		nbytes = (*this->getNbytes) (fd, buf, nbytes);
+		r = archive_write_data_block(arOut, buff, size, offset);
+		if (r < ARCHIVE_OK) {
+			WriteDataException ex;
+			throw ex;
+		}
 
-		(*this->putNbytes) ((*this->_fdd.begin()).first, buf, nbytes);
+		this->_transferredBytes += size;
 
-		written_bytes += nbytes;
+		// Every certain amount of Mbytes, notify the views
+		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
+					this->_transferredBytes);
+		}
 	}
 
-	this->_transferredBytes += written_bytes;
-
-	// Every certain amount of Mbytes, notify the views
-	this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
-			this->_transferredBytes);
-
-	log->loopDebug("DataTransfer::transferFrom(written_bytes=>%d) end", written_bytes);
-	return written_bytes;
+	log->loopDebug("DataTransfer::copyData(_transferredBytes=>%d) end", this->_transferredBytes);
+	return this->_transferredBytes;
 }
 
 /**
- * \brief Transfers [count] bytes of data from the pointer passed as parameter
- * to this->_fdd
+ * \brief Transfers all the data from fdin to fdout.
  *
- * \param buff
- * 		Origin pointer
+ * \param fdin
+ * 		Origin descriptor
+ * \param fdout
+ * 		Destinarion descriptor
  *
  * \return Number of bytes sent
  */
-uint64_t DataTransfer::transferFrom(const void *buff, uint64_t count) throw(Exception) {
+uint64_t DataTransfer::copyData(int fdin, int fdout) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::transferAllFrom(buff=>0x%x, count=>%d) start", buff, count);
-
-	uint64_t written_bytes = 0;
-
-	written_bytes = (*this->putNbytes) ((*this->_fdd.begin()).first, buff, count);
-
-	log->loopDebug("DataTransfer::transferAllFrom(_transferredBytes=>%d) end", written_bytes);
-	return written_bytes;
-}
-
-/**
- * \brief Transfers all the data from this->_fdo to the file descriptor passed
- * as parameter.
- *
- * If this->_fdd is not null, sends a copy of data through it (for link mode).
- *
- * \param fd
- * 		Descriptor of the destination
- * \return Number of bytes sent
- */
-uint64_t DataTransfer::transferAllTo(int fd) throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::transferAllTo(fd=>%d) start", fd);
+	log->loopDebug("DataTransfer::copyData(fdin=>%d, fdout=>%d) start", fdin, fdout);
 
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = Doclone::BUFFER_SIZE;
 
-	while ((nbytes = (*this->getNbytes) (this->_fdo, buf, Doclone::BUFFER_SIZE)) > 0) {
-		// If we are in link mode and there are links behind us
-		if (!this->_fdd.empty()) {
-			if ((send ((*this->_fdd.begin()).first, buf, nbytes, 0)) < 0) {
-				SendDataException ex((*this->_fdd.begin()).second);
-				throw ex;
-			}
-		}
+	while ((nbytes = (*this->getNbytes) (fdin, buf, Doclone::BUFFER_SIZE)) > 0) {
+		(*this->putNbytes) (fdout, buf, nbytes);
 
-		nbytes = (*this->putNbytes) (fd, buf, nbytes);
 		this->_transferredBytes += nbytes;
 
 		// Every certain amount of Mbytes, notify the views
@@ -196,110 +209,24 @@ uint64_t DataTransfer::transferAllTo(int fd) throw(Exception) {
 		}
 	}
 
-	log->loopDebug("DataTransfer::transferAllTo(_transferredBytes=>%d) end", this->_transferredBytes);
+	log->loopDebug("DataTransfer::copyData(_transferredBytes=>%d) end", this->_transferredBytes);
 	return this->_transferredBytes;
 }
 
-/**
- * \brief Transfers [count] bytes of data from this->_fdo to the file descriptor
- * passed as parameter.
- *
- * If this->_fdd is not null, sends a copy of data through it (for link mode).
- *
- * \param fd
- * 		Descriptor of the destination
- * \param count
- * 		Number of bytes that will be sent
- * \return Number of bytes sent
- */
-uint64_t DataTransfer::transferTo(int fd, uint64_t count) throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::transferTo(fd=>%d, count=>%d) start", fd, count);
-
-	char buf[Doclone::BUFFER_SIZE];
-	uint64_t rBytes = 0;
-	uint64_t written_bytes = 0;
-
-	try{
-		while (written_bytes < count) {
-			uint64_t nbytes = Doclone::BUFFER_SIZE;
-
-			if(written_bytes+nbytes>count) {
-				nbytes = count-written_bytes;
-			}
-			rBytes = (*this->getNbytes) (this->_fdo, buf, nbytes);
-
-			// If we are in link mode and there are links behind us
-			if (!this->_fdd.empty()) {
-				if ((send ((*this->_fdd.begin()).first, buf, rBytes, 0)) < 0) {
-					SendDataException ex((*this->_fdd.begin()).second);
-					throw ex;
-				}
-			}
-
-			uint64_t wBytes = (*this->putNbytes) (fd, buf, rBytes);
-
-			if(wBytes < rBytes) {
-				// No space left in disk.
-				WriteDataException ex;
-				throw ex;
-			}
-
-			written_bytes += wBytes;
-		}
-
-		this->_transferredBytes += written_bytes;
-	} catch (WarningException &ex) {
-		/*
-		 * The data has been read but not written, we must set _transferredBytes
-		 * properly to continue with the job.
-		 *
-		 * this->_transferredBytes is used to calculate the offset at where the
-		 * error has happen. It's very important in order to pass this file by.
-		 */
-		this->_transferredBytes += written_bytes + rBytes;
-		throw;
-	}
-
-	// Every certain amount of Mbytes, notify the views
-	this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
-				this->_transferredBytes);
-
-	log->loopDebug("DataTransfer::transferTo(written_bytes=>%d) end", written_bytes);
-	return written_bytes;
+void DataTransfer::initLocalRead() {
+	this->getNbytes = DataTransfer::readBytes;
 }
 
-/**
- * \brief Transfers [count] bytes of data from this->_fdo to [buff].
- *
- * If this->_fdd is not null, sends a copy of data over it (for link mode).
- *
- * \param buff
- * 		Destination data buffer
- * \param count
- * 		Number of bytes that will be sent
- * \return Number of bytes sent
- */
-uint64_t DataTransfer::transferTo(void *buff, uint64_t count) throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::transferTo(buff=>0x%x, count=>%d) start", buff, count);
+void DataTransfer::initSocketRead() {
+	this->getNbytes = DataTransfer::recvData;
+}
 
-	uint64_t read_bytes = 0;
+void DataTransfer::initLocalWrite() {
+	this->putNbytes = DataTransfer::writeBytes;
+}
 
-	read_bytes = (*this->getNbytes) (this->_fdo, buff, count);
-
-	// If we are in link mode and there are links behind us
-	if (!this->_fdd.empty()) {
-		if ((send ((*this->_fdd.begin()).first, buff, read_bytes, 0)) < 0) {
-			SendDataException ex((*this->_fdd.begin()).second);
-			throw ex;
-		}
-	}
-
-	this->_transferredBytes += read_bytes;
-
-	log->loopDebug("DataTransfer::transferTo(read_bytes=>%d) end", read_bytes);
-	return read_bytes;
+void DataTransfer::initSocketWrite() {
+	this->putNbytes = DataTransfer::sendData;
 }
 
 /**
@@ -395,152 +322,12 @@ ssize_t DataTransfer::sendData (int s, const void *buf, size_t len) throw (Excep
 	ssize_t nbytes = send(s, buf, len, 0);
 
 	if(nbytes<0) {
-		DataTransfer *trns = DataTransfer::getInstance();
-
-		std::map<int,std::string> fdd(trns->getFddList());
-		SendDataException ex(fdd[s]);
+		//FIXME: Pass the human-readable IP address
+		SendDataException ex("TODO");
 		throw ex;
 	}
 
 	return nbytes;
-}
-
-/**
- * \brief Writes data over network, from one origin to multiple destinations.
- *
- * Transfers [len] bytes of data from [buf] to all descriptors in
- * DataTransfer::getFddList(). The parameter [s] is not used, it's here because
- * this function will be called using the pointer to function 'putNbytes'
- * that accepts that parameter. So in this function, this parameter is ignored.
- *
- * \param s
- * 		Not used, preserved by compatibility
- * \param buf
- * 		Buffer of data
- * \param len
- * 		Number of bytes to write
- *
- * \return Number of bytes written
- */
-ssize_t DataTransfer::sendMultiple(int s, const void *buf, size_t len) throw (Exception) {
-	ssize_t nbytes = 0;
-	DataTransfer *trns = DataTransfer::getInstance();
-
-	std::map<int,std::string> fdds(trns->getFddList());
-	std::map<int,std::string>::iterator it;
-	for(it = fdds.begin(); it != fdds.end(); ++it) {
-		/*
-		 * MSG_NOSIGNAL is here to prevent the sending of SIGPIPE signal,
-		 * which would be captured, interrupting the program.
-		 */
-		nbytes = send((*it).first, buf, len, MSG_NOSIGNAL);
-
-		if(nbytes<0) {
-			// If the sending fails, just remove this descriptor from the list.
-			DataTransfer *trns = DataTransfer::getInstance();
-			trns->removeFdd((*it).first);
-
-			SendDataException ex((*it).second);
-			ex.logMsg();
-
-			// If all receivers fail
-			if(trns->getFddList().size() == 0) {
-				BrokenPipeException ex;
-				ex.logMsg();
-				throw ex;
-			}
-		}
-	}
-
-	return nbytes;
-}
-
-/**
- * \brief Sets getNbytes to execute readBytes
- */
-void DataTransfer::initFileRead() {
-	Logger *log = Logger::getInstance();
-	log->debug("DataTransfer::initFileRead() start");
-
-	this->getNbytes = DataTransfer::readBytes;
-
-	log->debug("DataTransfer::initFileRead() end");
-}
-
-/**
- * \brief Sets getNbytes to execute recvData
- */
-void DataTransfer::initSocketRead() {
-	Logger *log = Logger::getInstance();
-	log->debug("DataTransfer::initSocketRead() start");
-
-	this->getNbytes = DataTransfer::recvData;
-
-	log->debug("DataTransfer::initSocketRead() end");
-}
-
-/**
- * \brief Sets putNbytes to execute writeBytes
- */
-void DataTransfer::initFileWrite() {
-	Logger *log = Logger::getInstance();
-	log->debug("DataTransfer::initFileWrite() start");
-
-	this->putNbytes = DataTransfer::writeBytes;
-
-	log->debug("DataTransfer::initFileWrite() end");
-}
-
-/**
- * \brief Sets getNbytes to execute sendData
- */
-void DataTransfer::initSocketWrite() {
-	Logger *log = Logger::getInstance();
-	log->debug("DataTransfer::initSocketWrite() start");
-
-	this->putNbytes = DataTransfer::sendData;
-
-	log->debug("DataTransfer::initSocketWrite() end");
-}
-
-/**
- * \brief Sets getNbytes to execute sendMultiple
- */
-void DataTransfer::initSocketMultiple() {
-	Logger *log = Logger::getInstance();
-	log->debug("DataTransfer::initSocketMultiple() start");
-
-	this->putNbytes = DataTransfer::sendMultiple;
-
-	log->debug("DataTransfer::initSocketMultiple() end");
-}
-
-void DataTransfer::setFdo(int fdo) {
-	this->_fdo = fdo;
-}
-
-int DataTransfer::getFdo() const {
-	return this->_fdo;
-}
-
-/**
- * \brief Clears the list of receivers and inserts the passed descriptor
- *
- * \param fdd
- * 		The descriptor that will be the only one in the list of receivers
- */
-void DataTransfer::setFdd(int fdd, std::string host) {
-	this->_fdd.clear();
-	this->_fdd.insert(std::pair<int,std::string>(fdd,host));
-}
-
-/**
- * \brief Gets the first descriptor in the list of receivers
- *
- * \return A descriptor
- */
-int DataTransfer::getFdd() const {
-	return (*this->_fdd.begin()).first;
 }
 
 /**
@@ -558,38 +345,6 @@ uint64_t DataTransfer::getTotalSize() const {
 
 uint64_t DataTransfer::getTransferredBytes() const {
 	return this->_transferredBytes;
-}
-
-/**
- * \brief Adds a descriptor at the end of the list of receivers
- *
- * \param fdd
- * 		A new receiver
- */
-void DataTransfer::pushFdd(int fdd, std::string host) {
-	this->_fdd.insert(std::pair<int,std::string>(fdd,host));
-}
-
-const std::map<int,std::string> &DataTransfer::getFddList() const {
-	return this->_fdd;
-}
-
-/**
- * \brief Removes a receivers from the list
- *
- * 	If one receiver fails, calling this function will remove it from the
- * 	list, so the server can continue sending to the other receivers.
- *
- * \param fdd
- * 		The receiver to be removed
- */
-void DataTransfer::removeFdd(int fdd) {
-	Logger *log = Logger::getInstance();
-	log->debug("DataTransfer::initSocketWrite(%d) start", fdd);
-
-	this->_fdd.erase(fdd);
-
-	log->debug("DataTransfer::initSocketWrite() start");
 }
 
 }

@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATEEIMAGEEXCEPTION_H_
-#define CREATEEIMAGEEXCEPTION_H_
+#ifndef CREATEIMAGEEXCEPTION_H_
+#define CREATEIMAGEEXCEPTION_H_
 
 #include <doclone/exception/ErrorException.h>
 
@@ -42,4 +42,4 @@ public:
 
 }
 
-#endif /* CREATEEIMAGEEXCEPTION_H_ */
+#endif /* CREATEIMAGEEXCEPTION_H_ */

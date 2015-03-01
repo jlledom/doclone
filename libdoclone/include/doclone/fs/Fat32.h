@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include <doclone/DosFS.h>
+#include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
@@ -45,7 +45,7 @@ namespace Doclone {
  * Writes uuid and label
  * \date August, 2011
  */
-class Fat32 : public DosFS {
+class Fat32 : public Filesystem {
 public:
 	Fat32();
 	

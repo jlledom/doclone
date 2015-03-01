@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include <doclone/UnixFS.h>
+#include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
@@ -44,7 +44,7 @@ namespace Doclone {
  * Writes UUID and label
  * \date August, 2011
  */
-class Reiserfs : public UnixFS {
+class Reiserfs : public Filesystem {
 public:
 	Reiserfs();
 	

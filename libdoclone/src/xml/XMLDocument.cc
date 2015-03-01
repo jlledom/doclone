@@ -35,6 +35,7 @@
 #include <xercesc/util/OutOfMemoryException.hpp>
 
 #include <doclone/exception/CreateImageException.h>
+#include <doclone/exception/InitializationException.h>
 
 namespace Doclone {
 
@@ -47,12 +48,12 @@ XERCES_CPP_NAMESPACE_USE
  */
 XMLDocument::XMLDocument() : _doc(), _parser(),_listXmlchData(), _listXmlByteData() {
 	// Initialize the XML4C2 system.
-    try {
-        XMLPlatformUtils::Initialize();
-    } catch(const XMLException& toCatch) {
-		CreateImageException ex;
+	try {
+    	XMLPlatformUtils::Initialize();
+	} catch(const XMLException& toCatch) {
+		InitializationException ex;
 		throw ex;
-    }
+	}
 }
 
 /**

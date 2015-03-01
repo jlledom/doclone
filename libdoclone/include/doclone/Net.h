@@ -137,7 +137,7 @@ public:
 	virtual ~Net() {}
 
 protected:
-	void closeConnection() const throw(Exception);
+	virtual void closeConnection() const throw(Exception) {}
 
 	/// Origin IP (Human readable)
 	std::string _srcIP;

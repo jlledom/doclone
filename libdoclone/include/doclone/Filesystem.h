@@ -21,6 +21,9 @@
 
 #include <string>
 
+#include <archive.h>
+#include <archive_entry.h>
+
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
@@ -149,11 +152,14 @@ public:
 	std::string readLabel(const std::string &dev) const throw(Exception);
 	std::string readUUID(const std::string &dev) const throw(Exception);
 
+	void readDir(struct archive *in, struct archive *out,
+			struct archive_entry_linkresolver *lResolv,
+			const std::string &path, const std::string &imgRootDir) throw(Exception);
+	void writeDir(struct archive *in, struct archive *out,
+			const std::string &path, const std::string &imgRootDir) throw(Exception);
+
 	virtual void writeLabel(const std::string &dev) const throw(Exception) {}
 	virtual void writeUUID(const std::string &dev) const throw(Exception) {}
-
-	virtual void readDir(const std::string &path) throw(Exception) {}
-	virtual void writeDir(const std::string &path) throw(Exception) {}
 
 protected:
 	/// If the mount is native or external

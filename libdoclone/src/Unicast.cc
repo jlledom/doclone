@@ -43,6 +43,7 @@
 #include <doclone/exception/CreateImageException.h>
 #include <doclone/exception/RestoreImageException.h>
 #include <doclone/exception/CancelException.h>
+#include <doclone/exception/CloseConnectionException.h>
 
 namespace Doclone {
 
@@ -59,7 +60,6 @@ void Unicast::tcpServer() throw(Exception) {
 	int sock_tcp;
 	sockaddr_in host_server;
 	socklen_t size = sizeof (sockaddr);
-	DataTransfer *trns = DataTransfer::getInstance();
 
 	host_server.sin_family = AF_INET;
 	host_server.sin_port = htons (Doclone::PORT_DATA);
@@ -105,7 +105,8 @@ void Unicast::tcpServer() throw(Exception) {
 				dcCommand response = Doclone::C_SERVER_OK;
 				DataTransfer::sendData(fd, &response, sizeof(response));
 
-				trns->pushFdd(fd, inet_ntoa (host_server.sin_addr));
+				this->_fd = fd;
+				this->_srcIP = inet_ntoa (host_server.sin_addr);
 
 				// Notify the views
 				Clone *dcl = Clone::getInstance();
@@ -128,11 +129,9 @@ void Unicast::tcpServer() throw(Exception) {
  *
  * This function communicates with the function "tcpServer" of the server.
  */
-void Unicast::tcpClient() const throw(Exception) {
+void Unicast::tcpClient() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Unicast::tcpClient() start");
-	
-	DataTransfer *trns = DataTransfer::getInstance();
 
 	int fd;
 	if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -169,7 +168,7 @@ void Unicast::tcpClient() const throw(Exception) {
 		throw ex;
 	}
 
-	trns->setFdo(fd);
+	this->_fd = fd;
 
 	log->debug("Unicast::tcpClient() end");
 }
@@ -213,9 +212,10 @@ void Unicast::sendFromImage(const std::string &image) throw(Exception) {
 	 * big-endian.
 	 */
 	uint64_t tmpTotalSize = htobe64(totalSize);
-	trns->transferFrom(&tmpTotalSize, static_cast<size_t>(sizeof(uint64_t)));
+	DataTransfer::sendData(this->_fd, &tmpTotalSize,
+			static_cast<size_t>(sizeof(uint64_t)));
 
-	trns->transferAllFrom(fd);
+	trns->copyData(fd, this->_fd);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");
 
@@ -282,8 +282,9 @@ void Unicast::sendFromDevice(const std::string &device) throw(Exception) {
 	}
 
 	image.initCreateOperations();
-
 	image.createImageHeader(dcDisk);
+	image.initDiskReadArchive();
+	image.initFdWriteArchive(this->_fd);
 
 	/*
 	 * Before sending the data, it sends its size. So the client/s can
@@ -291,14 +292,16 @@ void Unicast::sendFromDevice(const std::string &device) throw(Exception) {
 	 * If the system is little-endian, it's necessary to convert totalSize to
 	 * big-endian.
 	 */
-	DataTransfer *trns = DataTransfer::getInstance();
 	uint64_t tmpTotalSize = htobe64(image.getHeader().image_size);
-	(*trns->putNbytes) (trns->getFdd(), &tmpTotalSize,
+	DataTransfer::sendData(this->_fd, &tmpTotalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 
 	image.writeImageHeader();
 
 	image.readPartitionsData();
+
+	image.freeWriteArchive();
+	image.freeReadArchive();
 
 	this->closeConnection();
 
@@ -345,11 +348,9 @@ void Unicast::send() throw(Exception) {
  * \param image
  * 		The path for image.
  */
-void Unicast::receiveToImage(const std::string &image) const throw(Exception) {
+void Unicast::receiveToImage(const std::string &image) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Unicast::receiveToImage(image=>%s) start", image.c_str());
-
-	DataTransfer *trns = DataTransfer::getInstance();
 
 	Operation *waitOp = new Operation(
 			Doclone::OP_WAIT_SERVER, "");
@@ -373,16 +374,18 @@ void Unicast::receiveToImage(const std::string &image) const throw(Exception) {
 	 * Get the size of the data, in order to calculate the completed percentage.
 	 */
 	uint64_t totalSize;
-	trns->transferTo(&totalSize, static_cast<size_t>(sizeof(uint64_t)));
+	DataTransfer::recvData(this->_fd, &totalSize,
+			static_cast<size_t>(sizeof(uint64_t)));
 
 	/*
 	 * The given totalSize is received in big-endian. If the system is
 	 * little-endian, it must be converted to little-endian.
 	 */
 	uint64_t tmpTotalSize = be64toh(totalSize);
+	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(tmpTotalSize);
 
-	trns->transferAllTo(fd);
+	trns->copyData(this->_fd, fd);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");
 
@@ -399,7 +402,7 @@ void Unicast::receiveToImage(const std::string &image) const throw(Exception) {
  * \param device
  * 		The path for device.
  */
-void Unicast::receiveToDevice(const std::string &device) const throw(Exception) {
+void Unicast::receiveToDevice(const std::string &device) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Unicast::receiveToDevice(device=>%s) start", device.c_str());
 
@@ -425,8 +428,7 @@ void Unicast::receiveToDevice(const std::string &device) const throw(Exception) 
 	 * Get the size of the data, in order to calculate the completed percentage.
 	 */
 	uint64_t totalSize;
-	DataTransfer *trns = DataTransfer::getInstance();
-	DataTransfer::recvData(trns->getFdo(), &totalSize,
+	DataTransfer::recvData(this->_fd, &totalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 
 	/*
@@ -434,13 +436,14 @@ void Unicast::receiveToDevice(const std::string &device) const throw(Exception) 
 	 * little-endian, it must be converted to little-endian.
 	 */
 	uint64_t tmpTotalSize = be64toh(totalSize);
+	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(tmpTotalSize);
 
 	Image image;
-
 	image.readImageHeader(device);
-
 	image.openImageHeader();
+	image.initFdReadArchive(this->_fd);
+	image.initDiskWriteArchive();
 
 	Disk *dcDisk = DlFactory::createDiskLabel(image.getLabelType(),
 			pedDev->getPath());
@@ -451,15 +454,16 @@ void Unicast::receiveToDevice(const std::string &device) const throw(Exception) 
 	}
 
 	image.initRestoreOperations(device);
-
 	image.writePartitionTable(device);
-
 	image.writePartitionsData();
 
 	if(image.getHeader().image_type==(Doclone::imageType)IMAGE_DISK) {
 		dcDisk->setPartitions(image.getPartitions());
 		dcDisk->restoreGrub();
 	}
+
+	image.freeWriteArchive();
+	image.freeReadArchive();
 
 	this->closeConnection();
 
@@ -500,6 +504,23 @@ void Unicast::receive() throw(Exception) {
 	}
 
 	log->debug("Unicast::receive() end");
+}
+
+/**
+ * \brief Closes the opened connections
+ */
+void Unicast::closeConnection() const throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Unicast::closeConnection() start");
+
+	if(this->_fd) {
+		if(close(this->_fd)<0) {
+			CloseConnectionException ex;
+			ex.logMsg();
+		}
+	}
+
+	log->debug("Unicast::closeConnection() end");
 }
 
 }

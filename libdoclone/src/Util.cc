@@ -911,7 +911,7 @@ void Util::spawn_command_line_sync(const std::string &command, int *exitValue, s
  */
 char *Util::safe_strncpy(char *dest, const char *src, size_t n) {
 	Logger *log = Logger::getInstance();
-		log->loopDebug("Util::safe_strncpy(dest=>%s, src=>%s, n=>%d) start", dest, src, n);
+	log->loopDebug("Util::safe_strncpy(dest=>%s, src=>%s, n=>%d) start", dest, src, n);
 
 	strncpy(dest, src, n);
 	if (n > 0) {

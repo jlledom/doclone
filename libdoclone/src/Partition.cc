@@ -83,7 +83,7 @@ Partition::Partition(Doclone::partInfo partition) throw(Exception)
 	this->_type=(Doclone::partType)partition.type;
 	
 	try {
-		this->_fs = FsFactory::createFilesystem(reinterpret_cast<char*>(partition.fsName));
+		this->_fs = FsFactory::createFilesystem(reinterpret_cast<char*>(partition.fs_name));
 	} catch (const Exception &ex) {
 		this->_fs = FsFactory::createFilesystem("nofs");
 	}
@@ -654,12 +654,19 @@ void Partition::createPartInfo() throw(Exception) {
 	this->_partition.used_part = *tmpUsedPart;
 
 	this->_partition.flags = this->_flags;
-	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.fsName),
+	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.fs_name),
 			this->_fs->getdocloneName().c_str(), 32);
 	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.label),
 			this->_label.c_str(), 28);
 	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.uuid),
 			this->_uuid.c_str(), 37);
+	//Set the root of this partition inside the image
+	std::string rootDir = "_part";
+	char partNum[2] = {};
+	sprintf(partNum,"%d",this->_partNum);
+	rootDir.append(partNum);
+	Util::safe_strncpy(reinterpret_cast<char *>(this->_partition.root_dir),
+			rootDir.c_str(), rootDir.length()+1);
 	
 	log->debug("Partition::createPartInfo() end");
 }
@@ -795,9 +802,10 @@ bool Partition::isWritable() const throw(Exception) {
 /**
  * \brief Reads the data of the partition
  */
-void Partition::read() throw(Exception) {
+void Partition::read(struct archive *in, struct archive *out,
+		struct archive_entry_linkresolver *lResolv) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Partition::read() start");
+	log->debug("Partition::read(in=>0x%x, out=>0x%x, lResolv=>0x%x) start", in, out, lResolv);
 	
 	if(!this->isWritable()) {
 		log->debug("Partition::read() end");
@@ -806,11 +814,12 @@ void Partition::read() throw(Exception) {
 
 	this->doMount();
 	try {
-		std::string rootDir = this->_fs->getMountPoint();
-		if(rootDir[rootDir.length()-1]!='/') {
-			rootDir.push_back('/');
+		std::string mountPoint = this->_fs->getMountPoint();
+		if(mountPoint[mountPoint.length()-1]!='/') {
+			mountPoint.push_back('/');
 		}
-		this->_fs->readDir(rootDir);
+		this->_fs->readDir(in, out, lResolv, mountPoint,
+				reinterpret_cast<const char *>(this->_partition.root_dir));
 	} catch (const CancelException &ex) {
 		this->doUmount();
 		throw;
@@ -830,9 +839,9 @@ void Partition::read() throw(Exception) {
 /**
  * \brief Writes the data of the partition
  */
-void Partition::write() throw(Exception) {
+void Partition::write(struct archive *in, struct archive *out) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Partition::write() start");
+	log->debug("Partition::write(in=>0x%x, out=>0x%x) start", in, out);
 	
 	if(!this->isWritable()) {
 		log->debug("Partition::write() end");
@@ -846,7 +855,8 @@ void Partition::write() throw(Exception) {
 		if(rootDir[rootDir.length()-1]!='/') {
 			rootDir.push_back('/');
 		}
-		this->_fs->writeDir(rootDir);
+		this->_fs->writeDir(in, out, rootDir,
+				reinterpret_cast<const char *>(this->_partition.root_dir));
 	} catch (const CancelException &ex) {
 		this->doUmount();
 		throw;

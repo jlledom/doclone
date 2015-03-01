@@ -32,7 +32,7 @@ namespace Doclone {
  * \class NoAccessToDeviceException
  * \brief Impossible to access to a device file.
  *
- * Has been impossible to access to a device file, probably a permissions error.
+ * It has been impossible to access to a device file, probably a permissions error.
  * \date August, 2011
  */
 class NoAccessToDeviceException : public ErrorException {

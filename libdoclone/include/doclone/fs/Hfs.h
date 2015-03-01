@@ -19,7 +19,7 @@
 #ifndef HFS_H_
 #define HFS_H_
 
-#include <doclone/UnixFS.h>
+#include <doclone/Filesystem.h>
 
 namespace Doclone {
 
@@ -42,7 +42,7 @@ namespace Doclone {
  * Only checks the support
  * \date August, 2011
  */
-class Hfs : public UnixFS {
+class Hfs : public Filesystem {
 public:
 	Hfs();
 

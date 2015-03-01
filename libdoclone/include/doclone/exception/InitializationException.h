@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,31 +16,30 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <doclone/Net.h>
+#ifndef INITIALIZATIONEXCEPTION_H_
+#define INITIALIZATIONEXCEPTION_H_
 
-#include <unistd.h>
-
-#include <doclone/Logger.h>
-#include <doclone/Clone.h>
+#include <doclone/exception/ErrorException.h>
 
 namespace Doclone {
 
 /**
- * \brief Sets the maximum number of nodes and links
+ * \addtogroup Exceptions
+ * @{
+ *
+ * \class InitializationException
+ * \brief Initialization of Doclone logic failed
+ * \date February, 2015
  */
-Net::Net(): _srcIP() {
-	Clone *dcl = Clone::getInstance();
-
-	unsigned int nodes = dcl->getNodesNumber();
-
-	if(nodes == 0) {
-		this->_linksNum = Doclone::LINKS_NUM;
-		this->_nodesNum = 1;
+class InitializationException : public ErrorException {
+public:
+	InitializationException() throw() {
+		this->_msg=D_("Initialization of Doclone logic failed");
 	}
-	else {
-		this->_linksNum = nodes;
-		this->_nodesNum = nodes;
-	}
+
+};
+/**@}*/
+
 }
 
-}
+#endif /* INITIALIZATIONEXCEPTION_H_ */

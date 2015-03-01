@@ -44,6 +44,7 @@
 #include <doclone/exception/NoBlockDeviceException.h>
 #include <doclone/exception/CreateImageException.h>
 #include <doclone/exception/RestoreImageException.h>
+#include <doclone/exception/CloseConnectionException.h>
 
 namespace Doclone {
 
@@ -250,25 +251,26 @@ void Link::linkServer() throw(Exception) {
 	
 	sockaddr_in host_receiver;
 	socklen_t size = sizeof (sockaddr);
-	DataTransfer *trns = DataTransfer::getInstance();
 
 	host_receiver.sin_family = AF_INET;
 	host_receiver.sin_port = htons (Doclone::PORT_DATA);
 	host_receiver.sin_addr.s_addr = this->netScan();
 
-	int fd;
-	if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
+	int fdd;
+	if ((fdd = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
 		ConnectionException ex;
 		throw ex;
 	}
 	sleep (1);
 
-	if ((connect (fd, reinterpret_cast<sockaddr*>(&host_receiver), size)) < 0) {
+	if ((connect (fdd, reinterpret_cast<sockaddr*>(&host_receiver), size)) < 0) {
 		ConnectionException ex;
 		throw ex;
 	}
 	
-	trns->setFdd(fd, inet_ntoa (host_receiver.sin_addr));
+	// Set the destination descriptor
+	this->_fdout = fdd;
+	this->_dstIP = inet_ntoa (host_receiver.sin_addr);
 
 	log->debug("Link::linkServer() end");
 }
@@ -281,13 +283,12 @@ void Link::linkClient() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::linkClient() start");
 	
-	int fdo;
+	int fdi;
 	int ip_next_link;
 	int sock_sender;
 	sockaddr_in host_sender;
 	sockaddr_in host_receiver;
 	socklen_t size = sizeof (sockaddr);
-	DataTransfer *trns = DataTransfer::getInstance();
 
 	ip_next_link = this->answer();
 
@@ -316,7 +317,7 @@ void Link::linkClient() throw(Exception) {
 		throw ex;
 	}
 	
-	if ((fdo=
+	if ((fdi=
 		 accept (sock_sender,
 				 reinterpret_cast<sockaddr*>(&host_sender), &size)) < 0) {
 		ConnectionException ex;
@@ -324,7 +325,7 @@ void Link::linkClient() throw(Exception) {
 	}
 
 	// Set the origin descriptor
-	trns->setFdo(fdo);
+	this->_fdin = fdi;
 	this->_srcIP = inet_ntoa (host_sender.sin_addr);
 
 	// Notify the views
@@ -352,8 +353,9 @@ void Link::linkClient() throw(Exception) {
 			throw ex;
 		}
 
-		// Set the destination descriptor
-		trns->setFdd(fdd, inet_ntoa (host_receiver.sin_addr));
+		// Set the destination descriptor and IP
+		this->_fdout = fdd;
+		this->_dstIP = inet_ntoa (host_receiver.sin_addr);
 	}
 	
 	
@@ -399,9 +401,10 @@ void Link::sendFromImage(const std::string &image) throw(Exception) {
 	 * big-endian.
 	 */
 	uint64_t tmpTotalSize = htobe64(totalSize);
-	trns->transferFrom(&tmpTotalSize, static_cast<size_t>(sizeof(uint64_t)));
+	DataTransfer::sendData(this->_fdout, &tmpTotalSize,
+			static_cast<size_t>(sizeof(uint64_t)));
 
-	trns->transferAllFrom(fd);
+	trns->copyData(fd, this->_fdout);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");
 
@@ -468,8 +471,9 @@ void Link::sendFromDevice(const std::string &device) throw(Exception) {
 	}
 
 	image.initCreateOperations();
-
 	image.createImageHeader(dcDisk);
+	image.initDiskReadArchive();
+	image.initFdWriteArchive(this->_fdout);
 
 	/*
 	 * Before sending the data, it sends its size. So the client/s can
@@ -477,13 +481,16 @@ void Link::sendFromDevice(const std::string &device) throw(Exception) {
 	 * If the system is little-endian, it's necessary to convert totalSize to
 	 * big-endian.
 	 */
-	DataTransfer *trns = DataTransfer::getInstance();
 	uint64_t tmpTotalSize = htobe64(image.getHeader().image_size);
-	trns->transferFrom(&tmpTotalSize, static_cast<size_t>(sizeof(uint64_t)));
+	DataTransfer::sendData(this->_fdout, &tmpTotalSize,
+			static_cast<size_t>(sizeof(uint64_t)));
 
 	image.writeImageHeader();
 
 	image.readPartitionsData();
+
+	image.freeWriteArchive();
+	image.freeReadArchive();
 
 	this->closeConnection();
 
@@ -555,7 +562,8 @@ void Link::receiveToImage(const std::string &image) throw(Exception) {
 	dcl->addOperation(transferOp);
 
 	uint64_t totalSize;
-	trns->transferTo(&totalSize, static_cast<size_t>(sizeof(uint64_t)));
+	DataTransfer::recvData(this->_fdin, &totalSize,
+			static_cast<size_t>(sizeof(uint64_t)));
 
 	/*
 	 * The given totalSize is received in big-endian. If the system is
@@ -564,7 +572,7 @@ void Link::receiveToImage(const std::string &image) throw(Exception) {
 	uint64_t tmpTotalSize = be64toh(totalSize);
 	trns->setTotalSize(tmpTotalSize);
 
-	trns->transferAllTo(fd);
+	trns->copyData(this->_fdin, fd);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");
 
@@ -604,17 +612,21 @@ void Link::receiveToDevice(const std::string &device) throw(Exception) {
 	}
 
 	uint64_t totalSize;
-	DataTransfer *trns = DataTransfer::getInstance();
-	trns->transferTo(&totalSize, static_cast<size_t>(sizeof(uint64_t)));
+
+	DataTransfer::recvData(this->_fdin, &totalSize,
+			static_cast<size_t>(sizeof(uint64_t)));
 
 	/*
 	 * The given totalSize is received in big-endian. If the system is
 	 * little-endian, it must be converted to little-endian.
 	 */
 	uint64_t tmpTotalSize = be64toh(totalSize);
+	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(tmpTotalSize);
 
 	Image image;
+	image.initFdReadArchive(this->_fdin);
+	image.initDiskWriteArchive();
 
 	image.readImageHeader(device);
 
@@ -638,6 +650,9 @@ void Link::receiveToDevice(const std::string &device) throw(Exception) {
 		dcDisk->setPartitions(image.getPartitions());
 		dcDisk->restoreGrub();
 	}
+
+	image.freeWriteArchive();
+	image.freeReadArchive();
 
 	this->closeConnection();
 
@@ -676,6 +691,30 @@ void Link::receive() throw(Exception) {
 	}
 
 	log->debug("Link::receive() end");
+}
+
+/**
+ * \brief Closes the opened connections
+ */
+void Link::closeConnection() const throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Link::closeConnection() start");
+
+	if(this->_fdin) {
+		if(close(this->_fdin)<0) {
+			CloseConnectionException ex;
+			ex.logMsg();
+		}
+	}
+
+	if(this->_fdout) {
+		if(close(this->_fdout)<0) {
+			CloseConnectionException ex;
+			ex.logMsg();
+		}
+	}
+
+	log->debug("Link::closeConnection() end");
 }
 
 }

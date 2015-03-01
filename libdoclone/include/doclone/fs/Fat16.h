@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include <doclone/DosFS.h>
+#include <doclone/Filesystem.h>
 
 namespace Doclone {
 
@@ -51,7 +51,7 @@ namespace Doclone {
  * Writes UUID and label
  * \date August, 2011
  */
-class Fat16 : public DosFS {
+class Fat16 : public Filesystem {
 public:
 	Fat16();
 	

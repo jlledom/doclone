@@ -52,6 +52,8 @@ public:
 	void receive() throw(Exception);
 
 private:
+	virtual void closeConnection() const throw(Exception);
+
 	int answer() const throw(Exception);
 	int netScan() const throw(Exception);
 
@@ -63,6 +65,15 @@ private:
 
 	void receiveToImage(const std::string &image) throw(Exception);
 	void receiveToDevice(const std::string &device) throw(Exception);
+
+	///Previous link socket
+	int _fdin;
+
+	///Next link socket
+	int _fdout;
+
+	/// Next link IP (Human readable)
+	std::string _dstIP;
 };
 
 }

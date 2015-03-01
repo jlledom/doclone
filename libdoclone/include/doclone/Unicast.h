@@ -40,14 +40,19 @@ public:
 	void receive() throw(Exception);
 
 private:
+	virtual void closeConnection() const throw(Exception);
+
 	void tcpServer() throw(Exception);
-	void tcpClient() const throw(Exception);
+	void tcpClient() throw(Exception);
 
 	void sendFromImage(const std::string &image) throw(Exception);
 	void sendFromDevice(const std::string &device) throw(Exception);
 
-	void receiveToImage(const std::string &image) const throw(Exception);
-	void receiveToDevice(const std::string &device) const throw(Exception);
+	void receiveToImage(const std::string &image) throw(Exception);
+	void receiveToDevice(const std::string &device) throw(Exception);
+
+	///Socket connected to the client or server
+	int _fd;
 };
 
 }

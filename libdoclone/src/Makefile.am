@@ -27,6 +27,7 @@ libdcexception_la_SOURCES= \
 	$(top_srcdir)/include/doclone/exception/FileNotFoundException.h \
 	$(top_srcdir)/include/doclone/exception/FormatException.h \
 	$(top_srcdir)/include/doclone/exception/GrubException.h \
+	$(top_srcdir)/include/doclone/exception/InitializationException.h \
 	$(top_srcdir)/include/doclone/exception/InvalidImageException.h \
 	$(top_srcdir)/include/doclone/exception/MakeLabelException.h \
 	$(top_srcdir)/include/doclone/exception/MountException.h \
@@ -76,6 +77,7 @@ libdcexception_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/exception/FileNotFoundException.h \
 	$(top_srcdir)/include/doclone/exception/FormatException.h \
 	$(top_srcdir)/include/doclone/exception/GrubException.h \
+	$(top_srcdir)/include/doclone/exception/InitializationException.h \
 	$(top_srcdir)/include/doclone/exception/InvalidImageException.h \
 	$(top_srcdir)/include/doclone/exception/MakeLabelException.h \
 	$(top_srcdir)/include/doclone/exception/MountException.h \
@@ -125,7 +127,6 @@ libdoclone_la_SOURCES= \
 	Disk.cc \
 	DiskLabel.cc \
 	DlFactory.cc \
-	DosFS.cc \
 	Filesystem.cc \
 	FsFactory.cc \
 	Grub.cc \
@@ -138,7 +139,6 @@ libdoclone_la_SOURCES= \
 	PartedDevice.cc \
 	Partition.cc \
 	Unicast.cc \
-	UnixFS.cc \
 	Util.cc \
 	$(top_srcdir)/include/doclone/Clone.h \
 	$(top_srcdir)/include/doclone/clone.h \
@@ -146,7 +146,6 @@ libdoclone_la_SOURCES= \
 	$(top_srcdir)/include/doclone/Disk.h \
 	$(top_srcdir)/include/doclone/DiskLabel.h \
 	$(top_srcdir)/include/doclone/DlFactory.h \
-	$(top_srcdir)/include/doclone/DosFS.h \
 	$(top_srcdir)/include/doclone/Filesystem.h \
 	$(top_srcdir)/include/doclone/FsFactory.h \
 	$(top_srcdir)/include/doclone/Grub.h \
@@ -159,7 +158,6 @@ libdoclone_la_SOURCES= \
 	$(top_srcdir)/include/doclone/PartedDevice.h \
 	$(top_srcdir)/include/doclone/Partition.h \
 	$(top_srcdir)/include/doclone/Unicast.h \
-	$(top_srcdir)/include/doclone/UnixFS.h \
 	$(top_srcdir)/include/doclone/Util.h
 
 libdoclone_la_includedir= \
@@ -170,7 +168,6 @@ libdoclone_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/clone.h \
 	$(top_srcdir)/include/doclone/DataTransfer.h \
 	$(top_srcdir)/include/doclone/Disk.h \
-	$(top_srcdir)/include/doclone/DosFS.h \
 	$(top_srcdir)/include/doclone/Filesystem.h \
 	$(top_srcdir)/include/doclone/FsFactory.h \
 	$(top_srcdir)/include/doclone/Grub.h \
@@ -183,7 +180,6 @@ libdoclone_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/PartedDevice.h \
 	$(top_srcdir)/include/doclone/Partition.h \
 	$(top_srcdir)/include/doclone/Unicast.h \
-	$(top_srcdir)/include/doclone/UnixFS.h \
 	$(top_srcdir)/include/doclone/Util.h
 
 libdoclone_la_CPPFLAGS = \
@@ -192,6 +188,7 @@ libdoclone_la_CPPFLAGS = \
 	-DLOGDIR=\"$(logdir)\" \
 	-D_FILE_OFFSET_BITS=64 \
 	$(GLIBMM_CFLAGS) \
+	$(ARCHIVE_CFLAGS) \
 	$(LOG4CPP_CFLAGS)
 
 libdoclone_la_LIBADD = \
@@ -200,10 +197,7 @@ libdoclone_la_LIBADD = \
 	xml/libdcxml.la \
 	$(PARTED_LIBS) \
 	$(GLIBMM_LIBS) \
+	$(ARCHIVE_LIBS) \
 	$(LOG4CPP_LIBS) \
 	$(LIBINTL)
-
-if USE_SELINUX
-libdoclone_la_LIBADD += $(SELINUX_LIBS)
-endif
 

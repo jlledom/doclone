@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+#include <archive.h>
+
 #include <doclone/Util.h>
 #include <doclone/DiskLabel.h>
 #include <doclone/Partition.h>
@@ -60,8 +62,6 @@ struct imageHeader {
 	uint8_t boot_code[440];
 	/// Value of diskLabelType enumerator.
 	uint8_t disk_type;
-	/// For future features
-	uint8_t dummy[512];
 };
 
 /**
@@ -83,11 +83,19 @@ public:
 	
 	bool isValid() const throw(Exception);
 
+	void initDiskReadArchive();
+	void initFdReadArchive(const int fdin) throw(Exception);
+	void initDiskWriteArchive();
+	void initFdWriteArchive(const int fdout) throw(Exception);
+
+	void freeReadArchive();
+	void freeWriteArchive();
+
 	void openImageHeader() throw(Exception);
 	void createImageHeader(Disk *dcDev) throw(Exception);
 
-	ssize_t readImageHeader(const std::string &device) throw(Exception);
-	ssize_t writeImageHeader() const throw(Exception);
+	void readImageHeader(const std::string &device) throw(Exception);
+	void writeImageHeader() const throw(Exception);
 
 	void readPartitionsData() const throw(Exception);
 	void writePartitionsData() const throw(Exception);
@@ -110,6 +118,9 @@ public:
     const std::vector<Partition*> &getPartitions() const;
     Doclone::diskLabelType getLabelType() const;
 
+    struct archive *getArchiveIn() const;
+    struct archive *getArchiveOut() const;
+
 private:
 	/// Image size
 	uint64_t _size;
@@ -125,6 +136,10 @@ private:
 	std::vector<Partition*> _partitions;
 	/// Information about all partitions of the image
 	std::vector<Doclone::partInfo> _partsInfo;
+	/// The reading archive object
+	struct archive *_archiveIn;
+	/// The writing archive object
+	struct archive *_archiveOut;
 
 	bool fitInDisk(uint64_t size) const throw(Exception);
 

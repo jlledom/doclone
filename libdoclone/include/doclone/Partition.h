@@ -99,13 +99,13 @@ struct partInfo {
 	/// Minimum size of the partition (bytes)
 	uint64_t min_size;
 	/// The name for filesystem in libdoclone
-	uint8_t fsName[32];
+	uint8_t fs_name[32];
 	/// The partition's label
 	uint8_t label[28];
 	/// The partition's uuid
 	uint8_t uuid[37];
-	/// For future features
-	uint8_t dummy[512];
+	/// Root directory of the partition in the image
+	uint8_t root_dir[32];
 };
 
 /**
@@ -144,8 +144,9 @@ public:
 	void doUmount() throw(Exception);
 	
 	void createPartInfo() throw(Exception);
-	void read() throw(Exception);
-	void write() throw(Exception);
+	void read(struct archive *in, struct archive *out,
+			struct archive_entry_linkresolver *lResolv) throw(Exception);
+	void write(struct archive *in, struct archive *out) throw(Exception);
 	
 	bool isWritable() const throw(Exception);
 	bool fitInDevice() throw(Exception);

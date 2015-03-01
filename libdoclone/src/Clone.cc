@@ -81,21 +81,15 @@ void Clone::create() throw(Exception) {
 	try {
 		PartedDevice *pedDev = PartedDevice::getInstance();
 		pedDev->initialize(Util::getDiskPath(this->_device));
+
 		DataTransfer *trns = DataTransfer::getInstance();
 
-		trns->initFileRead();
-		trns->initFileWrite();
-
-		Util::createFile(this->_image);
-		int fd = Util::openFile(this->_image);
-
-		trns->setFdd(fd, "");
+		trns->initLocalRead();
+		trns->initLocalWrite();
 
 		Local local(this->_image, this->_device);
 
 		local.create();
-
-		Util::closeFile(fd);
 	} catch(const ErrorException &ex) {
 		// Alert to view
 		this->notifyObservers(Doclone::EVT_CANCEL_EXECUTION, "");
@@ -124,19 +118,12 @@ void Clone::restore() throw(Exception) {
 		pedDev->initialize(Util::getDiskPath(this->_device));
 
 		DataTransfer *trns = DataTransfer::getInstance();
-
-		trns->initFileRead();
-		trns->initFileWrite();
-
-		int fd = Util::openFile(this->_image);
-
-		trns->setFdo(fd);
+		trns->initLocalRead();
+		trns->initLocalWrite();
 
 		Local local(this->_image, this->_device);
 
 		local.restore();
-
-		Util::closeFile(fd);
 	} catch(const ErrorException &ex) {
 		// Alert to view
 		this->notifyObservers(Doclone::EVT_CANCEL_EXECUTION, "");
@@ -162,15 +149,8 @@ void Clone::send() throw(Exception) {
 	log->debug("doclone::send() start");
 
 	DataTransfer *trns = DataTransfer::getInstance();
-	trns->initFileRead();
-
-	if(this->_nodesNumber == 0
-			|| this->_nodesNumber == 1) {
-		trns->initSocketWrite();
-	}
-	else {
-		trns->initSocketMultiple();
-	}
+	trns->initLocalRead();
+	trns->initSocketWrite();
 
 	try {
 		Unicast unicast;
@@ -202,7 +182,7 @@ void Clone::receive() throw(Exception) {
 
 	DataTransfer *trns = DataTransfer::getInstance();
 	trns->initSocketRead();
-	trns->initFileWrite();
+	trns->initLocalWrite();
 
 	try {
 		Unicast unicast;
@@ -232,7 +212,7 @@ void Clone::chainOrigin() throw(Exception) {
 	log->debug("doclone::chainOrigin() start");
 
 	DataTransfer *trns = DataTransfer::getInstance();
-	trns->initFileRead();
+	trns->initLocalRead();
 	trns->initSocketWrite();
 
 	try {
@@ -264,7 +244,7 @@ void Clone::chainLink() throw(Exception) {
 
 	DataTransfer *trns = DataTransfer::getInstance();
 	trns->initSocketRead();
-	trns->initFileWrite();
+	trns->initLocalWrite();
 
 	try {
 		Link lnk;

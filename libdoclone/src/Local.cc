@@ -58,7 +58,14 @@ void Local::create() const throw(Exception) {
 	PartedDevice *pDevice = PartedDevice::getInstance();
 	std::string target = pDevice->getPath();
 	Disk *dcDisk = DlFactory::createDiskLabel();
+
+	Util::createFile(this->_image);
+	int fd = Util::openFile(this->_image);
+
 	Image image;
+
+	image.initDiskReadArchive();
+	image.initFdWriteArchive(fd);
 
 	if(Util::isDisk(this->_device)) {
 		image.setType(Doclone::IMAGE_DISK);
@@ -91,10 +98,14 @@ void Local::create() const throw(Exception) {
 
 	image.readPartitionsData();
 
+	image.freeWriteArchive();
+	image.freeReadArchive();
+
+	Util::closeFile(fd);
+
 	delete dcDisk;
 
 	log->debug("Local::create() end");
-
 }
 
 /**
@@ -109,7 +120,12 @@ void Local::restore() const throw(Exception) {
 		throw ex;
 	}
 
+	int fd = Util::openFile(this->_image);
+
 	Image image;
+
+	image.initFdReadArchive(fd);
+	image.initDiskWriteArchive();
 
 	image.readImageHeader(this->_device);
 
@@ -136,6 +152,11 @@ void Local::restore() const throw(Exception) {
 	}
 
 	delete dcDisk;
+
+	image.freeWriteArchive();
+	image.freeReadArchive();
+
+	Util::closeFile(fd);
 
 	log->debug("Local::restore() end");
 }

@@ -15,7 +15,8 @@ libdcxml_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/xml/XMLDocument.h
 
 libdcxml_la_CPPFLAGS = \
-	-I$(top_srcdir)/include
+	-I$(top_srcdir)/include \
+	$(XERCESC_CFLAGS)
 
 libdcxml_la_LIBADD = \
 	$(XERCESC_LIBS)

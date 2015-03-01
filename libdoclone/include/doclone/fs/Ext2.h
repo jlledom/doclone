@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include <doclone/UnixFS.h>
+#include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
@@ -45,7 +45,7 @@ namespace Doclone {
  * Functions to write the label and uuid of a ext2/3/4 filesystem
  * \date August, 2011
  */
-class Ext2 : public UnixFS {
+class Ext2 : public Filesystem {
 public:
 	Ext2();
 	
