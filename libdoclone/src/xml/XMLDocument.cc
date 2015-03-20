@@ -19,6 +19,7 @@
 #include <doclone/xml/XMLDocument.h>
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #include <iostream>
 #include <vector>
@@ -146,20 +147,20 @@ const uint8_t *XMLDocument::toCString(const XMLCh *xmlch) {
  *
  * \param rootNode The root node of the new XML
  */
-void XMLDocument::createNew(const char* rootNode) {
+void XMLDocument::createNew() {
 	Logger *log = Logger::getInstance();
-	log->debug("XMLDocument::createNew(rootNode=>%s) start", rootNode);
+	log->debug("XMLDocument::createNew() start");
 
 	DOMImplementation *impl =
 			DOMImplementationRegistry::getDOMImplementation(
-					this->toXMLText(XML_FEATURE));
+					this->toXMLText(Doclone::XML_FEATURE));
 
 	DOMDocumentType *docType =
-			impl->createDocumentType(this->toXMLText(rootNode),
-			this->toXMLText(XML_PUBLIC_ID),
-			this->toXMLText(XML_SYSTEM_ID));
+			impl->createDocumentType(this->toXMLText(Doclone::XML_ROOT_ELEMENT),
+			this->toXMLText(Doclone::XML_PUBLIC_ID),
+			this->toXMLText(Doclone::XML_SYSTEM_ID));
 
-	this->_doc = impl->createDocument(0, this->toXMLText(rootNode), docType);
+	this->_doc = impl->createDocument(0, this->toXMLText(Doclone::XML_ROOT_ELEMENT), docType);
 
 	log->debug("XMLDocument::createNew() end");
 }
@@ -476,7 +477,7 @@ void XMLDocument::openFromMem(const char *buf) {
 	this->_parser->resetDocumentPool();
 
 	MemBufInputSource source(reinterpret_cast<const XMLByte*>(buf),
-			strlen(buf), XML_ROOT_ELEMENT);
+			strlen(buf), Doclone::XML_ROOT_ELEMENT);
 
     DOMLSInput *input = implLS->createLSInput();
     input->setByteStream(&source);
@@ -591,9 +592,11 @@ const uint64_t XMLDocument::getElementValueU64(const DOMElement *parent,
 	DOMNodeList *nodeList = parent->getElementsByTagName(this->toXMLText(name));
 
 	if(nodeList->getLength() == 1) {
-		unsigned int buf;
-		XMLString::textToBin(nodeList->item(0)->getTextContent(), buf);
-		retVal = static_cast<uint64_t>(buf);
+		const char *tmpVal = reinterpret_cast<const char *>(this->toCString(
+				nodeList->item(0)->getTextContent()));
+		if(tmpVal != 0) {
+			retVal = atol(tmpVal);
+		}
 	}
 
 	log->debug("XMLDocument::getElementValueU64(retVal=>%d) end", retVal);

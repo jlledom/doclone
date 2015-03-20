@@ -21,9 +21,6 @@
 
 #include <string>
 
-#include <archive.h>
-#include <archive_entry.h>
-
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
@@ -140,23 +137,17 @@ public:
 	const std::string &getMountOptions() const;
 	const std::string &getCommand() const;
 	const std::string &getFormatOptions() const;
+	const std::string &getLabel() const;
+	const std::string &getUUID() const;
 	bool getMountSupport() const;
 	bool getFormatSupport() const;
 	bool getUUIDSupport() const;
 	bool getLabelSupport() const;
 	void setLabel(const std::string &label);
 	void setUUID(const std::string &uuid);
-	const std::string &getMountPoint() const;
-	void setMountPoint(const std::string &path);
 	
-	std::string readLabel(const std::string &dev) const throw(Exception);
-	std::string readUUID(const std::string &dev) const throw(Exception);
-
-	void readDir(struct archive *in, struct archive *out,
-			struct archive_entry_linkresolver *lResolv,
-			const std::string &path, const std::string &imgRootDir) throw(Exception);
-	void writeDir(struct archive *in, struct archive *out,
-			const std::string &path, const std::string &imgRootDir) throw(Exception);
+	void readLabel(const std::string &dev) throw(Exception);
+	void readUUID(const std::string &dev) throw(Exception);
 
 	virtual void writeLabel(const std::string &dev) const throw(Exception) {}
 	virtual void writeUUID(const std::string &dev) const throw(Exception) {}
@@ -184,8 +175,6 @@ protected:
 	std::string _formatOptions; 
 	/// Command to admin
 	std::string _adminCommand;
-	/// Path to the mount point
-	std::string _mountPoint;
 	
 	/// If it has mounting support
 	bool _mountSupport;

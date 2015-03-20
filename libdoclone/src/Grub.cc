@@ -76,10 +76,10 @@ void Grub::searchPartition() throw(Exception) {
 			part->doMount();
 
 			try {
-				std::string bootGrubPath = part->getFileSystem()->getMountPoint();
+				std::string bootGrubPath = part->getMountPoint();
 				bootGrubPath.append("/boot/grub");
 
-				std::string grubPath = part->getFileSystem()->getMountPoint();
+				std::string grubPath = part->getMountPoint();
 				grubPath.append("/grub");
 
 				std::ifstream bootGrubDir(bootGrubPath.c_str());
@@ -150,7 +150,7 @@ void Grub::install() throw(Exception) {
 
 				grub_install_cmdline = GRUB_COMMAND;
 				grub_install_cmdline.append(" -d ");
-				grub_install_cmdline.append(part->getFileSystem()->getMountPoint());
+				grub_install_cmdline.append(part->getMountPoint());
 				grub_install_cmdline.append(it->second);
 				grub_install_cmdline.append(" ");
 				grub_install_cmdline.append(this->_disk->getPath());

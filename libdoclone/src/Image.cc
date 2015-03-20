@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <endian.h>
 #include <time.h>
+#include <dirent.h>
 
 #include <sstream>
 #include <string>
@@ -54,6 +55,14 @@
 #include <doclone/exception/NoSelinuxSupportException.h>
 #include <doclone/exception/NoFitInDeviceException.h>
 #include <doclone/exception/TooMuchPartitionsException.h>
+#include <doclone/exception/FileNotFoundException.h>
+#include <doclone/exception/ReadErrorsInDirectoryException.h>
+#include <doclone/exception/WriteErrorsInDirectoryException.h>
+#include <doclone/exception/CancelException.h>
+#include <doclone/exception/ReadDataException.h>
+#include <doclone/exception/SendDataException.h>
+#include <doclone/exception/WriteDataException.h>
+#include <doclone/exception/ReceiveDataException.h>
 
 namespace Doclone {
 
@@ -165,7 +174,7 @@ void Image::initFdWriteArchive(const int fdout) throw(Exception) {
 
 	this->_archiveOut = archive_write_new();
 	archive_write_add_filter_gzip(this->_archiveOut);
-	archive_write_set_format_pax_restricted(this->_archiveOut);
+	archive_write_set_format_pax(this->_archiveOut);
 
 	if(archive_write_open_fd(this->_archiveOut, fdout) != ARCHIVE_OK) {
 		InitializationException ex;
@@ -327,25 +336,33 @@ void Image::readImageHeader(const std::string &device) throw(Exception) {
 		part.type = doc.getElementValueU8(partition, "type");
 		part.min_size = doc.getElementValueU64(partition, "minSize");
 
-		std::string fsName =
-				reinterpret_cast<const char *>(doc.getElementValueBinary(rootElement, "fsName"));
-		Util::safe_strncpy(reinterpret_cast<char *>(part.fs_name), fsName.c_str(),
-				fsName.length()+1);
+		const char *fsName =
+				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "fsName"));
+		if(fsName != 0) {
+			Util::safe_strncpy(reinterpret_cast<char *>(part.fs_name), fsName,
+					strlen(fsName)+1);
+		}
 
-		std::string label =
-				reinterpret_cast<const char *>(doc.getElementValueBinary(rootElement, "label"));
-		Util::safe_strncpy(reinterpret_cast<char *>(part.label), label.c_str(),
-				label.length()+1);
+		const char *label =
+				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "label"));
+		if(label != 0) {
+			Util::safe_strncpy(reinterpret_cast<char *>(part.label), label,
+					strlen(label)+1);
+		}
 
-		std::string uuid =
-				reinterpret_cast<const char *>(doc.getElementValueBinary(rootElement, "uuid"));
-		Util::safe_strncpy(reinterpret_cast<char *>(part.uuid), uuid.c_str(),
-				uuid.length()+1);
+		const char *uuid =
+				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "uuid"));
+		if(uuid != 0) {
+			Util::safe_strncpy(reinterpret_cast<char *>(part.uuid), uuid,
+					strlen(uuid)+1);
+		}
 
-		std::string root_dir =
-				reinterpret_cast<const char *>(doc.getElementValueBinary(rootElement, "root_dir"));
-		Util::safe_strncpy(reinterpret_cast<char *>(part.root_dir),
-				root_dir.c_str(), root_dir.length()+1);
+		const char *root_dir =
+				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "rootDir"));
+		if(root_dir != 0) {
+			Util::safe_strncpy(reinterpret_cast<char *>(part.root_dir),
+					root_dir, strlen(root_dir)+1);
+		}
 
 		this->_partsInfo.push_back(part);
 	}
@@ -363,8 +380,7 @@ void Image::writeImageHeader() const throw(Exception) {
 	log->debug("Image::writeImageHeader() start");
 
 	XMLDocument doc;
-
-	doc.createNew("image");
+	doc.createNew();
 
 	DOMElement *rootElem = doc.getRootElement();
 	doc.createElement(rootElem, "numPartitions", this->_header.num_partitions);
@@ -412,6 +428,186 @@ void Image::writeImageHeader() const throw(Exception) {
 	log->debug("Image::writeImageHeader() end");
 }
 
+void Image::readDataFromDisk(struct archive *in, struct archive *out,
+		struct archive_entry_linkresolver *lResolv,
+		const std::string &path, const std::string &imgRootDir,
+		size_t mPointLength) const throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("Image::readDataFromDisk(in=>0x%x, out=>0x%x, lResolv=>0x%x, path=>%s, imgRootDir=>%s, mPointLength=>%d) start",
+			in, out, lResolv, path.c_str(), imgRootDir.c_str(), mPointLength);
+
+	DIR *directory;
+	struct dirent *d_file; // a file in *directory
+	struct archive_entry *entry;
+	bool errors = false;
+
+	if ((directory = opendir (path.c_str())) == 0) {
+		FileNotFoundException ex(path);
+		throw ex;
+	}
+
+	while ((d_file = readdir (directory)) != 0) {
+		struct stat filestat;
+		std::string abPath;
+
+		abPath = path;
+		abPath.append(d_file->d_name);
+
+		//Path of the file in the image
+		std::string relPath = imgRootDir + "/" + abPath.substr(mPointLength);
+
+		if (lstat (abPath.c_str(), &filestat) < 0) {
+			FileNotFoundException ex(abPath);
+			throw ex;
+		}
+
+		try {
+			int fdin = open (abPath.c_str(), O_RDONLY);
+
+			entry = archive_entry_new();
+			archive_entry_update_pathname_utf8(entry, relPath.c_str());
+			archive_read_disk_entry_from_file(in, entry, fdin, &filestat);
+
+			switch (archive_entry_filetype(entry)) {
+			case AE_IFDIR: {
+				if (strcmp (".", d_file->d_name) && strcmp ("..", d_file->d_name)) {
+
+					archive_write_header(out, entry);
+
+					/*
+					 * If the current folder is a virtual one or is the mount
+					 * point of another partition, bypass it.
+					 */
+					if(Util::isVirtualDirectory(abPath.c_str())
+						|| Util::isMountPoint(abPath)) {
+
+						continue;
+					}
+
+					abPath.push_back('/');
+					this->readDataFromDisk(in, out, lResolv, abPath.c_str(),
+							imgRootDir, mPointLength);
+				}
+				break;
+			}
+			case AE_IFLNK: {
+				char linkPath[4096] = {};
+				ssize_t size = 0;
+
+				// Read link
+				if ((size = readlink (abPath.c_str(), linkPath, sizeof(linkPath))) < 0) {
+					FileNotFoundException ex(path);
+					throw ex;
+				} else {
+						archive_entry_update_symlink_utf8(entry, linkPath);
+						archive_write_header(out, entry);
+				}
+
+				break;
+			}
+			case AE_IFIFO:
+			case AE_IFSOCK:
+			case AE_IFCHR:
+			case AE_IFBLK:
+			case AE_IFREG: {
+				struct archive_entry *sparse;
+				if(archive_entry_nlink(entry) > 1) {
+					archive_entry_linkify(lResolv, &entry, &sparse);
+				}
+				if(entry != 0) {
+					archive_write_header(out, entry);
+				}
+
+				/*
+				 * If the current file is a virtual one, bypass
+				 */
+				if(Util::isLiveFile(abPath.c_str())) {
+					continue;
+				}
+
+				// else
+				if(archive_entry_size(entry) > 0) {
+					DataTransfer *trns = DataTransfer::getInstance();
+					trns->fdToArchive(fdin, out);
+				}
+
+				break;
+			}
+			default:
+				ReadDataException ex;
+				throw ex;
+			}
+
+			archive_entry_free(entry);
+			close(fdin);
+		}catch(const WarningException &ex) {
+			errors = true;
+		}
+	}
+
+	closedir (directory);
+
+	if(errors) {
+		ReadErrorsInDirectoryException ex(path);
+		ex.logMsg();
+	}
+
+	log->loopDebug("Image::readDataToDisk() end");
+}
+
+void Image::writeDataToDisk() const throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("Image::writeDataToDisk() start");
+
+	bool errors = false;
+	struct archive_entry *entry;
+
+	try {
+		while(archive_read_next_header(this->_archiveIn, &entry) == ARCHIVE_OK) {
+
+			std::string abPath = archive_entry_pathname(entry);
+
+			for(int i = 0;i<this->_header.num_partitions
+				&& this->_partitions[i]->getPartition().used_part != 0; i++) {
+				Partition *part = this->_partitions[i];
+				Doclone::partInfo partInf = this->_partsInfo[i];
+
+				if(abPath.find(reinterpret_cast<const char*>(partInf.root_dir)) == 0) {
+					abPath.replace(0,
+							strlen(reinterpret_cast<const char*>(partInf.root_dir)),
+							part->getMountPoint().c_str());
+
+					archive_entry_update_pathname_utf8(entry, abPath.c_str());
+
+					if(archive_entry_hardlink(entry)!=0 && archive_entry_size(entry)==0) {
+							std::string hardLinkPath = archive_entry_hardlink(entry);
+							hardLinkPath.replace(0,
+									strlen(reinterpret_cast<const char*>(partInf.root_dir)),
+									part->getMountPoint().c_str());
+
+							archive_entry_update_hardlink_utf8(entry, hardLinkPath.c_str());
+					}
+				}
+			}
+
+			archive_write_header(this->_archiveOut, entry);
+
+			DataTransfer *trns = DataTransfer::getInstance();
+			trns->copyData(this->_archiveIn, this->_archiveOut);
+		}
+	} catch(const WarningException &ex) {
+		errors = true;
+	}
+
+	if(errors) {
+		//TODO: Get the proper path
+		WriteErrorsInDirectoryException ex("TODO");
+		ex.logMsg();
+	}
+
+	log->loopDebug("Image::writeDataToDisk() end");
+}
+
 /**
  * \brief Reads and transfers all the data of a partition
  *
@@ -423,6 +619,7 @@ void Image::readPartition(int index) const throw(Exception) {
 	log->debug("Image::readPartition(numPart=>%d) start", index);
 	
 	Partition *part = this->_partitions[index];
+	Doclone::partInfo partInf = this->_partsInfo[index];
 	Clone *dcl = Clone::getInstance();
 	
 	if(!this->_noData) {
@@ -430,7 +627,28 @@ void Image::readPartition(int index) const throw(Exception) {
 				archive_entry_linkresolver_new();
         archive_entry_linkresolver_set_strategy(lResolv, ARCHIVE_FORMAT_TAR);
 
-		part->read(this->_archiveIn, this->_archiveOut, lResolv);
+        part->doMount();
+		try {
+			std::string mountPoint = part->getMountPoint();
+			if(mountPoint[mountPoint.length()-1]!='/') {
+				mountPoint.push_back('/');
+			}
+
+			this->readDataFromDisk(this->_archiveIn, this->_archiveOut,
+					lResolv, mountPoint,
+					reinterpret_cast<const char*>(partInf.root_dir),
+					mountPoint.length());
+		} catch (const CancelException &ex) {
+			part->doUmount();
+			throw;
+		} catch (const ReadDataException &ex) {
+			part->doUmount();
+			throw;
+		} catch (const SendDataException &ex) {
+			part->doUmount();
+			throw;
+		}
+		part->doUmount();
 
 		struct archive_entry *sparse;
 		struct archive_entry *entryLink = 0;
@@ -446,26 +664,6 @@ void Image::readPartition(int index) const throw(Exception) {
 	}
 
 	log->debug("Image::readPartition() end");
-}
-
-
-/**
- * \brief Gets and writes all the data for a partition
- *
- * \param index
- * 		The order of the partition (in the vector of Partition*)
- */
-void Image::writePartition(int index) const throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Image::writePartition(numPart=>%d) start", index);
-
-	Partition *part = this->_partitions[index];
-
-	if(!this->_noData) {
-		part->write(this->_archiveIn, this->_archiveOut);
-	}
-
-	log->debug("Image::writePartition() end");
 }
 
 /**
@@ -501,27 +699,47 @@ void Image::writePartitionsData() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::writePartitionsData() start");
 
-	Clone *dcl = Clone::getInstance();
-
 	// Initialize the counter of progress
 	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(this->_header.image_size);
 
-	if(this->_type == Doclone::IMAGE_DISK) {
-		for(int i = 0;i<this->_header.num_partitions
-			&& this->_partitions[i]->getPartition().used_part != 0; i++) {
-			this->writePartition(i);
+	if(!this->_noData) {
+		try {
+			for(int i = 0;i<this->_header.num_partitions; i++) {
+				if(this->_partitions[i]->getMinSize() != 0) {
+					this->_partitions[i]->doMount();
+				}
+			}
 
-			std::stringstream target;
-			target << Util::getDiskPath(this->_partitions[i]->getPath()) << ", #" << (i+1);
-			dcl->markCompleted(Doclone::OP_WRITE_DATA, target.str());
+			this->writeDataToDisk();
+
+		} catch (const CancelException &ex) {
+			for(int i = 0;i<this->_header.num_partitions; i++) {
+				if(this->_partitions[i]->getMinSize() != 0) {
+					this->_partitions[i]->doUmount();
+				}
+			}
+			throw;
+		} catch (const WriteDataException &ex) {
+			for(int i = 0;i<this->_header.num_partitions; i++) {
+				if(this->_partitions[i]->getMinSize() != 0) {
+					this->_partitions[i]->doUmount();
+				}
+			}
+			throw;
+		} catch (const ReceiveDataException &ex) {
+			for(int i = 0;i<this->_header.num_partitions; i++) {
+				if(this->_partitions[i]->getMinSize() != 0) {
+					this->_partitions[i]->doUmount();
+				}
+			}
+			throw;
 		}
-	} else {
-		this->writePartition(0);
-
-		std::stringstream target;
-		target << this->_partitions[0]->getPath();
-		dcl->markCompleted(Doclone::OP_WRITE_DATA, target.str());
+		for(int i = 0;i<this->_header.num_partitions; i++) {
+			if(this->_partitions[i]->getMinSize() != 0) {
+				this->_partitions[i]->doUmount();
+			}
+		}
 	}
 
 	log->debug("Image::writePartitionsData() end");
@@ -694,11 +912,6 @@ bool Image::canRestoreCheck(const std::string &device, uint64_t size) const thro
 	log->debug("Image::canRestoreCheck(device=>%s, size=>%d) start", device.c_str(), size);
 
 	bool retValue = true;
-
-#ifndef HAVE_SELINUX
-	NoSelinuxSupportException selinuxEx;
-	selinuxEx.logMsg();
-#endif
 
 	try {
 		switch(this->_type) {

@@ -26,6 +26,7 @@
 #include <vector>
 
 #include <archive.h>
+#include <archive_entry.h>
 
 #include <doclone/Util.h>
 #include <doclone/DiskLabel.h>
@@ -145,6 +146,11 @@ private:
 
 	void readPartition(int index) const throw(Exception);
 	void writePartition(int index) const throw(Exception);
+
+	void readDataFromDisk(struct archive *in, struct archive *out,
+			struct archive_entry_linkresolver *lResolv, const std::string &path,
+			const std::string &imgRootDir, size_t mPointLength) const throw(Exception);
+	void writeDataToDisk() const throw(Exception);
 };
 
 }

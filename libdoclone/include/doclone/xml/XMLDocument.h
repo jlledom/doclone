@@ -28,20 +28,21 @@
 
 #include <doclone/exception/Exception.h>
 
-///XML feature for DOM Level 3
-#define XML_FEATURE "Core"
-
-#define XML_ROOT_ELEMENT "doclone"
-
-///Public Identifier for doclone image XMLs
-#define XML_PUBLIC_ID "-//DOCLONE//DOCLONE IMAGE 1.0//EN"
-
-///System identifier for doclone image XMLs (DTD file location)
-#define XML_SYSTEM_ID "http://doclone.nongnu.org/xml/image-1.0.dtd"
-
 XERCES_CPP_NAMESPACE_USE
 
 namespace Doclone {
+
+///XML feature for DOM Level 3
+const char XML_FEATURE[] = "Core";
+
+///Root node of the document
+const char XML_ROOT_ELEMENT[] = "image";
+
+///Public Identifier for doclone image XMLs
+const char XML_PUBLIC_ID[] = "-//DOCLONE//DOCLONE IMAGE 1.0//EN";
+
+///System identifier for doclone image XMLs (DTD file location)
+const char XML_SYSTEM_ID[] = "http://doclone.nongnu.org/xml/image-1.0.dtd";
 
 /**
  * \class XMLDocument
@@ -60,7 +61,7 @@ public:
 	~XMLDocument();
 
 	//Write methods
-	void createNew(const char *rootNode);
+	void createNew();
 	DOMElement *getRootElement();
 	DOMElement *createElement(DOMElement *parent, const char *name) throw(Exception);
 	DOMElement *createElement(DOMElement *parent, const char *name, const uint8_t *value) throw(Exception);

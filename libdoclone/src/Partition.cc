@@ -108,12 +108,12 @@ Partition::Partition(Doclone::partInfo partition) throw(Exception)
 	this->_flags = partition.flags;
 	
 	// Label
-	this->_label = reinterpret_cast<char*>(partition.label);
-	this->_fs->setLabel(this->_label);
+	std::string label = reinterpret_cast<char*>(partition.label);
+	this->_fs->setLabel(label);
 	
 	// UUID
-	this->_uuid = reinterpret_cast<char*>(partition.uuid);
-	this->_fs->setUUID(this->_uuid);
+	std::string uuid = reinterpret_cast<char*>(partition.uuid);
+	this->_fs->setUUID(uuid);
 }
 
 /**
@@ -167,6 +167,10 @@ unsigned int Partition::getPartNum() const {
 
 Filesystem * Partition::getFileSystem() {
 	return this->_fs;
+}
+
+const std::string &Partition::getMountPoint()const {
+	return this->_mountPoint;
 }
 
 /**
@@ -379,7 +383,7 @@ void Partition::initLabel() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::initLabel() start");
 
-	this->_label = this->_fs->readLabel(this->_path);
+	this->_fs->readLabel(this->_path);
 
 	log->debug("Partition::initLabel() end");
 }
@@ -391,7 +395,7 @@ void Partition::initUUID() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::initUUID() start");
 
-	this->_uuid = this->_fs->readUUID(this->_path);
+	this->_fs->readUUID(this->_path);
 
 	log->debug("Partition::initUUID() end");
 }
@@ -409,11 +413,10 @@ uint64_t Partition::usedSpace() throw(Exception) {
 	uint64_t used_blocks;
 
 	this->doMount();
-	std::string mountDir = this->_fs->getMountPoint();
 	
 	try {
-		if (statvfs (mountDir.c_str(), &info) < 0) {
-			FileNotFoundException ex(mountDir);
+		if (statvfs (this->_mountPoint.c_str(), &info) < 0) {
+			FileNotFoundException ex(this->_mountPoint);
 			throw ex;
 		}
 
@@ -466,7 +469,7 @@ void Partition::externalMount() throw(Exception) {
 		throw ex;
 	}
 	
-	this->_fs->setMountPoint(tmpDir);
+	this->_mountPoint = tmpDir;
 	
 	std::string cmdline="mount."+this->_fs->getMountName();
 	cmdline.append(" ")
@@ -502,12 +505,12 @@ void Partition::doMount() throw(Exception) {
 		MountException ex(this->_path);
 		throw ex;
 	}
-	
+
 	if(this->isMounted()) {
 		log->debug("Partition::doMount() end");
 		return;
 	}
-	
+
 	if(this->_fs->getMountType() == Doclone::MOUNT_EXTERNAL) {
 		// perform external doMount
 		this->externalMount();
@@ -521,7 +524,7 @@ void Partition::doMount() throw(Exception) {
 			throw ex;
 		}
 		
-		this->_fs->setMountPoint(tmpDir);
+		this->_mountPoint = tmpDir;
 		
 		if(mount (this->_path.c_str(), tmpDir,
 			this->_fs->getMountName().c_str(), 0,
@@ -533,7 +536,7 @@ void Partition::doMount() throw(Exception) {
 	}
 	
 	// After mounting, write a new line in /etc/mtab
-	Util::addMtabEntry(this->_path, this->_fs->getMountPoint(),
+	Util::addMtabEntry(this->_path, this->_mountPoint,
 		this->_fs->getMountName(), this->_fs->getMountOptions());
 	
 	log->debug("Partition::doMount() end");
@@ -547,7 +550,7 @@ void Partition::doUmount() throw(Exception) {
 	log->debug("Partition::doUmount() start");
 	
 	if(!this->isMounted() // If it is not mounted or is mounted but not in /tmp
-			|| !Util::match(this->_fs->getMountPoint(), TMP_PREFIX_REGEXP)) {
+			|| !Util::match(this->_mountPoint, TMP_PREFIX_REGEXP)) {
 		/*
 		 * If the mount point is not in /tmp, it means the user has mounted it
 		 * manually before running libdoclone, so do not unmount it.
@@ -558,12 +561,12 @@ void Partition::doUmount() throw(Exception) {
 
 	sync();
 
-	if(umount2(this->_fs->getMountPoint().c_str(), MNT_DETACH)<0) {
-		UmountException ex(this->_fs->getMountPoint().c_str());
+	if(umount2(this->_mountPoint.c_str(), MNT_DETACH)<0) {
+		UmountException ex(this->_mountPoint.c_str());
 		ex.logMsg();
 	}
 
-	remove(this->_fs->getMountPoint().c_str());
+	remove(this->_mountPoint.c_str());
 
 	// After unmounting, we must delete the entry of /etc/mtab
 	Util::updateMtab(this->_path);
@@ -588,17 +591,17 @@ bool Partition::isMounted() throw(Exception) {
 		throw ex;
 	}
 
-	std::string uuidDevPath = "/dev/disk/by-uuid/"+this->_uuid;
+	std::string uuidDevPath = "/dev/disk/by-uuid/"+this->_fs->getUUID();
 
 	while ((filesys = getmntent (f))) {
 		// If this->_path or uuidDevPath are in /etc/mtab
 		if(!this->_path.compare(filesys->mnt_fsname)) {
-			this->_fs->setMountPoint(filesys->mnt_dir);
+			this->_mountPoint = filesys->mnt_dir;
 			retValue = true;
 			break;
 		} else if (!uuidDevPath.compare(filesys->mnt_fsname)) {
-			if(!Util::isUUIDRepeated(this->_uuid.c_str())) {
-				this->_fs->setMountPoint(filesys->mnt_dir);
+			if(!Util::isUUIDRepeated(this->_fs->getUUID().c_str())) {
+				this->_mountPoint =  filesys->mnt_dir;
 				retValue = true;
 				break;
 			}
@@ -657,9 +660,9 @@ void Partition::createPartInfo() throw(Exception) {
 	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.fs_name),
 			this->_fs->getdocloneName().c_str(), 32);
 	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.label),
-			this->_label.c_str(), 28);
+			this->_fs->getLabel().c_str(), 28);
 	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.uuid),
-			this->_uuid.c_str(), 37);
+			this->_fs->getUUID().c_str(), 37);
 	//Set the root of this partition inside the image
 	std::string rootDir = "_part";
 	char partNum[2] = {};
@@ -797,80 +800,6 @@ bool Partition::isWritable() const throw(Exception) {
 	
 	log->debug("Partition::isWritable(retValue=>%d) end", retValue);
 	return retValue;
-}
-
-/**
- * \brief Reads the data of the partition
- */
-void Partition::read(struct archive *in, struct archive *out,
-		struct archive_entry_linkresolver *lResolv) throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Partition::read(in=>0x%x, out=>0x%x, lResolv=>0x%x) start", in, out, lResolv);
-	
-	if(!this->isWritable()) {
-		log->debug("Partition::read() end");
-		return;
-	}
-
-	this->doMount();
-	try {
-		std::string mountPoint = this->_fs->getMountPoint();
-		if(mountPoint[mountPoint.length()-1]!='/') {
-			mountPoint.push_back('/');
-		}
-		this->_fs->readDir(in, out, lResolv, mountPoint,
-				reinterpret_cast<const char *>(this->_partition.root_dir));
-	} catch (const CancelException &ex) {
-		this->doUmount();
-		throw;
-	} catch (const ReadDataException &ex) {
-		this->doUmount();
-		throw;
-	} catch (const SendDataException &ex) {
-		this->doUmount();
-		throw;
-	}
-	
-	this->doUmount();
-	
-	log->debug("Partition::read() end");
-}
-
-/**
- * \brief Writes the data of the partition
- */
-void Partition::write(struct archive *in, struct archive *out) throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Partition::write(in=>0x%x, out=>0x%x) start", in, out);
-	
-	if(!this->isWritable()) {
-		log->debug("Partition::write() end");
-		return;
-	}
-
-	this->doMount();
-	
-	try {
-		std::string rootDir = this->_fs->getMountPoint();
-		if(rootDir[rootDir.length()-1]!='/') {
-			rootDir.push_back('/');
-		}
-		this->_fs->writeDir(in, out, rootDir,
-				reinterpret_cast<const char *>(this->_partition.root_dir));
-	} catch (const CancelException &ex) {
-		this->doUmount();
-		throw;
-	} catch (const WriteDataException &ex) {
-		this->doUmount();
-		throw;
-	} catch (const ReceiveDataException &ex) {
-		this->doUmount();
-		throw;
-	}
-	
-	this->doUmount();
-
-	log->debug("Partition::write() end");
 }
 
 }

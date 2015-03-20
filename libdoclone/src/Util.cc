@@ -904,7 +904,7 @@ void Util::spawn_command_line_sync(const std::string &command, int *exitValue, s
 }
 
 /**
- * \brief Calls strncpy and adds a line terminator '/0' at end
+ * \brief Calls strncpy and adds a line terminator '\0' at end
  *
  * \param dest Destination  pointer
  *

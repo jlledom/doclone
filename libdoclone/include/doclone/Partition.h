@@ -134,6 +134,7 @@ public:
 	void setPartNum(unsigned int);
 	unsigned int getPartNum() const;
 	Filesystem * getFileSystem();
+	const std::string &getMountPoint() const;
 	
 	void format() const throw(Exception);
 	void writeLabel() const throw(Exception);
@@ -144,9 +145,6 @@ public:
 	void doUmount() throw(Exception);
 	
 	void createPartInfo() throw(Exception);
-	void read(struct archive *in, struct archive *out,
-			struct archive_entry_linkresolver *lResolv) throw(Exception);
-	void write(struct archive *in, struct archive *out) throw(Exception);
 	
 	bool isWritable() const throw(Exception);
 	bool fitInDevice() throw(Exception);
@@ -168,10 +166,8 @@ private:
 	Doclone::partType _type;
 	/// Flags of the partition
 	Doclone::dcFlag _flags;
-	/// Fs Label
-	std::string _label;
-	/// Fs uuid
-	std::string _uuid;
+	/// Path to the mount point
+	std::string _mountPoint;
 	/// Metadata of the partition
 	Doclone::partInfo _partition;
 	
