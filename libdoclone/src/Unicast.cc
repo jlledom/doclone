@@ -433,17 +433,17 @@ void Unicast::receiveToDevice(const std::string &device) throw(Exception) {
 
 	/*
 	 * The given totalSize is received in big-endian. If the system is
-	 * little-endian, it must be converted to little-endian.
+	 * little-endian, it must be converted.
 	 */
 	uint64_t tmpTotalSize = be64toh(totalSize);
 	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(tmpTotalSize);
 
 	Image image;
-	image.readImageHeader(device);
-	image.openImageHeader();
 	image.initFdReadArchive(this->_fd);
 	image.initDiskWriteArchive();
+	image.readImageHeader(device);
+	image.openImageHeader();
 
 	Disk *dcDisk = DlFactory::createDiskLabel(image.getLabelType(),
 			pedDev->getPath());
