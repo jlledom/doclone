@@ -52,7 +52,7 @@ public:
 	void receive() throw(Exception);
 
 private:
-	virtual void closeConnection() const throw(Exception);
+	virtual void closeConnection() throw(Exception);
 
 	int answer() const throw(Exception);
 	int netScan() const throw(Exception);

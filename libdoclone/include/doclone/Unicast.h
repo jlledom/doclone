@@ -20,6 +20,7 @@
 #define UNICAST_H_
 
 #include <string>
+#include <vector>
 
 #include <doclone/Net.h>
 #include <doclone/exception/Exception.h>
@@ -36,11 +37,13 @@ namespace Doclone {
  */
 class Unicast : public Net {
 public:
+	Unicast();
+
 	void send() throw(Exception);
 	void receive() throw(Exception);
 
 private:
-	virtual void closeConnection() const throw(Exception);
+	virtual void closeConnection() throw(Exception);
 
 	void tcpServer() throw(Exception);
 	void tcpClient() throw(Exception);
@@ -51,8 +54,8 @@ private:
 	void receiveToImage(const std::string &image) throw(Exception);
 	void receiveToDevice(const std::string &device) throw(Exception);
 
-	///Socket connected to the client or server
-	int _fd;
+	///Vector of sockets connected to the client or server
+	std::vector<int> _fds;
 };
 
 }

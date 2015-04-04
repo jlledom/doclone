@@ -95,11 +95,15 @@ uint64_t DataTransfer::archiveToBuf(struct archive *arIn, std::string &target) t
 	return this->_transferredBytes;
 }
 
-uint64_t DataTransfer::bufToArchive(const std::string &source, struct archive *arOut) throw(Exception) {
+uint64_t DataTransfer::bufToArchive(const std::string &source,
+		std::vector<struct archive*> &outArchives) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::bufToArchive(source=>%s, arOut=>0x%x) start", source.c_str(), arOut);
+	log->loopDebug("DataTransfer::bufToArchive(source=>%s, outArchives=>0x%x) start", source.c_str(), &outArchives);
 
-	archive_write_data(arOut, source.c_str(), source.length());
+	std::vector<struct archive*>::iterator it;
+	for(it = outArchives.begin(); it != outArchives.end(); ++it) {
+		archive_write_data(*it, source.c_str(), source.length());
+	}
 
 	this->_transferredBytes += source.length();
 
@@ -113,15 +117,18 @@ uint64_t DataTransfer::bufToArchive(const std::string &source, struct archive *a
 	return this->_transferredBytes;
 }
 
-uint64_t DataTransfer::fdToArchive(int fd, struct archive *arOut) throw(Exception) {
+uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArchives) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::transferFile(fd=>%d, arOut=>0x%x) start", fd, arOut);
+	log->loopDebug("DataTransfer::transferFile(fd=>%d, outArchives=>0x%x) start", fd, &outArchives);
 
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = 0;
 
 	while ((nbytes = (*this->getNbytes) (fd, buf, Doclone::BUFFER_SIZE)) > 0) {
-		archive_write_data(arOut, buf, nbytes);
+		std::vector<struct archive*>::iterator it;
+		for(it = outArchives.begin(); it != outArchives.end(); ++it) {
+			archive_write_data(*it, buf, nbytes);
+		}
 
 		this->_transferredBytes += nbytes;
 
@@ -136,6 +143,15 @@ uint64_t DataTransfer::fdToArchive(int fd, struct archive *arOut) throw(Exceptio
 	return this->_transferredBytes;
 }
 
+void DataTransfer::copyHeader(struct archive_entry *entry,
+		std::vector<struct archive*> &outArchives) throw(Exception) {
+
+	std::vector<struct archive*>::iterator it;
+	for(it = outArchives.begin(); it != outArchives.end(); ++it) {
+		archive_write_header(*it, entry);
+	}
+}
+
 /**
  * \brief Transfers all the data from fdin to fdout.
  *
@@ -146,9 +162,9 @@ uint64_t DataTransfer::fdToArchive(int fd, struct archive *arOut) throw(Exceptio
  *
  * \return Number of bytes sent
  */
-uint64_t DataTransfer::copyData(struct archive *arIn, struct archive *arOut) throw(Exception) {
+uint64_t DataTransfer::copyData(struct archive *arIn, std::vector<struct archive *> &outArchives) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::copyData(arIn=>0x%x, arOut=>0x%x) start", arIn, arOut);
+	log->loopDebug("DataTransfer::copyData(arIn=>0x%x, outArchives=>0x%x) start", arIn, &outArchives);
 
 	int r;
 	const void *buff;
@@ -161,10 +177,13 @@ uint64_t DataTransfer::copyData(struct archive *arIn, struct archive *arOut) thr
 			throw ex;
 		}
 
-		r = archive_write_data_block(arOut, buff, size, offset);
-		if (r < ARCHIVE_OK) {
-			WriteDataException ex;
-			throw ex;
+		std::vector<struct archive*>::iterator it;
+		for(it = outArchives.begin(); it != outArchives.end(); ++it) {
+			r = archive_write_data_block(*it, buff, size, offset);
+			if (r < ARCHIVE_OK) {
+				WriteDataException ex;
+				throw ex;
+			}
 		}
 
 		this->_transferredBytes += size;
@@ -190,6 +209,32 @@ uint64_t DataTransfer::copyData(struct archive *arIn, struct archive *arOut) thr
  *
  * \return Number of bytes sent
  */
+uint64_t DataTransfer::copyData(int fdin, std::vector<int> &outFds) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::copyData(fdin=>%d, outFds=>0x%x) start", fdin, &outFds);
+
+	char buf[Doclone::BUFFER_SIZE];
+	unsigned int nbytes = Doclone::BUFFER_SIZE;
+
+	while ((nbytes = (*this->getNbytes) (fdin, buf, Doclone::BUFFER_SIZE)) > 0) {
+		std::vector<int>::iterator it;
+		for(it = outFds.begin(); it != outFds.end(); ++it) {
+			(*this->putNbytes) (*it, buf, nbytes);
+		}
+
+		this->_transferredBytes += nbytes;
+
+		// Every certain amount of Mbytes, notify the views
+		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
+					this->_transferredBytes);
+		}
+	}
+
+	log->loopDebug("DataTransfer::copyData(_transferredBytes=>%d) end", this->_transferredBytes);
+	return this->_transferredBytes;
+}
+
 uint64_t DataTransfer::copyData(int fdin, int fdout) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::copyData(fdin=>%d, fdout=>%d) start", fdin, fdout);
@@ -325,6 +370,24 @@ ssize_t DataTransfer::sendData (int s, const void *buf, size_t len) throw (Excep
 		//FIXME: Pass the human-readable IP address
 		SendDataException ex("TODO");
 		throw ex;
+	}
+
+	return nbytes;
+}
+
+ssize_t DataTransfer::sendData (std::vector<int> &fds, const void *buf,
+		size_t len) throw (Exception) {
+
+	ssize_t nbytes = 0;
+	std::vector<int>::iterator it;
+	for(it = fds.begin(); it != fds.end(); ++it) {
+		nbytes = send(*it, buf, len, 0);
+
+		if(nbytes<0) {
+			//FIXME: Pass the human-readable IP address
+			SendDataException ex("TODO");
+			throw ex;
+		}
 	}
 
 	return nbytes;

@@ -28,6 +28,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <config.h>
 #include <archive.h>
@@ -70,7 +71,7 @@ namespace Doclone {
  * \brief Initializes attributes
  */
 Image::Image(): _size(), _type(), _labelType(),_header(), _partitions(),
-		_partsInfo(), _archiveIn(), _archiveOut() {
+		_partsInfo(), _archiveIn(), _archivesOut() {
 	Clone *dcl = Clone::getInstance();
 	this->_noData = dcl->getEmpty();
 }
@@ -153,7 +154,7 @@ void  Image::initDiskWriteArchive() {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::initDiskWrite() start");
 
-	this->_archiveOut = archive_write_disk_new();
+	 struct archive *arch = archive_write_disk_new();
 
 	int flags = ARCHIVE_EXTRACT_OWNER;
 	flags |= ARCHIVE_EXTRACT_PERM;
@@ -163,7 +164,8 @@ void  Image::initDiskWriteArchive() {
 	flags |= ARCHIVE_EXTRACT_XATTR;
 	flags |= ARCHIVE_EXTRACT_UNLINK;
 
-	archive_write_disk_set_options(this->_archiveOut, flags);
+	archive_write_disk_set_options(arch, flags);
+	this->_archivesOut.push_back(arch);
 
 	log->debug("Image::initDiskWrite() end");
 }
@@ -172,13 +174,36 @@ void Image::initFdWriteArchive(const int fdout) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::initFdWrite(fdout=>%d) start", fdout);
 
-	this->_archiveOut = archive_write_new();
-	archive_write_add_filter_gzip(this->_archiveOut);
-	archive_write_set_format_pax(this->_archiveOut);
+	struct archive *arch = archive_write_new();
+	archive_write_add_filter_gzip(arch);
+	archive_write_set_format_pax(arch);
 
-	if(archive_write_open_fd(this->_archiveOut, fdout) != ARCHIVE_OK) {
+	if(archive_write_open_fd(arch, fdout) != ARCHIVE_OK) {
 		InitializationException ex;
 		throw ex;
+	}
+
+	this->_archivesOut.push_back(arch);
+
+	log->debug("Image::initFdWrite() end");
+}
+
+void Image::initFdWriteArchive(std::vector<int> &fds) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Image::initFdWrite(fds=>0x%x) start", &fds);
+
+	std::vector<int>::iterator it;
+	for(it = fds.begin(); it != fds.end(); ++it) {
+		struct archive *arch = archive_write_new();
+		archive_write_add_filter_gzip(arch);
+		archive_write_set_format_pax(arch);
+
+		if(archive_write_open_fd(arch, *it) != ARCHIVE_OK) {
+			InitializationException ex;
+			throw ex;
+		}
+
+		this->_archivesOut.push_back(arch);
 	}
 
 	log->debug("Image::initFdWrite() end");
@@ -190,8 +215,11 @@ void Image::freeReadArchive() {
 }
 
 void Image::freeWriteArchive() {
-	archive_write_close(this->_archiveOut);
-	archive_write_free(this->_archiveOut);
+	std::vector<struct archive*>::iterator it;
+	for(it = this->_archivesOut.begin(); it != this->_archivesOut.end(); ++it) {
+		archive_write_close(*it);
+		archive_write_free(*it);
+	}
 }
 
 /**
@@ -375,7 +403,7 @@ void Image::readImageHeader(const std::string &device) throw(Exception) {
  *
  * \return Number of bytes written
  */
-void Image::writeImageHeader() const throw(Exception) {
+void Image::writeImageHeader() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::writeImageHeader() start");
 
@@ -418,28 +446,28 @@ void Image::writeImageHeader() const throw(Exception) {
 	archive_entry_set_birthtime(headerEntry, timeNow, 0);
 	archive_entry_set_ctime(headerEntry, timeNow, 0);
 	archive_entry_set_mtime(headerEntry, timeNow, 0);
-	archive_write_header(this->_archiveOut, headerEntry);
 
 	DataTransfer *trns = DataTransfer::getInstance();
-	trns->bufToArchive(xmlSer, this->_archiveOut);
+	trns->copyHeader(headerEntry, this->_archivesOut);
+	trns->bufToArchive(xmlSer, this->_archivesOut);
 
 	archive_entry_free(headerEntry);
 
 	log->debug("Image::writeImageHeader() end");
 }
 
-void Image::readDataFromDisk(struct archive *in, struct archive *out,
-		struct archive_entry_linkresolver *lResolv,
+void Image::readDataFromDisk(struct archive_entry_linkresolver *lResolv,
 		const std::string &path, const std::string &imgRootDir,
-		size_t mPointLength) const throw(Exception) {
+		size_t mPointLength) throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->loopDebug("Image::readDataFromDisk(in=>0x%x, out=>0x%x, lResolv=>0x%x, path=>%s, imgRootDir=>%s, mPointLength=>%d) start",
-			in, out, lResolv, path.c_str(), imgRootDir.c_str(), mPointLength);
+	log->loopDebug("Image::readDataFromDisk(lResolv=>0x%x, path=>%s, imgRootDir=>%s, mPointLength=>%d) start",
+			lResolv, path.c_str(), imgRootDir.c_str(), mPointLength);
 
 	DIR *directory;
 	struct dirent *d_file; // a file in *directory
 	struct archive_entry *entry;
 	bool errors = false;
+	DataTransfer *trns = DataTransfer::getInstance();
 
 	if ((directory = opendir (path.c_str())) == 0) {
 		FileNotFoundException ex(path);
@@ -466,13 +494,13 @@ void Image::readDataFromDisk(struct archive *in, struct archive *out,
 
 			entry = archive_entry_new();
 			archive_entry_update_pathname_utf8(entry, relPath.c_str());
-			archive_read_disk_entry_from_file(in, entry, fdin, &filestat);
+			archive_read_disk_entry_from_file(this->_archiveIn, entry, fdin, &filestat);
 
 			switch (archive_entry_filetype(entry)) {
 			case AE_IFDIR: {
 				if (strcmp (".", d_file->d_name) && strcmp ("..", d_file->d_name)) {
 
-					archive_write_header(out, entry);
+					trns->copyHeader(entry, this->_archivesOut);
 
 					/*
 					 * If the current folder is a virtual one or is the mount
@@ -485,8 +513,8 @@ void Image::readDataFromDisk(struct archive *in, struct archive *out,
 					}
 
 					abPath.push_back('/');
-					this->readDataFromDisk(in, out, lResolv, abPath.c_str(),
-							imgRootDir, mPointLength);
+					this->readDataFromDisk(lResolv, abPath.c_str(), imgRootDir,
+							mPointLength);
 				}
 				break;
 			}
@@ -500,7 +528,7 @@ void Image::readDataFromDisk(struct archive *in, struct archive *out,
 					throw ex;
 				} else {
 						archive_entry_update_symlink_utf8(entry, linkPath);
-						archive_write_header(out, entry);
+						trns->copyHeader(entry, this->_archivesOut);
 				}
 
 				break;
@@ -515,7 +543,7 @@ void Image::readDataFromDisk(struct archive *in, struct archive *out,
 					archive_entry_linkify(lResolv, &entry, &sparse);
 				}
 				if(entry != 0) {
-					archive_write_header(out, entry);
+					trns->copyHeader(entry, this->_archivesOut);
 				}
 
 				/*
@@ -527,8 +555,7 @@ void Image::readDataFromDisk(struct archive *in, struct archive *out,
 
 				// else
 				if(archive_entry_size(entry) > 0) {
-					DataTransfer *trns = DataTransfer::getInstance();
-					trns->fdToArchive(fdin, out);
+					trns->fdToArchive(fdin, this->_archivesOut);
 				}
 
 				break;
@@ -555,7 +582,7 @@ void Image::readDataFromDisk(struct archive *in, struct archive *out,
 	log->loopDebug("Image::readDataToDisk() end");
 }
 
-void Image::writeDataToDisk() const throw(Exception) {
+void Image::writeDataToDisk() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("Image::writeDataToDisk() start");
 
@@ -590,10 +617,9 @@ void Image::writeDataToDisk() const throw(Exception) {
 				}
 			}
 
-			archive_write_header(this->_archiveOut, entry);
-
 			DataTransfer *trns = DataTransfer::getInstance();
-			trns->copyData(this->_archiveIn, this->_archiveOut);
+			trns->copyHeader(entry, this->_archivesOut);
+			trns->copyData(this->_archiveIn, this->_archivesOut);
 		}
 	} catch(const WarningException &ex) {
 		errors = true;
@@ -614,7 +640,7 @@ void Image::writeDataToDisk() const throw(Exception) {
  * \param index
  * 		The order of the partition (in the vector of Partition*)
  */
-void Image::readPartition(int index) const throw(Exception) {
+void Image::readPartition(int index) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::readPartition(numPart=>%d) start", index);
 	
@@ -634,8 +660,7 @@ void Image::readPartition(int index) const throw(Exception) {
 				mountPoint.push_back('/');
 			}
 
-			this->readDataFromDisk(this->_archiveIn, this->_archiveOut,
-					lResolv, mountPoint,
+			this->readDataFromDisk(lResolv, mountPoint,
 					reinterpret_cast<const char*>(partInf.root_dir),
 					mountPoint.length());
 		} catch (const CancelException &ex) {
@@ -669,7 +694,7 @@ void Image::readPartition(int index) const throw(Exception) {
 /**
  * \brief Reads the data of all partitions in the vector
  */
-void Image::readPartitionsData() const throw(Exception) {
+void Image::readPartitionsData() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::readPartitionsData() start");
 
@@ -695,7 +720,7 @@ void Image::readPartitionsData() const throw(Exception) {
 /**
  * \brief Writes the data of all partitions in the vector
  */
-void Image::writePartitionsData() const throw(Exception) {
+void Image::writePartitionsData() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::writePartitionsData() start");
 
@@ -1150,8 +1175,8 @@ Doclone::diskLabelType Image::getLabelType() const {
 struct archive *Image::getArchiveIn() const {
 	return this->_archiveIn;
 }
-struct archive *Image::getArchiveOut() const {
-	return this->_archiveOut;
+const std::vector<struct archive *> &Image::getArchivesOut() const {
+	return this->_archivesOut;
 }
 
 }

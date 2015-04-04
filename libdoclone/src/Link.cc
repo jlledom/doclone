@@ -326,11 +326,11 @@ void Link::linkClient() throw(Exception) {
 
 	// Set the origin descriptor
 	this->_fdin = fdi;
-	this->_srcIP = inet_ntoa (host_sender.sin_addr);
+	this->_srcIPs.push_back(inet_ntoa (host_sender.sin_addr));
 
 	// Notify the views
 	Clone *dcl = Clone::getInstance();
-	dcl->triggerEvent(Doclone::EVT_NEW_CONNECION, this->_srcIP);
+	dcl->triggerEvent(Doclone::EVT_NEW_CONNECION, this->_srcIPs[0]);
 
 	host_receiver.sin_family = AF_INET;
 	host_receiver.sin_port = htons (Doclone::PORT_DATA);
@@ -561,9 +561,16 @@ void Link::receiveToImage(const std::string &image) throw(Exception) {
 
 	dcl->addOperation(transferOp);
 
+	// Receive the total amount of bytes to be transferred
 	uint64_t totalSize;
 	DataTransfer::recvData(this->_fdin, &totalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
+
+	// Pass it to the next link if any
+	if(this->_fdout != 0) {
+		DataTransfer::sendData(this->_fdout, &totalSize,
+				static_cast<size_t>(sizeof(uint64_t)));
+	}
 
 	/*
 	 * The given totalSize is received in big-endian. If the system is
@@ -572,7 +579,12 @@ void Link::receiveToImage(const std::string &image) throw(Exception) {
 	uint64_t tmpTotalSize = be64toh(totalSize);
 	trns->setTotalSize(tmpTotalSize);
 
-	trns->copyData(this->_fdin, fd);
+	std::vector<int> fdsOut;
+	fdsOut.push_back(fd);
+	if(this->_fdout != 0) {
+		fdsOut.push_back(this->_fdout);
+	}
+	trns->copyData(this->_fdin, fdsOut);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");
 
@@ -611,10 +623,16 @@ void Link::receiveToDevice(const std::string &device) throw(Exception) {
 		throw ex;
 	}
 
+	// Receive the total amount of bytes to be transferred
 	uint64_t totalSize;
-
 	DataTransfer::recvData(this->_fdin, &totalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
+
+	// Pass it to the next link if any
+	if(this->_fdout != 0) {
+		DataTransfer::sendData(this->_fdout, &totalSize,
+				static_cast<size_t>(sizeof(uint64_t)));
+	}
 
 	/*
 	 * The given totalSize is received in big-endian. If the system is
@@ -696,7 +714,7 @@ void Link::receive() throw(Exception) {
 /**
  * \brief Closes the opened connections
  */
-void Link::closeConnection() const throw(Exception) {
+void Link::closeConnection() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::closeConnection() start");
 

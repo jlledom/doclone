@@ -28,7 +28,7 @@ namespace Doclone {
 /**
  * \brief Sets the maximum number of nodes and links
  */
-Net::Net(): _srcIP() {
+Net::Net(): _srcIPs() {
 	Clone *dcl = Clone::getInstance();
 
 	unsigned int nodes = dcl->getNodesNumber();

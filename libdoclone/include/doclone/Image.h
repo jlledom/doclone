@@ -87,6 +87,7 @@ public:
 	void initDiskReadArchive();
 	void initFdReadArchive(const int fdin) throw(Exception);
 	void initDiskWriteArchive();
+	void initFdWriteArchive(std::vector<int> &fds) throw(Exception);
 	void initFdWriteArchive(const int fdout) throw(Exception);
 
 	void freeReadArchive();
@@ -96,10 +97,10 @@ public:
 	void createImageHeader(Disk *dcDev) throw(Exception);
 
 	void readImageHeader(const std::string &device) throw(Exception);
-	void writeImageHeader() const throw(Exception);
+	void writeImageHeader() throw(Exception);
 
-	void readPartitionsData() const throw(Exception);
-	void writePartitionsData() const throw(Exception);
+	void readPartitionsData() throw(Exception);
+	void writePartitionsData() throw(Exception);
 
 	void readPartitionTable(const std::string &device) throw(Exception);
 	void writePartitionTable(const std::string &device) throw(Exception);
@@ -120,7 +121,7 @@ public:
     Doclone::diskLabelType getLabelType() const;
 
     struct archive *getArchiveIn() const;
-    struct archive *getArchiveOut() const;
+    const std::vector<struct archive *> &getArchivesOut() const;
 
 private:
 	/// Image size
@@ -139,18 +140,18 @@ private:
 	std::vector<Doclone::partInfo> _partsInfo;
 	/// The reading archive object
 	struct archive *_archiveIn;
-	/// The writing archive object
-	struct archive *_archiveOut;
+	/// Vector of writing archive objects
+	std::vector<struct archive *> _archivesOut;
 
 	bool fitInDisk(uint64_t size) const throw(Exception);
 
-	void readPartition(int index) const throw(Exception);
+	void readPartition(int index) throw(Exception);
 	void writePartition(int index) const throw(Exception);
 
-	void readDataFromDisk(struct archive *in, struct archive *out,
-			struct archive_entry_linkresolver *lResolv, const std::string &path,
-			const std::string &imgRootDir, size_t mPointLength) const throw(Exception);
-	void writeDataToDisk() const throw(Exception);
+	void readDataFromDisk(struct archive_entry_linkresolver *lResolv,
+			const std::string &path, const std::string &imgRootDir,
+			size_t mPointLength) throw(Exception);
+	void writeDataToDisk() throw(Exception);
 };
 
 }

@@ -23,6 +23,7 @@
 #include <sys/types.h>
 
 #include <map>
+#include <vector>
 
 #include <archive.h>
 
@@ -89,10 +90,12 @@ public:
 	static DataTransfer* getInstance();
 
 	uint64_t archiveToBuf(struct archive *arIn, std::string &target) throw(Exception);
-	uint64_t bufToArchive(const std::string &source, struct archive *arOut) throw(Exception);
-	uint64_t fdToArchive(int fd, struct archive *arOut) throw(Exception);
-	uint64_t copyData(struct archive *arIn, struct archive *arOut) throw(Exception);
+	uint64_t bufToArchive(const std::string &source, std::vector<struct archive*> &outArchives) throw(Exception);
+	uint64_t fdToArchive(int fd, std::vector<struct archive*> &outArchives) throw(Exception);
+	uint64_t copyData(struct archive *arIn, std::vector<struct archive *> &outArchives) throw(Exception);
+	uint64_t copyData(int fdin, std::vector<int> &outFds) throw(Exception);
 	uint64_t copyData(int fdin, int fdout) throw(Exception);
+	void copyHeader(struct archive_entry *entry, std::vector<struct archive*> &outArchives) throw(Exception);
 
 	void initLocalRead();
 	void initSocketRead();
@@ -103,6 +106,7 @@ public:
 	static ssize_t recvData (int s, void *buf, size_t len) throw (Exception);
 	static ssize_t writeBytes (int s, const void *buf, size_t len) throw (Exception);
 	static ssize_t sendData (int s, const void *buf, size_t len) throw (Exception);
+	static ssize_t sendData (std::vector<int> &fds, const void *buf, size_t len) throw (Exception);
 
 	void setTotalSize(const uint64_t size);
 

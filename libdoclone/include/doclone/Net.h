@@ -137,10 +137,10 @@ public:
 	virtual ~Net() {}
 
 protected:
-	virtual void closeConnection() const throw(Exception) {}
+	virtual void closeConnection() throw(Exception) {}
 
-	/// Origin IP (Human readable)
-	std::string _srcIP;
+	/// Vector of origin IPs (Human readable)
+	std::vector<std::string> _srcIPs;
 	
 	/// Number of receivers in multicast mode
 	unsigned int _nodesNum;
