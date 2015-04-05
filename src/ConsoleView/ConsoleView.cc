@@ -202,9 +202,10 @@ void ConsoleView::initView(int argc, char **argv) const {
 	std::string image="";
 	std::string device="";
 	std::string address="";
+	std::string interface="";
 	int nodesNumber = 0;
 
-	const char options_c[] = "hvcrSRsld:f:a:n:eF";
+	const char options_c[] = "hvcrSRsld:f:a:i:n:eF";
 	const struct option options_l[] = {
 		{"help", 0, 0, 'h'},
 		{"version", 0, 0, 'v'},
@@ -217,6 +218,7 @@ void ConsoleView::initView(int argc, char **argv) const {
 		{"device", 1, 0, 'd'},
 		{"file", 1, 0, 'f'},
 		{"address", 1, 0, 'a'},
+		{"interface", 1, 0, 'i'},
 		{"nodes", 1, 0, 'n'},
 		{"empty", 0, 0, 'e'},
 		{"force", 0, 0, 'F'},
@@ -293,6 +295,11 @@ void ConsoleView::initView(int argc, char **argv) const {
 		case 'a': {
 			address = optarg;
 			dcl->setAddress(address);
+			break;
+		}
+		case 'i': {
+			interface = optarg;
+			dcl->setInterface(interface);
 			break;
 		}
 		case 'n': {
@@ -412,6 +419,7 @@ void ConsoleView::usage (FILE * stream, int code, const char * cmd) const {
 			"[ -d, --device DEVICE ] [ -f, --file FILE ]\n"
 			"\t[ -a, --address SERVER-IP-ADDRESS ]"
 			" [ -n, --nodes NUMBER ]\n"
+			"\t[ -i, --interface IP-OF-WORKING-INTERFACE]\n"
 			"\t[ -e, --empty ] [ -F, --force]\n "), cmd);
 
 	fprintf (stream,

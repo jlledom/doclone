@@ -388,6 +388,8 @@ typedef struct dc_doclone {
 	uint8_t _device[512];
 	/// Ip address entered by the user
 	uint8_t _address[20];
+	/// Ip address of the network interface entered by the user
+	uint8_t _interface[20];
 	/// Number of receivers entered by the user
 	uint32_t _nodesNumber;
 	/// Empty mode enabled/disabled

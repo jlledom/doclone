@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doclone 0.7.1\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2015-01-11 21:12+0100\n"
+"POT-Creation-Date: 2015-04-05 21:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,16 +89,17 @@ msgstr ""
 msgid "New connection from"
 msgstr ""
 
-#: src/ConsoleView/ConsoleView.cc:411
+#: src/ConsoleView/ConsoleView.cc:418
 #, c-format
 msgid ""
 "Usage: %s FUNCTION [ -d, --device DEVICE ] [ -f, --file FILE ]\n"
 "\t[ -a, --address SERVER-IP-ADDRESS ] [ -n, --nodes NUMBER ]\n"
+"\t[ -i, --interface IP-OF-WORKING-INTERFACE]\n"
 "\t[ -e, --empty ] [ -F, --force]\n"
 " "
 msgstr ""
 
-#: src/ConsoleView/ConsoleView.cc:418
+#: src/ConsoleView/ConsoleView.cc:426
 #, c-format
 msgid ""
 "\n"
@@ -119,7 +120,7 @@ msgid ""
 "\t-l, --link-receive\tReceives data from the network.\n"
 msgstr ""
 
-#: src/ConsoleView/ConsoleView.cc:434
+#: src/ConsoleView/ConsoleView.cc:442
 #, c-format
 msgid ""
 "\n"
@@ -128,7 +129,7 @@ msgid ""
 "\t-v, --version\t\tShow doclone version.\n"
 msgstr ""
 
-#: src/ConsoleView/ConsoleView.cc:443
+#: src/ConsoleView/ConsoleView.cc:451
 #, c-format
 msgid ""
 "doclone %s\n"

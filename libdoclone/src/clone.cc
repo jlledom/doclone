@@ -320,6 +320,15 @@ void doclone_set_address(dc_doclone *dc_obj, const char *address) {
 
 /**
  * \ingroup CWrapperAPI
+ * \brief Sets the IP address of the interface to be used in the link mode
+ */
+void doclone_set_interface(dc_doclone *dc_obj, const char *interface) {
+	char *dst = reinterpret_cast<char *>(dc_obj->_interface);
+	snprintf(dst, sizeof(dc_obj->_interface), "%s", interface);
+}
+
+/**
+ * \ingroup CWrapperAPI
  * \brief Sets the number of receivers of the given dc_doclone object
  *
  * Useful only if this object will be used to be a server

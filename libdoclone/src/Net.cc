@@ -26,13 +26,13 @@
 namespace Doclone {
 
 /**
- * \brief Sets the maximum number of nodes and links
+ * \brief Sets the maximum number of nodes and the network interface
+ * to be used if any.
  */
 Net::Net(): _srcIPs() {
 	Clone *dcl = Clone::getInstance();
 
 	unsigned int nodes = dcl->getNodesNumber();
-
 	if(nodes == 0) {
 		this->_linksNum = Doclone::LINKS_NUM;
 		this->_nodesNum = 1;
@@ -41,6 +41,8 @@ Net::Net(): _srcIPs() {
 		this->_linksNum = nodes;
 		this->_nodesNum = nodes;
 	}
+
+	this->_interface = dcl->getInterface();
 }
 
 }

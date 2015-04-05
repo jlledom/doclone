@@ -86,7 +86,11 @@ int Link::answer() const throw(Exception) {
 	// We join the broadcast group
 	ip_mreq mReq;
 	mReq.imr_multiaddr.s_addr = inet_addr (Doclone::MULTICAST_GROUP);
-	mReq.imr_interface.s_addr = htonl(INADDR_ANY);
+	if(this->_interface.compare("")==0) {
+		mReq.imr_interface.s_addr = htonl(INADDR_ANY);
+	} else {
+		mReq.imr_interface.s_addr =  inet_addr(this->_interface.c_str());
+	}
 
 	setsockopt (sock_udp, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mReq, sizeof(mReq));
 
@@ -160,6 +164,7 @@ int Link::netScan() const throw(Exception) {
 	int sock_udp;
 	fd_set readSet;
 	in_addr_t links[this->_linksNum];
+	struct in_addr localInterface = {};
 	sockaddr_in udp = {};
 	timeval timeout = { 3, 0 };
 	socklen_t addrlen = sizeof (sockaddr);
@@ -172,6 +177,11 @@ int Link::netScan() const throw(Exception) {
 	udp.sin_family = AF_INET;
 	udp.sin_port = htons (Doclone::PORT_PING);
 	udp.sin_addr.s_addr = inet_addr (Doclone::MULTICAST_GROUP);
+
+	if(this->_interface.compare("")!=0) {
+		localInterface.s_addr = inet_addr (this->_interface.c_str());
+		setsockopt(sock_udp, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface));
+	}
 
 	dcCommand request = Doclone::C_LINK_SERVER_OK;
 	if ((sendto (sock_udp, &request, sizeof(request), 0,

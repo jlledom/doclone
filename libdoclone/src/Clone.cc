@@ -39,7 +39,7 @@ namespace Doclone {
 /**
  * \brief Initializes gettext, signal handlers and some attributes of this class
  */
-Clone::Clone(): _image(), _device(), _address(), _nodesNumber(0),
+Clone::Clone(): _image(), _device(), _address(), _interface(), _nodesNumber(0),
 		_empty(false), _force(), _operations() {
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
@@ -333,6 +333,21 @@ const std::string &Clone::getAddress() const {
  */
 void Clone::setAddress(const std::string &address) {
 	this->_address = address;
+}
+
+const std::string &Clone::getInterface() const {
+	return this->_interface;
+}
+
+/**
+ * \ingroup CPPAPI
+ * \brief Sets the IP address of the network interface to be used in the link mode.
+ *
+ * \param interface
+ * 		IP Address of the interface
+ */
+void Clone::setInterface(const std::string &interface) {
+	this->_interface = interface;
 }
 
 bool Clone::getForce() const {

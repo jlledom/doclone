@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2015-01-11 21:12+0100\n"
-"PO-Revision-Date: 2015-01-11 21:20+0100\n"
+"POT-Creation-Date: 2015-04-05 21:09+0200\n"
+"PO-Revision-Date: 2015-04-05 21:10+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -18,15 +18,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TO TRANSLATORS: looks like "Transferred: 55%"
-#: src/ConsoleView/ConsoleView.cc:61 src/CursesView/ProgressScreen.cc:78
+#: src/ConsoleView/ConsoleView.cc:61
+#: src/CursesView/ProgressScreen.cc:78
 msgid "Transferred:"
 msgstr "Transferido:"
 
-#: src/ConsoleView/ConsoleView.cc:78 src/CursesView/ActionPanel.cc:196
+#: src/ConsoleView/ConsoleView.cc:78
+#: src/CursesView/ActionPanel.cc:196
 msgid "Waiting for server..."
 msgstr "Esperando al servidor..."
 
-#: src/ConsoleView/ConsoleView.cc:83 src/CursesView/ActionPanel.cc:201
+#: src/ConsoleView/ConsoleView.cc:83
+#: src/CursesView/ActionPanel.cc:201
 msgid "Waiting for client/s..."
 msgstr "Esperando a los clientes..."
 
@@ -85,24 +88,27 @@ msgid "Grub installed on"
 msgstr "GRUB instalado en"
 
 #. TO TRANSLATORS: looks like	New connection from 192.168.1.10
-#: src/ConsoleView/ConsoleView.cc:173 src/CursesView/ProgressScreen.cc:317
+#: src/ConsoleView/ConsoleView.cc:173
+#: src/CursesView/ProgressScreen.cc:317
 msgid "New connection from"
 msgstr "Nueva conexión desde"
 
-#: src/ConsoleView/ConsoleView.cc:411
+#: src/ConsoleView/ConsoleView.cc:418
 #, c-format
 msgid ""
 "Usage: %s FUNCTION [ -d, --device DEVICE ] [ -f, --file FILE ]\n"
 "\t[ -a, --address SERVER-IP-ADDRESS ] [ -n, --nodes NUMBER ]\n"
+"\t[ -i, --interface IP-OF-WORKING-INTERFACE]\n"
 "\t[ -e, --empty ] [ -F, --force]\n"
 " "
 msgstr ""
 "Uso: %s FUNCIÓN [ -d, --device DISPOSITIVO ] [ -f, --file FICHERO ]\n"
 "\t[ -a, --address IP-DEL-SERVIDOR ] [ -n, --nodes NÚMERO ]\n"
+"\t[ -i, --interface IP-DE-INTERFAZ-DE-RED]\n"
 "\t[ -e, --empty ] [ -F, --force]\n"
 " "
 
-#: src/ConsoleView/ConsoleView.cc:418
+#: src/ConsoleView/ConsoleView.cc:426
 #, c-format
 msgid ""
 "\n"
@@ -138,7 +144,7 @@ msgstr ""
 "\t-s, --link-send\t\tEnvía datos a la cadena.\n"
 "\t-l, --link-receive\tRecibe datos de la cadena.\n"
 
-#: src/ConsoleView/ConsoleView.cc:434
+#: src/ConsoleView/ConsoleView.cc:442
 #, c-format
 msgid ""
 "\n"
@@ -151,7 +157,7 @@ msgstr ""
 "\t-h, --help\t\tMuestra esta ayuda.\n"
 "\t-v, --version\t\tMuestra la versión de doclone.\n"
 
-#: src/ConsoleView/ConsoleView.cc:443
+#: src/ConsoleView/ConsoleView.cc:451
 #, c-format
 msgid ""
 "doclone %s\n"
@@ -271,25 +277,35 @@ msgid "Close doclone"
 msgstr "Cierra doclone"
 
 #. Refresh the text at the top bar
-#: src/CursesView/CursesView.cc:90 src/CursesView/InsertIpForm.cc:28
-#: src/CursesView/InsertNumOfClientsForm.cc:30 src/CursesView/LanMenu.cc:37
-#: src/CursesView/LanRoleMenu.cc:37 src/CursesView/LocalMenu.cc:37
-#: src/CursesView/ScopeMenu.cc:37 src/CursesView/SelectDeviceForm.cc:40
+#: src/CursesView/CursesView.cc:90
+#: src/CursesView/InsertIpForm.cc:28
+#: src/CursesView/InsertNumOfClientsForm.cc:30
+#: src/CursesView/LanMenu.cc:37
+#: src/CursesView/LanRoleMenu.cc:37
+#: src/CursesView/LocalMenu.cc:37
+#: src/CursesView/ScopeMenu.cc:37
+#: src/CursesView/SelectDeviceForm.cc:40
 #: src/CursesView/TargetMenu.cc:37
 msgid "Select the option and press [Enter] or push <Continue>."
 msgstr "Seleccione una opción y pulse [Intro] o presione <Continuar>"
 
-#: src/CursesView/CursesView.cc:92 src/CursesView/InsertFileForm.cc:47
+#: src/CursesView/CursesView.cc:92
+#: src/CursesView/InsertFileForm.cc:47
 #: src/CursesView/InsertIpForm.cc:30
-#: src/CursesView/InsertNumOfClientsForm.cc:32 src/CursesView/LanMenu.cc:39
-#: src/CursesView/LanRoleMenu.cc:39 src/CursesView/LocalMenu.cc:39
-#: src/CursesView/ScopeMenu.cc:39 src/CursesView/SelectDeviceForm.cc:42
-#: src/CursesView/SelectFileForm.cc:48 src/CursesView/TargetMenu.cc:39
+#: src/CursesView/InsertNumOfClientsForm.cc:32
+#: src/CursesView/LanMenu.cc:39
+#: src/CursesView/LanRoleMenu.cc:39
+#: src/CursesView/LocalMenu.cc:39
+#: src/CursesView/ScopeMenu.cc:39
+#: src/CursesView/SelectDeviceForm.cc:42
+#: src/CursesView/SelectFileForm.cc:48
+#: src/CursesView/TargetMenu.cc:39
 msgid "Press [Tab] to move."
 msgstr "Pulse [Tab] para moverse."
 
 #. Refresh the text at the top bar
-#: src/CursesView/InsertFileForm.cc:45 src/CursesView/SelectFileForm.cc:46
+#: src/CursesView/InsertFileForm.cc:45
+#: src/CursesView/SelectFileForm.cc:46
 msgid "Select the directory and type the file name."
 msgstr "Selecione el directorio y escriba el nombre del fichero."
 
@@ -315,7 +331,8 @@ msgid "Sorry, you do not have permission to access this directory"
 msgstr "No tiene permiso para acceder a este directorio"
 
 #. TO TRANSLATORS: looks like	Enter into /home
-#: src/CursesView/InsertFileForm.cc:233 src/CursesView/SelectFileForm.cc:232
+#: src/CursesView/InsertFileForm.cc:233
+#: src/CursesView/SelectFileForm.cc:232
 msgid "Enter into"
 msgstr "Entrar en"
 
@@ -384,11 +401,13 @@ msgstr "Recibe datos del servidor"
 msgid "Choose what you want to do:"
 msgstr "Escoja qué desea hacer:"
 
-#: src/CursesView/LocalMenu.cc:42 src/CursesView/SummaryScreen.cc:50
+#: src/CursesView/LocalMenu.cc:42
+#: src/CursesView/SummaryScreen.cc:50
 msgid "Create image"
 msgstr "Crear imagen"
 
-#: src/CursesView/LocalMenu.cc:43 src/CursesView/SummaryScreen.cc:61
+#: src/CursesView/LocalMenu.cc:43
+#: src/CursesView/SummaryScreen.cc:61
 msgid "Restore image"
 msgstr "Restaurar imagen"
 

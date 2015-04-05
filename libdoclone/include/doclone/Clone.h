@@ -260,6 +260,8 @@ public:
 	void setImage(const std::string &image);
 	const std::string &getAddress() const;
 	void setAddress(const std::string &address);
+	const std::string &getInterface() const;
+	void setInterface(const std::string &interface);
 	bool getForce() const;
 	void setForce(bool force);
 
@@ -278,6 +280,8 @@ protected:
 	std::string _device;
 	/// Ip address entered by the user
 	std::string _address;
+	/// Ip address of the interface to be used in the link mode
+	std::string _interface;
 	/// Number of receivers entered by the user
 	unsigned int _nodesNumber;
 	/// Empty mode enabled/disabled

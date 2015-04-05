@@ -146,6 +146,8 @@ protected:
 	unsigned int _nodesNum;
 	/// Max number of links in the chain
 	unsigned int _linksNum;
+	/// Ip address of the interface to be used in the link mode
+	std::string _interface;
 };
 
 }
