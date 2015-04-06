@@ -38,7 +38,9 @@ namespace Doclone {
  * \brief Initializes the attributes
  */
 DataTransfer::DataTransfer()
-	:  getNbytes(0), putNbytes(0), _totalSize(0), _transferredBytes(0) {
+	:  getNbytes(0), putNbytes(0), _totalSize(0), _transferredBytes(0),
+	   _transferNotificationsCount(0) {
+	this->_notificationPointSize = Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT;
 }
 
 /**
@@ -78,8 +80,10 @@ uint64_t DataTransfer::archiveToBuf(struct archive *arIn, std::string &target) t
 
 		this->_transferredBytes += nbytes;
 
-		// Every certain amount of Mbytes, notify the views
-		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+		// Notify the views if it crosses a notification point
+		if(this->_transferredBytes >
+			(this->_notificationPointSize * this->_transferNotificationsCount)) {
+			this->_transferNotificationsCount++;
 			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
 					this->_transferredBytes);
 		}
@@ -100,7 +104,7 @@ uint64_t DataTransfer::bufToArchive(const std::string &source,
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::bufToArchive(source=>%s, outArchives=>0x%x) start", source.c_str(), &outArchives);
 
-	int r = {};
+	int r;
 
 	std::vector<struct archive*>::iterator it;
 	for(it = outArchives.begin(); it != outArchives.end(); ++it) {
@@ -113,8 +117,10 @@ uint64_t DataTransfer::bufToArchive(const std::string &source,
 
 	this->_transferredBytes += source.length();
 
-	// Every certain amount of Mbytes, notify the views
-	if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+	// Notify the views if it crosses a notification point
+	if(this->_transferredBytes >
+		(this->_notificationPointSize * this->_transferNotificationsCount)) {
+		this->_transferNotificationsCount++;
 		this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
 				this->_transferredBytes);
 	}
@@ -127,7 +133,7 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::transferFile(fd=>%d, outArchives=>0x%x) start", fd, &outArchives);
 
-	int r = {};
+	int r;
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = 0;
 
@@ -143,8 +149,10 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 
 		this->_transferredBytes += nbytes;
 
-		// Every certain amount of Mbytes, notify the views
-		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+		// Notify the views if it crosses a notification point
+		if(this->_transferredBytes >
+			(this->_notificationPointSize * this->_transferNotificationsCount)) {
+			this->_transferNotificationsCount++;
 			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
 					this->_transferredBytes);
 		}
@@ -156,7 +164,7 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 
 void DataTransfer::copyHeader(struct archive_entry *entry,
 		std::vector<struct archive*> &outArchives) throw(Exception) {
-	int r = {};
+	int r;
 
 	std::vector<struct archive*>::iterator it;
 	for(it = outArchives.begin(); it != outArchives.end(); ++it) {
@@ -204,8 +212,10 @@ uint64_t DataTransfer::copyData(struct archive *arIn, std::vector<struct archive
 
 		this->_transferredBytes += size;
 
-		// Every certain amount of Mbytes, notify the views
-		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+		// Notify the views if it crosses a notification point
+		if(this->_transferredBytes >
+			(this->_notificationPointSize * this->_transferNotificationsCount)) {
+			this->_transferNotificationsCount++;
 			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
 					this->_transferredBytes);
 		}
@@ -240,8 +250,10 @@ uint64_t DataTransfer::copyData(int fdin, std::vector<int> &outFds) throw(Except
 
 		this->_transferredBytes += nbytes;
 
-		// Every certain amount of Mbytes, notify the views
-		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+		// Notify the views if it crosses a notification point
+		if(this->_transferredBytes >
+			(this->_notificationPointSize * this->_transferNotificationsCount)) {
+			this->_transferNotificationsCount++;
 			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
 					this->_transferredBytes);
 		}
@@ -263,8 +275,10 @@ uint64_t DataTransfer::copyData(int fdin, int fdout) throw(Exception) {
 
 		this->_transferredBytes += nbytes;
 
-		// Every certain amount of Mbytes, notify the views
-		if((this->_transferredBytes%(Doclone::BUFFER_SIZE*Doclone::UPDATE_QUOTIENT)) == 0) {
+		// Notify the views if it crosses a notification point
+		if(this->_transferredBytes >
+			(this->_notificationPointSize * this->_transferNotificationsCount)) {
+			this->_transferNotificationsCount++;
 			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
 					this->_transferredBytes);
 		}

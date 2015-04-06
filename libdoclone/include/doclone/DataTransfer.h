@@ -126,6 +126,10 @@ private:
 	uint64_t _totalSize;
 	/// Transferred bytes at the moment
 	uint64_t _transferredBytes;
+	/// Observers are be notified every time this amount of bytes is written
+	uint32_t _notificationPointSize;
+	/// Number of times the observers have been notified at the moment
+	uint32_t _transferNotificationsCount;
 };
 
 }
