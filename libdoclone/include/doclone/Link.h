@@ -48,6 +48,8 @@ namespace Doclone {
  */
 class Link : public Net {
 public:
+	Link();
+
 	void send() throw(Exception);
 	void receive() throw(Exception);
 

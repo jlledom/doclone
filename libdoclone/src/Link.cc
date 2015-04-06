@@ -49,6 +49,11 @@
 namespace Doclone {
 
 /**
+ * \brief Constructor. Initializes attributes
+ */
+Link::Link(): _fdin(), _fdout(), _dstIP() {}
+
+/**
  * \brief Establishes a communication with the sender via UDP to inform it
  * that this node is available to receive data.
  *
