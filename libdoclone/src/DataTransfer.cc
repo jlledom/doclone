@@ -100,9 +100,15 @@ uint64_t DataTransfer::bufToArchive(const std::string &source,
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::bufToArchive(source=>%s, outArchives=>0x%x) start", source.c_str(), &outArchives);
 
+	int r = {};
+
 	std::vector<struct archive*>::iterator it;
 	for(it = outArchives.begin(); it != outArchives.end(); ++it) {
-		archive_write_data(*it, source.c_str(), source.length());
+		r = archive_write_data(*it, source.c_str(), source.length());
+		if (r < ARCHIVE_OK) {
+			WriteDataException ex;
+			throw ex;
+		}
 	}
 
 	this->_transferredBytes += source.length();
@@ -121,13 +127,18 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::transferFile(fd=>%d, outArchives=>0x%x) start", fd, &outArchives);
 
+	int r = {};
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = 0;
 
 	while ((nbytes = (*this->getNbytes) (fd, buf, Doclone::BUFFER_SIZE)) > 0) {
 		std::vector<struct archive*>::iterator it;
 		for(it = outArchives.begin(); it != outArchives.end(); ++it) {
-			archive_write_data(*it, buf, nbytes);
+			r = archive_write_data(*it, buf, nbytes);
+			if (r < ARCHIVE_OK) {
+				WriteDataException ex;
+				throw ex;
+			}
 		}
 
 		this->_transferredBytes += nbytes;
@@ -145,10 +156,15 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 
 void DataTransfer::copyHeader(struct archive_entry *entry,
 		std::vector<struct archive*> &outArchives) throw(Exception) {
+	int r = {};
 
 	std::vector<struct archive*>::iterator it;
 	for(it = outArchives.begin(); it != outArchives.end(); ++it) {
-		archive_write_header(*it, entry);
+		r = archive_write_header(*it, entry);
+		if (r < ARCHIVE_OK) {
+			WriteDataException ex;
+			throw ex;
+		}
 	}
 }
 
