@@ -22,7 +22,6 @@
 #include <arpa/inet.h>
 
 #include <string>
-#include <vector>
 
 #include <doclone/exception/Exception.h>
 
@@ -139,8 +138,8 @@ public:
 protected:
 	virtual void closeConnection() throw(Exception) {}
 
-	/// Vector of origin IPs (Human readable)
-	std::vector<std::string> _srcIPs;
+	/// Origin IP (Human readable)
+	std::string _srcIP;
 	
 	/// Number of receivers in multicast mode
 	unsigned int _nodesNum;

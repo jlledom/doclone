@@ -113,7 +113,7 @@ void Unicast::tcpServer() throw(Exception) {
 				DataTransfer::sendData(fd, &response, sizeof(response));
 
 				this->_fds.push_back(fd);
-				this->_srcIPs.push_back(inet_ntoa (host_server.sin_addr));
+				this->_srcIP = inet_ntoa (host_server.sin_addr);
 
 				// Notify the views
 				Clone *dcl = Clone::getInstance();
@@ -152,7 +152,7 @@ void Unicast::tcpClient() throw(Exception) {
 	hints.ai_socktype = SOCK_STREAM;
 	std::string strPort = Util::intToString(Doclone::PORT_DATA);
 
-	if(getaddrinfo (this->_srcIPs[0].c_str(), strPort.c_str(), &hints, &res)) {
+	if(getaddrinfo (this->_srcIP.c_str(), strPort.c_str(), &hints, &res)) {
 		ConnectionException ex;
 		throw ex;
 	}
@@ -488,7 +488,7 @@ void Unicast::receive() throw(Exception) {
 
 	Clone *dcl = Clone::getInstance();
 
-	this->_srcIPs.push_back(dcl->getAddress());
+	this->_srcIP = dcl->getAddress();
 
 	try {
 		if(dcl->getDevice().empty()) {

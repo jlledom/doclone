@@ -29,7 +29,7 @@ namespace Doclone {
  * \brief Sets the maximum number of nodes and the network interface
  * to be used if any.
  */
-Net::Net(): _srcIPs() {
+Net::Net(): _srcIP() {
 	Clone *dcl = Clone::getInstance();
 
 	unsigned int nodes = dcl->getNodesNumber();

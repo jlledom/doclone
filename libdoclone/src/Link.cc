@@ -342,11 +342,11 @@ void Link::linkClient() throw(Exception) {
 
 	// Set the origin descriptor
 	this->_fdin = fdi;
-	this->_srcIPs.push_back(inet_ntoa (host_sender.sin_addr));
+	this->_srcIP = inet_ntoa (host_sender.sin_addr);
 
 	// Notify the views
 	Clone *dcl = Clone::getInstance();
-	dcl->triggerEvent(Doclone::EVT_NEW_CONNECION, this->_srcIPs[0]);
+	dcl->triggerEvent(Doclone::EVT_NEW_CONNECION, this->_srcIP);
 
 	host_receiver.sin_family = AF_INET;
 	host_receiver.sin_port = htons (Doclone::PORT_DATA);
