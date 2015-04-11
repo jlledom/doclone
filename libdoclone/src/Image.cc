@@ -720,7 +720,7 @@ void Image::readPartitionsData() throw(Exception) {
 /**
  * \brief Writes the data of all partitions in the vector
  */
-void Image::writePartitionsData() throw(Exception) {
+void Image::writePartitionsData(const std::string &device) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::writePartitionsData() start");
 
@@ -766,6 +766,9 @@ void Image::writePartitionsData() throw(Exception) {
 			}
 		}
 	}
+
+	Clone *dcl = Clone::getInstance();
+		dcl->markCompleted(Doclone::OP_WRITE_DATA, device);
 
 	log->debug("Image::writePartitionsData() end");
 }
@@ -1125,25 +1128,8 @@ void Image::initRestoreOperations(const std::string &device) const throw(Excepti
 		}
 	}
 
-	for (int i = 0;i<this->_header.num_partitions &&
-				this->_partitions[i]->getPartition().used_part != 0; i++) {
-		Partition *part = this->_partitions[i];
-
-		std::stringstream partTarget;
-
-		if(this->_header.image_type == Doclone::IMAGE_DISK) {
-			partTarget << target << ", #" << (i+1);
-		} else {
-			partTarget << target;
-		}
-
-		if(this->_noData == false && part->isWritable() == true) {
-			Operation *dataOp = new Operation(Doclone::OP_WRITE_DATA,
-					partTarget.str());
-
-			dcl->addOperation(dataOp);
-		}
-	}
+	Operation *dataOp = new Operation(Doclone::OP_WRITE_DATA,target);
+	dcl->addOperation(dataOp);
 
 	log->debug("Image::initRestoreOperations() end");
 }

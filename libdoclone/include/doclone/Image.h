@@ -100,7 +100,7 @@ public:
 	void writeImageHeader() throw(Exception);
 
 	void readPartitionsData() throw(Exception);
-	void writePartitionsData() throw(Exception);
+	void writePartitionsData(const std::string &device) throw(Exception);
 
 	void readPartitionTable(const std::string &device) throw(Exception);
 	void writePartitionTable(const std::string &device) throw(Exception);

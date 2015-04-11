@@ -46,7 +46,7 @@ namespace Doclone {
  * \var OP_READ_DATA
  * 	Reading the data of a partition
  * \var OP_WRITE_DATA
- * 	Writing the data of a partition
+ * 	Writing the data of an image (to all partitions)
  * \var OP_GRUB_INSTALL
  * 	Installing GRUB
  * \var OP_TRANSFER_DATA

@@ -144,7 +144,7 @@ void Local::restore() const throw(Exception) {
 
 	image.writePartitionTable(this->_device);
 
-	image.writePartitionsData();
+	image.writePartitionsData(this->_device);
 
 	if(image.getHeader().image_type==(Doclone::imageType)IMAGE_DISK) {
 		dcDisk->setPartitions(image.getPartitions());

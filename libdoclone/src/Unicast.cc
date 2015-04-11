@@ -462,7 +462,7 @@ void Unicast::receiveToDevice(const std::string &device) throw(Exception) {
 
 	image.initRestoreOperations(device);
 	image.writePartitionTable(device);
-	image.writePartitionsData();
+	image.writePartitionsData(device);
 
 	if(image.getHeader().image_type==(Doclone::imageType)IMAGE_DISK) {
 		dcDisk->setPartitions(image.getPartitions());
