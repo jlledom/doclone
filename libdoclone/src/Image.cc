@@ -123,6 +123,9 @@ bool Image::isValid() const throw(Exception) {
 	return retValue;
 }
 
+/**
+ * \brief Makes this->_archiveIn be a disk read archive
+ */
 void Image::initDiskReadArchive() {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::initDiskRead() start");
@@ -133,6 +136,9 @@ void Image::initDiskReadArchive() {
 	log->debug("Image::initDiskRead() end");
 }
 
+/**
+ * \brief Makes this->_archiveIn be a descriptor read archive
+ */
 void Image::initFdReadArchive(const int fdin) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::initFdRead(fdin=>%d) start", fdin);
@@ -150,6 +156,9 @@ void Image::initFdReadArchive(const int fdin) throw(Exception) {
 	log->debug("Image::initFdRead() end");
 }
 
+/**
+ * \brief Makes this->_archivesOut[0] be a disk write archive
+ */
 void  Image::initDiskWriteArchive() {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::initDiskWrite() start");
@@ -170,6 +179,12 @@ void  Image::initDiskWriteArchive() {
 	log->debug("Image::initDiskWrite() end");
 }
 
+/**
+ * \brief Makes this->_archivesOut[0] be a write archive for [fdout]
+ *
+ * \param fdout
+ * 		Descriptor where archive will write
+ */
 void Image::initFdWriteArchive(const int fdout) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::initFdWrite(fdout=>%d) start", fdout);
@@ -188,6 +203,12 @@ void Image::initFdWriteArchive(const int fdout) throw(Exception) {
 	log->debug("Image::initFdWrite() end");
 }
 
+/**
+ * \brief For each descriptor in [fds], create an archive for writing to it
+ *
+ * \param fds
+ * 		Vector of descriptors
+ */
 void Image::initFdWriteArchive(std::vector<int> &fds) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::initFdWrite(fds=>0x%x) start", &fds);
@@ -209,11 +230,17 @@ void Image::initFdWriteArchive(std::vector<int> &fds) throw(Exception) {
 	log->debug("Image::initFdWrite() end");
 }
 
+/**
+ * \brief Free allocated memory for read archive
+ */
 void Image::freeReadArchive() {
 	archive_read_close(this->_archiveIn);
 	archive_read_free(this->_archiveIn);
 }
 
+/**
+ * \brief Free allocated memory for write archive
+ */
 void Image::freeWriteArchive() {
 	std::vector<struct archive*>::iterator it;
 	for(it = this->_archivesOut.begin(); it != this->_archivesOut.end(); ++it) {
@@ -456,6 +483,23 @@ void Image::writeImageHeader() throw(Exception) {
 	log->debug("Image::writeImageHeader() end");
 }
 
+/**
+ * \brief Reads the data of a directory and stores it in the out archive
+ * or vector of archives
+ *
+ * This function is called for first time on the root path of the partition and
+ * is recursively called to read all the data in the directory tree.
+ *
+ * \param lResolv
+ * 		Libarchive link resolver for handling hard links logic
+* \param path
+* 		Path in the FS of the folder to be read
+* \param imgRootDir
+* 		Path into the image file where the data of the current partition
+* 		is being written
+* \param mPointLength
+* 		Size of the path to the current mount point of the partition
+ */
 void Image::readDataFromDisk(struct archive_entry_linkresolver *lResolv,
 		const std::string &path, const std::string &imgRootDir,
 		size_t mPointLength) throw(Exception) {
@@ -582,6 +626,15 @@ void Image::readDataFromDisk(struct archive_entry_linkresolver *lResolv,
 	log->loopDebug("Image::readDataToDisk() end");
 }
 
+/**
+ * \brief Writes all the data in the image file.
+ *
+ * This method is not called for each partition but just once for the whole
+ * image file. All the partitions have been mounted before calling it and the
+ * files in the archive are written in the corresponding mount point. This way
+ * of restoring let us restore a Doclone image that has been modified by other
+ * tools.
+ */
 void Image::writeDataToDisk() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("Image::writeDataToDisk() start");
@@ -652,9 +705,9 @@ void Image::readPartition(int index) throw(Exception) {
 	if(!this->_noData) {
 		struct archive_entry_linkresolver *lResolv =
 				archive_entry_linkresolver_new();
-        archive_entry_linkresolver_set_strategy(lResolv, ARCHIVE_FORMAT_TAR);
+		archive_entry_linkresolver_set_strategy(lResolv, ARCHIVE_FORMAT_TAR);
 
-        part->doMount();
+		part->doMount();
 		try {
 			std::string mountPoint = part->getMountPoint();
 			if(mountPoint[mountPoint.length()-1]!='/') {

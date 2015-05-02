@@ -122,7 +122,7 @@ public:
 	Partition(const std::string &path) throw(Exception);
 	Partition(Doclone::partInfo header) throw(Exception);
 	~Partition();
-	
+
 	// Getters and setters
 	Doclone::partType getType() const;
 	uint64_t getMinSize() const;
@@ -135,17 +135,17 @@ public:
 	unsigned int getPartNum() const;
 	Filesystem * getFileSystem();
 	const std::string &getMountPoint() const;
-	
+
 	void format() const throw(Exception);
 	void writeLabel() const throw(Exception);
 	void writeUUID() const throw(Exception);
 	void writeFlags() const throw(Exception);
-	
+
 	void doMount() throw(Exception);
 	void doUmount() throw(Exception);
-	
+
 	void createPartInfo() throw(Exception);
-	
+
 	bool isWritable() const throw(Exception);
 	bool fitInDevice() throw(Exception);
 
@@ -170,10 +170,10 @@ private:
 	std::string _mountPoint;
 	/// Metadata of the partition
 	Doclone::partInfo _partition;
-	
+
 	bool isMounted() throw(Exception);
 	void externalMount() throw(Exception);
-	
+
 	// Initialize functions
 	void initNum() throw(Exception);
 	void initType() throw(Exception);
@@ -184,7 +184,7 @@ private:
 	void initFlags() throw(Exception);
 	void initLabel() throw(Exception);
 	void initUUID() throw(Exception);
-	
+
 	uint64_t usedSpace() throw(Exception);
 };
 

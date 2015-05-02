@@ -81,7 +81,7 @@ class Image {
 public:
 	Image();
 	virtual ~Image();
-	
+
 	bool isValid() const throw(Exception);
 
 	void initDiskReadArchive();
@@ -111,17 +111,17 @@ public:
 	void initCreateOperations() throw(Exception);
 	void initRestoreOperations(const std::string &device) const throw(Exception);
 
-    Doclone::imageType getType() const;
-    void setType(Doclone::imageType type);
+	Doclone::imageType getType() const;
+	void setType(Doclone::imageType type);
 
-    Doclone::imageHeader getHeader() const;
-    void setHeader(Doclone::imageHeader header);
+	Doclone::imageHeader getHeader() const;
+	void setHeader(Doclone::imageHeader header);
 
-    const std::vector<Partition*> &getPartitions() const;
-    Doclone::diskLabelType getLabelType() const;
+	const std::vector<Partition*> &getPartitions() const;
+	Doclone::diskLabelType getLabelType() const;
 
-    struct archive *getArchiveIn() const;
-    const std::vector<struct archive *> &getArchivesOut() const;
+	struct archive *getArchiveIn() const;
+	const std::vector<struct archive *> &getArchivesOut() const;
 
 private:
 	/// Image size

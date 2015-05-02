@@ -426,30 +426,30 @@ const char *XMLDocument::serialize(std::string &buf) {
 	Logger *log = Logger::getInstance();
 	log->debug("XMLDocument::serialize(buf=>0x%x) start", &buf);
 
-    DOMImplementationLS *implLS =
-    		DOMImplementationRegistry::getDOMImplementation(this->toXMLText("LS"));
+	DOMImplementationLS *implLS =
+	DOMImplementationRegistry::getDOMImplementation(this->toXMLText("LS"));
 
-    DOMLSSerializer *serializer = implLS->createLSSerializer();
+	DOMLSSerializer *serializer = implLS->createLSSerializer();
 
-    if (serializer->getDomConfig()->canSetParameter(
-    		XMLUni::fgDOMWRTFormatPrettyPrint, true)) {
-    	serializer->getDomConfig()->setParameter(
-    			XMLUni::fgDOMWRTFormatPrettyPrint, true);
+	if (serializer->getDomConfig()->canSetParameter(
+			XMLUni::fgDOMWRTFormatPrettyPrint, true)) {
+		serializer->getDomConfig()->setParameter(
+				XMLUni::fgDOMWRTFormatPrettyPrint, true);
 	}
 
-    MemBufFormatTarget target;
+	MemBufFormatTarget target;
 
-    DOMLSOutput *output = implLS->createLSOutput();
-    output->setByteStream(&target);
+	DOMLSOutput *output = implLS->createLSOutput();
+	output->setByteStream(&target);
 
-    serializer->write(this->_doc, output);
+	serializer->write(this->_doc, output);
 
 	buf = reinterpret_cast<const char*>(target.getRawBuffer());
 
-    serializer->release();
-    output->release();
+	serializer->release();
+	output->release();
 
-    log->debug("XMLDocument::serialize(buf.c_str()=>%s) end", buf.c_str());
+	log->debug("XMLDocument::serialize(buf.c_str()=>%s) end", buf.c_str());
 	return buf.c_str();
 }
 
@@ -465,22 +465,22 @@ void XMLDocument::openFromMem(const char *buf) {
 	DOMImplementationLS *implLS =
 			DOMImplementationRegistry::getDOMImplementation(this->toXMLText("LS"));
 
-    this->_parser =
-    		implLS->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, 0);
-    DOMConfiguration *config = this->_parser->getDomConfig();
+	this->_parser =
+			implLS->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, 0);
+	DOMConfiguration *config = this->_parser->getDomConfig();
 
 	config->setParameter(XMLUni::fgDOMNamespaces, true);
-    config->setParameter(XMLUni::fgXercesSchema, true);
+	config->setParameter(XMLUni::fgXercesSchema, true);
 	config->setParameter(XMLUni::fgXercesHandleMultipleImports, true);
-    config->setParameter(XMLUni::fgXercesSchemaFullChecking, true);
+	config->setParameter(XMLUni::fgXercesSchemaFullChecking, true);
 
 	this->_parser->resetDocumentPool();
 
 	MemBufInputSource source(reinterpret_cast<const XMLByte*>(buf),
 			strlen(buf), Doclone::XML_ROOT_ELEMENT);
 
-    DOMLSInput *input = implLS->createLSInput();
-    input->setByteStream(&source);
+	DOMLSInput *input = implLS->createLSInput();
+	input->setByteStream(&source);
 	this->_doc = this->_parser->parse(input);
 
 	log->debug("XMLDocument::openFromMem() end");

@@ -63,20 +63,20 @@ public:
 	~Logger();
 
 	static Logger* getInstance();
-	
+
 	void loopDebug(const std::string &msg, ...) const;
 	void debug(const std::string &msg, ...) const;
 	void info(const std::string &msg, ...) const;
 	void warn(const std::string &msg, ...);
 	void error(const std::string &msg, ...);
 	void fatal(const std::string &msg, ...);
-	
+
 	std::vector<std::string> &getBT();
 
 private:
 	Logger();
 	void pushBT(const std::string &msg);
-	
+
 	// log4cpp stuff
 	log4cpp::RollingFileAppender *_app;
 	log4cpp::PatternLayout* _layout;

@@ -69,18 +69,32 @@ DataTransfer* DataTransfer::getInstance() {
 	return &instance;
 }
 
+/**
+ * \brief Reads data from the archive and appends it in the target
+ *
+ * Only for text buffers
+ *
+ * \param arIn
+ * 		Pointer to the archive file
+ * \param target
+ * 		String where data will be written
+ *
+ * \return Number of transferred bytes
+ */
 uint64_t DataTransfer::archiveToBuf(struct archive *arIn, std::string &target) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::archiveToBuf(arIn=>0x%x, buff=>%s) start", arIn, target.c_str());
 
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = Doclone::BUFFER_SIZE;
+	unsigned int totalNbytes = 0;
 	target = "";
 
 	while ((nbytes = archive_read_data(arIn, buf, Doclone::BUFFER_SIZE)) > 0) {
 		target.append(buf);
 
 		this->_transferredBytes += nbytes;
+		totalNbytes += nbytes;
 
 		// Notify the views if it crosses a notification point
 		if(this->_transferredBytes >
@@ -97,16 +111,29 @@ uint64_t DataTransfer::archiveToBuf(struct archive *arIn, std::string &target) t
 		throw ex;
 	}
 
-	log->loopDebug("DataTransfer::archiveToBuf(_transferredBytes=>%d) end", this->_transferredBytes);
-	return this->_transferredBytes;
+	log->loopDebug("DataTransfer::archiveToBuf(totalNbytes=>%d) end", totalNbytes);
+	return totalNbytes;
 }
 
+/**
+ * \brief Reads data from the source and writes it in the archives
+ *
+ * Only for text buffers
+ *
+ * \param source
+ * 		Text to be written
+ * \param outArchives
+ * 		Vector of archives where data will be written
+ *
+ * \return Number of transferred bytes
+ */
 uint64_t DataTransfer::bufToArchive(const std::string &source,
 		std::vector<struct archive*> &outArchives) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::bufToArchive(source=>%s, outArchives=>0x%x) start", source.c_str(), &outArchives);
 
 	int r;
+	unsigned int totalNbytes = 0;
 
 	std::vector<struct archive*>::iterator it;
 	for(it = outArchives.begin(); it != outArchives.end(); ++it) {
@@ -118,6 +145,7 @@ uint64_t DataTransfer::bufToArchive(const std::string &source,
 	}
 
 	this->_transferredBytes += source.length();
+	totalNbytes += source.length();
 
 	// Notify the views if it crosses a notification point
 	if(this->_transferredBytes >
@@ -127,10 +155,22 @@ uint64_t DataTransfer::bufToArchive(const std::string &source,
 				this->_transferredBytes);
 	}
 
-	log->loopDebug("DataTransfer::bufToArchive(_transferredBytes=>%d) end", this->_transferredBytes);
-	return this->_transferredBytes;
+	log->loopDebug("DataTransfer::bufToArchive(totalNbytes=>%d) end", totalNbytes);
+	return totalNbytes;
 }
 
+/**
+ * \brief Reads data from the file descriptor and writes it in the archives
+ *
+ * Only for text buffers
+ *
+ * \param fd
+ * 		Source file descriptor
+ * \param outArchives
+ * 		Vector of archives where data will be written
+ *
+ * \return Number of transferred bytes
+ */
 uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArchives) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::transferFile(fd=>%d, outArchives=>0x%x) start", fd, &outArchives);
@@ -138,6 +178,7 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 	int r;
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = 0;
+	unsigned int totalNbytes = 0;
 
 	while ((nbytes = (*this->getNbytes) (fd, buf, Doclone::BUFFER_SIZE)) > 0) {
 		std::vector<struct archive*>::iterator it;
@@ -150,6 +191,7 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 		}
 
 		this->_transferredBytes += nbytes;
+		totalNbytes += nbytes;
 
 		// Notify the views if it crosses a notification point
 		if(this->_transferredBytes >
@@ -160,10 +202,18 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
 		}
 	}
 
-	log->loopDebug("DataTransfer::fdToArchive(_transferredBytes=>%d) end", this->_transferredBytes);
-	return this->_transferredBytes;
+	log->loopDebug("DataTransfer::fdToArchive(totalNbytes=>%d) end", totalNbytes);
+	return totalNbytes;
 }
 
+/**
+ * \brief Writes the libarchive entry of a file in many archives
+ *
+ * \param entry
+ * 		The libarchive entry
+ * \param outArchives
+ * 		Vector of archives where data will be written
+ */
 void DataTransfer::copyHeader(struct archive_entry *entry,
 		std::vector<struct archive*> &outArchives) throw(Exception) {
 	int r;
@@ -196,6 +246,7 @@ uint64_t DataTransfer::copyData(struct archive *arIn, std::vector<struct archive
 	const void *buff;
 	size_t size;
 	off_t offset;
+	unsigned int totalNbytes = 0;
 
 	while ((r = archive_read_data_block(arIn, &buff, &size, &offset)) != ARCHIVE_EOF) {
 		if (r < ARCHIVE_OK) {
@@ -213,6 +264,7 @@ uint64_t DataTransfer::copyData(struct archive *arIn, std::vector<struct archive
 		}
 
 		this->_transferredBytes += size;
+		totalNbytes += size;
 
 		// Notify the views if it crosses a notification point
 		if(this->_transferredBytes >
@@ -223,8 +275,48 @@ uint64_t DataTransfer::copyData(struct archive *arIn, std::vector<struct archive
 		}
 	}
 
-	log->loopDebug("DataTransfer::copyData(_transferredBytes=>%d) end", this->_transferredBytes);
-	return this->_transferredBytes;
+	log->loopDebug("DataTransfer::copyData(totalNbytes=>%d) end", totalNbytes);
+	return totalNbytes;
+}
+
+/**
+ * \brief Transfers all the data from fdin to all out file descriptors.
+ *
+ * \param fdin
+ * 		Origin descriptor
+ * \param outFds
+ * 		Vector of destination descriptors
+ *
+ * \return Number of bytes sent
+ */
+uint64_t DataTransfer::copyData(int fdin, std::vector<int> &outFds) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::copyData(fdin=>%d, outFds=>0x%x) start", fdin, &outFds);
+
+	char buf[Doclone::BUFFER_SIZE];
+	unsigned int nbytes = Doclone::BUFFER_SIZE;
+	unsigned int totalNbytes = 0;
+
+	while ((nbytes = (*this->getNbytes) (fdin, buf, Doclone::BUFFER_SIZE)) > 0) {
+		std::vector<int>::iterator it;
+		for(it = outFds.begin(); it != outFds.end(); ++it) {
+			(*this->putNbytes) (*it, buf, nbytes);
+		}
+
+		this->_transferredBytes += nbytes;
+		totalNbytes += nbytes;
+
+		// Notify the views if it crosses a notification point
+		if(this->_transferredBytes >
+			(this->_notificationPointSize * this->_transferNotificationsCount)) {
+			this->_transferNotificationsCount++;
+			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
+					this->_transferredBytes);
+		}
+	}
+
+	log->loopDebug("DataTransfer::copyData(totalNbytes=>%d) end", totalNbytes);
+	return totalNbytes;
 }
 
 /**
@@ -237,45 +329,19 @@ uint64_t DataTransfer::copyData(struct archive *arIn, std::vector<struct archive
  *
  * \return Number of bytes sent
  */
-uint64_t DataTransfer::copyData(int fdin, std::vector<int> &outFds) throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->loopDebug("DataTransfer::copyData(fdin=>%d, outFds=>0x%x) start", fdin, &outFds);
-
-	char buf[Doclone::BUFFER_SIZE];
-	unsigned int nbytes = Doclone::BUFFER_SIZE;
-
-	while ((nbytes = (*this->getNbytes) (fdin, buf, Doclone::BUFFER_SIZE)) > 0) {
-		std::vector<int>::iterator it;
-		for(it = outFds.begin(); it != outFds.end(); ++it) {
-			(*this->putNbytes) (*it, buf, nbytes);
-		}
-
-		this->_transferredBytes += nbytes;
-
-		// Notify the views if it crosses a notification point
-		if(this->_transferredBytes >
-			(this->_notificationPointSize * this->_transferNotificationsCount)) {
-			this->_transferNotificationsCount++;
-			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
-					this->_transferredBytes);
-		}
-	}
-
-	log->loopDebug("DataTransfer::copyData(_transferredBytes=>%d) end", this->_transferredBytes);
-	return this->_transferredBytes;
-}
-
 uint64_t DataTransfer::copyData(int fdin, int fdout) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("DataTransfer::copyData(fdin=>%d, fdout=>%d) start", fdin, fdout);
 
 	char buf[Doclone::BUFFER_SIZE];
 	unsigned int nbytes = Doclone::BUFFER_SIZE;
+	unsigned int totalNbytes = 0;
 
 	while ((nbytes = (*this->getNbytes) (fdin, buf, Doclone::BUFFER_SIZE)) > 0) {
 		(*this->putNbytes) (fdout, buf, nbytes);
 
 		this->_transferredBytes += nbytes;
+		totalNbytes += nbytes;
 
 		// Notify the views if it crosses a notification point
 		if(this->_transferredBytes >
@@ -286,22 +352,34 @@ uint64_t DataTransfer::copyData(int fdin, int fdout) throw(Exception) {
 		}
 	}
 
-	log->loopDebug("DataTransfer::copyData(_transferredBytes=>%d) end", this->_transferredBytes);
-	return this->_transferredBytes;
+	log->loopDebug("DataTransfer::copyData(totalNbytes=>%d) end", totalNbytes);
+	return totalNbytes;
 }
 
+/**
+ * \brief Makes getNbytes point to local reading function
+ */
 void DataTransfer::initLocalRead() {
 	this->getNbytes = DataTransfer::readBytes;
 }
 
+/**
+ * \brief Makes getNbytes point to net receiving function
+ */
 void DataTransfer::initSocketRead() {
 	this->getNbytes = DataTransfer::recvData;
 }
 
+/**
+ * \brief Makes getNbytes point to local writing function
+ */
 void DataTransfer::initLocalWrite() {
 	this->putNbytes = DataTransfer::writeBytes;
 }
 
+/**
+ * \brief Makes getNbytes point to net sending function
+ */
 void DataTransfer::initSocketWrite() {
 	this->putNbytes = DataTransfer::sendData;
 }
@@ -409,6 +487,20 @@ ssize_t DataTransfer::sendData (int s, const void *buf, size_t len) throw (Excep
 	return nbytes;
 }
 
+/**
+ * \brief Sends data over the network.
+ *
+ * Transfers [len] bytes of data from [buf] to each element in [fds]
+ *
+ * \param s
+ * 		Vector of destination descriptors
+ * \param buf
+ * 		Buffer of data
+ * \param len
+ * 		Number of bytes to send
+ *
+ * \return Number of bytes sent
+ */
 ssize_t DataTransfer::sendData (std::vector<int> &fds, const void *buf,
 		size_t len) throw (Exception) {
 

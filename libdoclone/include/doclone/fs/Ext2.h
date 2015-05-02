@@ -48,10 +48,10 @@ namespace Doclone {
 class Ext2 : public Filesystem {
 public:
 	Ext2();
-	
+
 	void writeLabel(const std::string &dev) const throw(Exception);
 	void writeUUID(const std::string &dev) const throw(Exception);
-	
+
 private:
 	virtual void checkSupport();
 };

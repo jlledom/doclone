@@ -54,7 +54,7 @@ namespace Doclone {
 class Fat16 : public Filesystem {
 public:
 	Fat16();
-	
+
 	void writeLabel(const std::string &dev) const throw(Exception);
 	void writeUUID(const std::string &dev) const throw(Exception);
 

@@ -48,7 +48,7 @@ namespace Doclone {
 class Fat32 : public Filesystem {
 public:
 	Fat32();
-	
+
 	void writeLabel(const std::string &dev) const throw(Exception);
 	void writeUUID(const std::string &dev) const throw(Exception);
 
