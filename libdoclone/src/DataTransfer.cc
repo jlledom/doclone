@@ -530,13 +530,5 @@ void DataTransfer::setTotalSize(uint64_t size) {
 	this->notifyObservers(Doclone::TRANS_TOTAL_SIZE, this->_totalSize);
 }
 
-uint64_t DataTransfer::getTotalSize() const {
-	return this->_totalSize;
-}
-
-uint64_t DataTransfer::getTransferredBytes() const {
-	return this->_transferredBytes;
-}
-
 }
 
