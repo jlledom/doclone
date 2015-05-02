@@ -22,6 +22,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <pthread.h>
 
 #include <doclone/Logger.h>
@@ -397,8 +399,10 @@ ssize_t DataTransfer::sendData (int s, const void *buf, size_t len) throw (Excep
 	ssize_t nbytes = send(s, buf, len, 0);
 
 	if(nbytes<0) {
-		//FIXME: Pass the human-readable IP address
-		SendDataException ex("TODO");
+		struct sockaddr_in addr;
+		socklen_t addr_size = sizeof(struct sockaddr_in);
+		getsockname(s, (struct sockaddr *)&addr, &addr_size);
+		SendDataException ex(inet_ntoa(addr.sin_addr));
 		throw ex;
 	}
 
@@ -414,8 +418,10 @@ ssize_t DataTransfer::sendData (std::vector<int> &fds, const void *buf,
 		nbytes = send(*it, buf, len, 0);
 
 		if(nbytes<0) {
-			//FIXME: Pass the human-readable IP address
-			SendDataException ex("TODO");
+			struct sockaddr_in addr;
+			socklen_t addr_size = sizeof(struct sockaddr_in);
+			getsockname(*it, (struct sockaddr *)&addr, &addr_size);
+			SendDataException ex(inet_ntoa(addr.sin_addr));
 			throw ex;
 		}
 	}

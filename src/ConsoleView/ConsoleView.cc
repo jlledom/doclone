@@ -85,7 +85,7 @@ void ConsoleView::notify(Doclone::dcOperationEvent event,
 			break;
 		}
 		case Doclone::OP_TRANSFER_DATA: {
-			std::cout << _("Transferring data...") << " " << target << std::endl;
+			std::cout << _("Transferring data...") << std::endl;
 
 			break;
 		}
@@ -146,7 +146,7 @@ void ConsoleView::notify(Doclone::dcOperationEvent event,
 		break;
 	}
 	case Doclone::OP_WRITE_DATA: {
-		// TO TRANSLATORS: looks like Data written to /dev/sdb1
+		// TO TRANSLATORS: looks like Data written to /dev/sdb
 		std::cout << _("Data written to") << " " << target << std::endl;
 
 		break;

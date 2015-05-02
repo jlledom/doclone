@@ -118,7 +118,7 @@ bool Image::isValid() const throw(Exception) {
 	else {
 		retValue = true;
 	}
-	
+
 	log->debug("Image::isValid(retValue=>%d) end", retValue);
 	return retValue;
 }
@@ -231,9 +231,9 @@ void Image::freeWriteArchive() {
 bool Image::fitInDisk(uint64_t size) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::fitInDisk(size=>%d) start", size);
-	
+
 	bool retValue = this->_size < size;
-	
+
 	log->debug("Image::fitInDisk(retValue=>%d) end", retValue);
 	return retValue;
 }
@@ -280,22 +280,22 @@ void Image::openImageHeader() throw(Exception) {
 void Image::createImageHeader(Disk *dcDisk) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::createImageHeader(dcDisk=>0x%x) start", dcDisk);
-	
+
 	// Initialize to 0;
 	memset(&this->_header, 0, sizeof(this->_header));
-	
+
 	this->_header.num_partitions = this->_partitions.size();
 
 	this->_header.image_size = 0;
-	
+
 	for(int i = 0;i<this->_header.num_partitions;i++) {
 		this->_partitions[i]->createPartInfo();
 		this->_partsInfo.push_back(this->_partitions[i]->getPartition());
 		this->_header.image_size += this->_partsInfo.at(i).min_size;
 	}
-	
+
 	this->_header.image_type = this->_type;
-	
+
 	this->_header.disk_type = this->_labelType;
 
 	if(this->_type == Doclone::IMAGE_DISK) {
@@ -587,6 +587,7 @@ void Image::writeDataToDisk() throw(Exception) {
 	log->loopDebug("Image::writeDataToDisk() start");
 
 	bool errors = false;
+	std::string failedFilePath;
 	struct archive_entry *entry;
 
 	try {
@@ -622,12 +623,12 @@ void Image::writeDataToDisk() throw(Exception) {
 			trns->copyData(this->_archiveIn, this->_archivesOut);
 		}
 	} catch(const WarningException &ex) {
+		failedFilePath = archive_entry_pathname(entry);
 		errors = true;
 	}
 
 	if(errors) {
-		//TODO: Get the proper path
-		WriteErrorsInDirectoryException ex("TODO");
+		WriteErrorsInDirectoryException ex(failedFilePath);
 		ex.logMsg();
 	}
 
@@ -643,11 +644,11 @@ void Image::writeDataToDisk() throw(Exception) {
 void Image::readPartition(int index) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::readPartition(numPart=>%d) start", index);
-	
+
 	Partition *part = this->_partitions[index];
 	Doclone::partInfo partInf = this->_partsInfo[index];
 	Clone *dcl = Clone::getInstance();
-	
+
 	if(!this->_noData) {
 		struct archive_entry_linkresolver *lResolv =
 				archive_entry_linkresolver_new();
