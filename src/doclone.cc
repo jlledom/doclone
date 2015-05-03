@@ -22,27 +22,14 @@
 #include <libintl.h>
 
 #include <ConsoleView/ConsoleView.h>
-#ifdef HAVE_NCURSES
-#include <CursesView/CursesView.h>
-#endif
 
 int main(int argc, char** argv) {
 	setlocale(LC_ALL, "");
 	textdomain(PACKAGE);
 	bindtextdomain(PACKAGE, LOCALEDIR);
 
-	if(argc>1) {
-		ConsoleView view;
-		view.initView(argc, argv);
-	} else {
-#ifdef HAVE_NCURSES
-		CursesView *curView = CursesView::getInstance();
-		curView->flowControl();
-#else
-		ConsoleView view;
-		view.initView(argc, argv);
-#endif
-	}
+	ConsoleView view;
+	view.initView(argc, argv);
 
 	return 0;
 }

@@ -4,9 +4,6 @@
 # See the file COPYING for copying conditions.
 
 SUBDIRS= ConsoleView
-if USE_NCURSES
-SUBDIRS += CursesView
-endif
 
 bin_PROGRAMS=doclone
 
@@ -21,7 +18,3 @@ doclone_CPPFLAGS = \
 doclone_LDADD = \
 	ConsoleView/libdcconsoleview.la \
 	$(LIBINTL)
-
-if USE_NCURSES
-doclone_LDADD += CursesView/libdccursesview.la
-endif
