@@ -370,10 +370,10 @@ void Image::readImageHeader(const std::string &device) throw(Exception) {
 	this->_header.image_size = doc.getElementValueU64(rootElement, "imageSize");
 	this->_header.image_type = doc.getElementValueU8(rootElement, "imageType");
 
-	std::string bootCode =
-			reinterpret_cast<const char *>(doc.getElementValueBinary(rootElement, "bootCode"));
-	Util::safe_strncpy(reinterpret_cast<char *>(this->_header.boot_code),
-			bootCode.c_str(), bootCode.length()+1);
+	const uint8_t *bootCode = doc.getElementValueBinary(rootElement, "bootCode");
+	for(int i=0; i<440; i++) {
+		this->_header.boot_code[i] = bootCode[i];
+	}
 
 	this->_header.disk_type = doc.getElementValueU8(rootElement, "diskType");
 
