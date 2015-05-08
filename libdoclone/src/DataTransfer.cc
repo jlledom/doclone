@@ -46,13 +46,6 @@ DataTransfer::DataTransfer()
 }
 
 /**
- * \brief Clear this->_fdd map
- */
-DataTransfer::~DataTransfer() {
-	//this->_fdd.clear();
-}
-
-/**
  * \brief Singleton stuff
  *
  * \return Pointer to a DataTransfer object
@@ -216,6 +209,9 @@ uint64_t DataTransfer::fdToArchive(int fd, std::vector<struct archive*> &outArch
  */
 void DataTransfer::copyHeader(struct archive_entry *entry,
 		std::vector<struct archive*> &outArchives) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::copyHeader(entry=>0x%x) start", entry);
+
 	int r;
 
 	std::vector<struct archive*>::iterator it;
@@ -226,6 +222,8 @@ void DataTransfer::copyHeader(struct archive_entry *entry,
 			throw ex;
 		}
 	}
+
+	log->loopDebug("DataTransfer::fdToArchive() end");
 }
 
 /**
@@ -399,6 +397,9 @@ void DataTransfer::initSocketWrite() {
  * \return Number of bytes read
  */
 ssize_t DataTransfer::readBytes (int s, void *buf, size_t len) throw (Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::readBytes(s=>%d, buf=>0x%x, len=>%d) start", s, buf, len);
+
 	ssize_t nbytes = read(s, buf, len);
 
 	if(nbytes<0) {
@@ -406,6 +407,7 @@ ssize_t DataTransfer::readBytes (int s, void *buf, size_t len) throw (Exception)
 		throw ex;
 	}
 
+	log->loopDebug("DataTransfer::readBytes(nbytes=>%d) end", nbytes);
 	return nbytes;
 }
 
@@ -424,6 +426,9 @@ ssize_t DataTransfer::readBytes (int s, void *buf, size_t len) throw (Exception)
  * \return Number of bytes received
  */
 ssize_t DataTransfer::recvData (int s, void *buf, size_t len) throw (Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::recvData(s=>%d, buf=>0x%x, len=>%d) start", s, buf, len);
+
 	ssize_t nbytes = recv(s, buf, len, MSG_WAITALL);
 
 	if(nbytes<0) {
@@ -431,6 +436,7 @@ ssize_t DataTransfer::recvData (int s, void *buf, size_t len) throw (Exception) 
 		throw ex;
 	}
 
+	log->loopDebug("DataTransfer::recvData(nbytes=>%d) end", nbytes);
 	return nbytes;
 }
 
@@ -449,6 +455,9 @@ ssize_t DataTransfer::recvData (int s, void *buf, size_t len) throw (Exception) 
  * \return Number of bytes written
  */
 ssize_t DataTransfer::writeBytes (int s, const void *buf, size_t len) throw (Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::writeBytes(s=>%d, buf=>0x%x, len=>%d) start", s, buf, len);
+
 	ssize_t nbytes = write(s, buf, len);
 
 	if(nbytes<0) {
@@ -456,6 +465,7 @@ ssize_t DataTransfer::writeBytes (int s, const void *buf, size_t len) throw (Exc
 		throw ex;
 	}
 
+	log->loopDebug("DataTransfer::writeBytes(nbytes=>%d) end", nbytes);
 	return nbytes;
 }
 
@@ -474,6 +484,9 @@ ssize_t DataTransfer::writeBytes (int s, const void *buf, size_t len) throw (Exc
  * \return Number of bytes sent
  */
 ssize_t DataTransfer::sendData (int s, const void *buf, size_t len) throw (Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::sendData(s=>%d, buf=>0x%x, len=>%d) start", s, buf, len);
+
 	ssize_t nbytes = send(s, buf, len, 0);
 
 	if(nbytes<0) {
@@ -484,6 +497,7 @@ ssize_t DataTransfer::sendData (int s, const void *buf, size_t len) throw (Excep
 		throw ex;
 	}
 
+	log->loopDebug("DataTransfer::sendData(nbytes=>%d) end", nbytes);
 	return nbytes;
 }
 
@@ -503,6 +517,8 @@ ssize_t DataTransfer::sendData (int s, const void *buf, size_t len) throw (Excep
  */
 ssize_t DataTransfer::sendData (std::vector<int> &fds, const void *buf,
 		size_t len) throw (Exception) {
+	Logger *log = Logger::getInstance();
+	log->loopDebug("DataTransfer::sendData(fds=>0x%x, buf=>0x%x, len=>%d) start", &fds, buf, len);
 
 	ssize_t nbytes = 0;
 	std::vector<int>::iterator it;
@@ -518,6 +534,7 @@ ssize_t DataTransfer::sendData (std::vector<int> &fds, const void *buf,
 		}
 	}
 
+	log->loopDebug("DataTransfer::sendData(nbytes=>%d) end", nbytes);
 	return nbytes;
 }
 

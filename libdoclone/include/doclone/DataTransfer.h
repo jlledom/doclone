@@ -86,7 +86,7 @@ typedef ssize_t (*writeFunction) (int, const void*, size_t);
  */
 class DataTransfer : public AbstractSubject {
 public:
-	~DataTransfer();
+	~DataTransfer() {}
 	static DataTransfer* getInstance();
 
 	uint64_t archiveToBuf(struct archive *arIn, std::string &target) throw(Exception);
@@ -112,7 +112,7 @@ public:
 
 	uint64_t getTotalSize() const;
 	uint64_t getTransferredBytes() const;
-	
+
 	/// Can be defined as read() or recv()
 	Doclone::readFunction getNbytes;
 

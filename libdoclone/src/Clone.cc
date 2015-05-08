@@ -430,7 +430,7 @@ Operation* Clone::getOperation(dcOperationType type, const std::string &target) 
 		}
 	}
 
-	log->debug("doclone::getOperation() start");
+	log->debug("doclone::getOperation(op=>0x%x) start", op);
 
 	return op;
 }

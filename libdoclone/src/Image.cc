@@ -234,19 +234,29 @@ void Image::initFdWriteArchive(std::vector<int> &fds) throw(Exception) {
  * \brief Free allocated memory for read archive
  */
 void Image::freeReadArchive() {
+	Logger *log = Logger::getInstance();
+	log->debug("Image::freeReadArchive() start");
+
 	archive_read_close(this->_archiveIn);
 	archive_read_free(this->_archiveIn);
+
+	log->debug("Image::freeReadArchive() end");
 }
 
 /**
  * \brief Free allocated memory for write archive
  */
 void Image::freeWriteArchive() {
+	Logger *log = Logger::getInstance();
+	log->debug("Image::freeReadArchive() start");
+
 	std::vector<struct archive*>::iterator it;
 	for(it = this->_archivesOut.begin(); it != this->_archivesOut.end(); ++it) {
 		archive_write_close(*it);
 		archive_write_free(*it);
 	}
+
+	log->debug("Image::freeReadArchive() end");
 }
 
 /**
@@ -1082,7 +1092,6 @@ bool Image::canRestoreCheck(const std::string &device, uint64_t size) const thro
 	}
 
 	log->debug("Image::canRestoreCheck(retValue=>%d) end", retValue);
-
 	return retValue;
 }
 
