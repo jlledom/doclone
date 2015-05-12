@@ -649,50 +649,57 @@ void Image::writeDataToDisk() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->loopDebug("Image::writeDataToDisk() start");
 
-	bool errors = false;
-	std::string failedFilePath;
 	struct archive_entry *entry;
+	DataTransfer *trns = DataTransfer::getInstance();
 
-	try {
-		while(archive_read_next_header(this->_archiveIn, &entry) == ARCHIVE_OK) {
+	//Won't keep restoring partitions with errors
+	bool errorPartitions[this->_header.num_partitions];
+	memset(errorPartitions, false, this->_header.num_partitions);
 
-			std::string abPath = archive_entry_pathname(entry);
+	while(archive_read_next_header(this->_archiveIn, &entry) == ARCHIVE_OK) {
+		std::string abPath = archive_entry_pathname(entry);
 
-			for(int i = 0;i<this->_header.num_partitions
-				&& this->_partitions[i]->getPartition().used_part != 0; i++) {
+		for(int i = 0;i<this->_header.num_partitions
+			&& this->_partitions[i]->getPartition().used_part != 0; i++) {
+
+			try {
 				Partition *part = this->_partitions[i];
 				Doclone::partInfo partInf = this->_partsInfo[i];
 
-				if(abPath.find(reinterpret_cast<const char*>(partInf.root_dir)) == 0) {
+				if(abPath.find(
+						reinterpret_cast<const char*>(partInf.root_dir)) == 0
+						&& !errorPartitions[i]) {
+
 					abPath.replace(0,
-							strlen(reinterpret_cast<const char*>(partInf.root_dir)),
-							part->getMountPoint().c_str());
+							strlen(reinterpret_cast<const char*>(
+									partInf.root_dir)),
+									part->getMountPoint().c_str());
 
 					archive_entry_update_pathname_utf8(entry, abPath.c_str());
 
-					if(archive_entry_hardlink(entry)!=0 && archive_entry_size(entry)==0) {
-							std::string hardLinkPath = archive_entry_hardlink(entry);
+					if(archive_entry_hardlink(entry)!=0
+							&& archive_entry_size(entry)==0) {
+
+							std::string hardLinkPath =
+									archive_entry_hardlink(entry);
 							hardLinkPath.replace(0,
-									strlen(reinterpret_cast<const char*>(partInf.root_dir)),
+									strlen(reinterpret_cast<const char*>(
+											partInf.root_dir)),
 									part->getMountPoint().c_str());
 
-							archive_entry_update_hardlink_utf8(entry, hardLinkPath.c_str());
+							archive_entry_update_hardlink_utf8(entry,
+									hardLinkPath.c_str());
 					}
+
+					trns->copyHeader(entry, this->_archivesOut);
+					trns->copyData(this->_archiveIn, this->_archivesOut);
 				}
+			} catch(const WarningException &e) {
+				errorPartitions[i] = true;
+				WriteErrorsInDirectoryException ex(archive_entry_pathname(entry));
+				ex.logMsg();
 			}
-
-			DataTransfer *trns = DataTransfer::getInstance();
-			trns->copyHeader(entry, this->_archivesOut);
-			trns->copyData(this->_archiveIn, this->_archivesOut);
 		}
-	} catch(const WarningException &ex) {
-		failedFilePath = archive_entry_pathname(entry);
-		errors = true;
-	}
-
-	if(errors) {
-		WriteErrorsInDirectoryException ex(failedFilePath);
-		ex.logMsg();
 	}
 
 	log->loopDebug("Image::writeDataToDisk() end");
