@@ -96,7 +96,7 @@ public:
 	void openImageHeader() throw(Exception);
 	void createImageHeader(Disk *dcDev) throw(Exception);
 
-	void readImageHeader(const std::string &device) throw(Exception);
+	void readImageHeader() throw(Exception);
 	void writeImageHeader() throw(Exception);
 
 	void readPartitionsData() throw(Exception);

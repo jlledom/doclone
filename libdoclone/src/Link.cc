@@ -66,7 +66,7 @@ Link::Link(): _fdin(), _fdout(), _dstIP() {
 int Link::answer() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::answer() start");
-	
+
 	int sock_udp;
 	uint32_t next_link;
 	sockaddr_in udp = {};
@@ -85,7 +85,7 @@ int Link::answer() const throw(Exception) {
 		ConnectionException ex;
 		throw ex;
 	}
-	
+
 	u_int loop = 0;
 	setsockopt(sock_udp, IPPROTO_IP, IP_MULTICAST_LOOP, &loop, sizeof(loop));
 
@@ -166,7 +166,7 @@ int Link::answer() const throw(Exception) {
 int Link::netScan() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::netScan() start");
-	
+
 	int sock_udp;
 	fd_set readSet;
 	in_addr_t links[this->_linksNum];
@@ -198,7 +198,7 @@ int Link::netScan() const throw(Exception) {
 
 	FD_ZERO (&readSet);
 	FD_SET (sock_udp, &readSet);
-	
+
 	unsigned int i = 0;
 	while (select (sock_udp + 1, &readSet, 0, 0, &timeout) > 0) {
 		if(FD_ISSET(sock_udp, &readSet)) {
@@ -264,7 +264,7 @@ int Link::netScan() const throw(Exception) {
 void Link::linkServer() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::linkServer() start");
-	
+
 	sockaddr_in host_receiver;
 	socklen_t size = sizeof (sockaddr);
 
@@ -283,7 +283,7 @@ void Link::linkServer() throw(Exception) {
 		ConnectionException ex;
 		throw ex;
 	}
-	
+
 	// Set the destination descriptor
 	this->_fdout = fdd;
 	this->_dstIP = inet_ntoa (host_receiver.sin_addr);
@@ -298,7 +298,7 @@ void Link::linkServer() throw(Exception) {
 void Link::linkClient() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::linkClient() start");
-	
+
 	int fdi;
 	int ip_next_link;
 	int sock_sender;
@@ -332,7 +332,7 @@ void Link::linkClient() throw(Exception) {
 		ConnectionException ex;
 		throw ex;
 	}
-	
+
 	if ((fdi=
 		 accept (sock_sender,
 				 reinterpret_cast<sockaddr*>(&host_sender), &size)) < 0) {
@@ -373,8 +373,8 @@ void Link::linkClient() throw(Exception) {
 		this->_fdout = fdd;
 		this->_dstIP = inet_ntoa (host_receiver.sin_addr);
 	}
-	
-	
+
+
 	log->debug("Link::linkClient() end");
 }
 
@@ -387,11 +387,6 @@ void Link::linkClient() throw(Exception) {
 void Link::sendFromImage(const std::string &image) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::sendFromImage(image=>%s) start", image.c_str());
-
-	uint64_t totalSize = Util::getFileSize(image);
-
-	DataTransfer *trns = DataTransfer::getInstance();
-	trns->setTotalSize(totalSize);
 
 	Operation *waitOp = new Operation(
 			Doclone::OP_WAIT_CLIENTS, "");
@@ -416,10 +411,18 @@ void Link::sendFromImage(const std::string &image) throw(Exception) {
 	 * If the system is little-endian, it's necessary to convert totalSize to
 	 * big-endian.
 	 */
+	Image dcImage;
+	dcImage.initFdReadArchive(fd);
+	dcImage.readImageHeader();
+	uint64_t totalSize = dcImage.getHeader().image_size;
+	DataTransfer *trns = DataTransfer::getInstance();
+	trns->setTotalSize(totalSize);
+
 	uint64_t tmpTotalSize = htobe64(totalSize);
 	DataTransfer::sendData(this->_fdout, &tmpTotalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 
+	lseek(fd, 0, SEEK_SET);
 	trns->copyData(fd, this->_fdout);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");
@@ -521,7 +524,7 @@ void Link::sendFromDevice(const std::string &device) throw(Exception) {
 void Link::send() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Link::send() start");
-	
+
 	Clone *dcl = Clone::getInstance();
 
 	try {
@@ -662,7 +665,7 @@ void Link::receiveToDevice(const std::string &device) throw(Exception) {
 	image.initFdReadArchive(this->_fdin);
 	image.initDiskWriteArchive();
 
-	image.readImageHeader(device);
+	image.readImageHeader();
 
 	image.openImageHeader();
 
@@ -703,7 +706,7 @@ void Link::receive() throw(Exception) {
 	log->debug("Link::receive() start");
 
 	Clone *dcl = Clone::getInstance();
-	
+
 	try {
 		if(dcl->getDevice().empty()) {
 			this->receiveToImage(dcl->getImage());

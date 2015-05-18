@@ -63,7 +63,7 @@ Unicast::Unicast(): _fds() {}
 void Unicast::tcpServer() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Unicast::tcpServer() start");
-	
+
 	int sock_tcp;
 	sockaddr_in host_server;
 	socklen_t size = sizeof (sockaddr);
@@ -124,7 +124,7 @@ void Unicast::tcpServer() throw(Exception) {
 			}
 		}
 	}
-	
+
 	close(sock_tcp);
 
 	log->debug("Unicast::tcpServer() end");
@@ -161,7 +161,7 @@ void Unicast::tcpClient() throw(Exception) {
 		ConnectionException ex;
 		throw ex;
 	}
-	
+
 	freeaddrinfo(res);
 
 	dcCommand request = Doclone::C_RECEIVER_OK;
@@ -190,11 +190,6 @@ void Unicast::sendFromImage(const std::string &image) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Unicast::sendFromImage(image=>%s) start", image.c_str());
 
-	uint64_t totalSize = Util::getFileSize(image);
-
-	DataTransfer *trns = DataTransfer::getInstance();
-	trns->setTotalSize(totalSize);
-
 	Operation *waitOp = new Operation(
 			Doclone::OP_WAIT_CLIENTS, "");
 
@@ -218,10 +213,18 @@ void Unicast::sendFromImage(const std::string &image) throw(Exception) {
 	 * If the system is little-endian, it is necessary to convert totalSize to
 	 * big-endian.
 	 */
+	Image dcImage;
+	dcImage.initFdReadArchive(fd);
+	dcImage.readImageHeader();
+	uint64_t totalSize = dcImage.getHeader().image_size;
+	DataTransfer *trns = DataTransfer::getInstance();
+	trns->setTotalSize(totalSize);
+
 	uint64_t tmpTotalSize = htobe64(totalSize);
 	DataTransfer::sendData(this->_fds, &tmpTotalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 
+	lseek(fd, 0, SEEK_SET);
 	trns->copyData(fd, this->_fds);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");
@@ -449,7 +452,7 @@ void Unicast::receiveToDevice(const std::string &device) throw(Exception) {
 	Image image;
 	image.initFdReadArchive(this->_fds[0]);
 	image.initDiskWriteArchive();
-	image.readImageHeader(device);
+	image.readImageHeader();
 	image.openImageHeader();
 
 	Disk *dcDisk = DlFactory::createDiskLabel(image.getLabelType(),

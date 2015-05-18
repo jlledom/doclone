@@ -348,7 +348,7 @@ void Image::createImageHeader(Disk *dcDisk) throw(Exception) {
  *
  * \return Number of bytes read
  */
-void Image::readImageHeader(const std::string &device) throw(Exception) {
+void Image::readImageHeader() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::readImageHeader() start");
 
@@ -369,13 +369,6 @@ void Image::readImageHeader(const std::string &device) throw(Exception) {
 
 	this->_header.num_partitions = doc.getElementValueU8(
 			rootElement, "numPartitions");
-
-	if (this->_header.num_partitions > Util::getNumberOfMinors(device)) {
-		TooMuchPartitionsException ex(this->_header.num_partitions,
-				Util::getNumberOfMinors(device));
-		ex.logMsg();
-		throw ex;
-	}
 
 	this->_header.image_size = doc.getElementValueU64(rootElement, "imageSize");
 	this->_header.image_type = doc.getElementValueU8(rootElement, "imageType");
@@ -1037,6 +1030,17 @@ bool Image::canRestoreCheck(const std::string &device, uint64_t size) const thro
 				ex.logMsg();
 				throw ex;
 			}
+		}
+
+		/*
+		 * Check if the amount of partitions in the image is supported
+		 * by the kernel driver.
+		 */
+		if (this->_header.num_partitions > Util::getNumberOfMinors(device)) {
+			TooMuchPartitionsException ex(this->_header.num_partitions,
+					Util::getNumberOfMinors(device));
+			ex.logMsg();
+			throw ex;
 		}
 
 		// Check if it fills in the entire device

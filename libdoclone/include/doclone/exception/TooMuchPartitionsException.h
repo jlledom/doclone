@@ -34,10 +34,10 @@ namespace Doclone {
  * \class TooMuchPartitionsException
  * \brief The number of partitions in an image is greater than the allowed.
  *
- * The max number of partitions it is allowed to work with is determined by the
- * kernel device driver used to access the disk. If the number of partitions on
- * the image file is greater than the supported by the currently used driver,
- * the execution must top.
+ * The max number of partitions that is allowed to work with is determined by
+ * the kernel device driver used to access the disk. If the number of partitions
+ * on the image file is greater than the supported by the driver, the execution
+ * must stop.
  *
  * \date March, 2012
  */

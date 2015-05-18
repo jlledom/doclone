@@ -127,7 +127,7 @@ void Local::restore() const throw(Exception) {
 	image.initFdReadArchive(fd);
 	image.initDiskWriteArchive();
 
-	image.readImageHeader(this->_device);
+	image.readImageHeader();
 
 	image.openImageHeader();
 
