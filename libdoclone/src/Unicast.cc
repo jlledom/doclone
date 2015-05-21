@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,17 @@ namespace Doclone {
  *
  * Initializes attributes.
  */
-Unicast::Unicast(): _fds() {}
+Unicast::Unicast(): _fds() {
+	Clone *dcl = Clone::getInstance();
+
+	unsigned int nodes = dcl->getNodesNumber();
+	if(nodes == 0) {
+		this->_nodesNum = 1;
+	}
+	else {
+		this->_nodesNum = nodes;
+	}
+}
 
 /**
  * \brief This function is called by the server and waits for a connection from
@@ -186,9 +196,9 @@ void Unicast::tcpClient() throw(Exception) {
  * \param image
  * 		The path for image file.
  */
-void Unicast::sendFromImage(const std::string &image) throw(Exception) {
+void Unicast::sendFromImage() throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Unicast::sendFromImage(image=>%s) start", image.c_str());
+	log->debug("Unicast::sendFromImage() start");
 
 	Operation *waitOp = new Operation(
 			Doclone::OP_WAIT_CLIENTS, "");
@@ -200,7 +210,7 @@ void Unicast::sendFromImage(const std::string &image) throw(Exception) {
 
 	dcl->markCompleted(Doclone::OP_WAIT_CLIENTS, "");
 
-	int fd = Util::openFile(image);
+	int fd = Util::openFile(this->_image);
 
 	Operation *transferOp = new Operation(
 			Doclone::OP_TRANSFER_DATA, "");
@@ -242,12 +252,12 @@ void Unicast::sendFromImage(const std::string &image) throw(Exception) {
  * \param device
  * 		The path for device.
  */
-void Unicast::sendFromDevice(const std::string &device) throw(Exception) {
+void Unicast::sendFromDevice() throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Unicast::sendFromDevice(device=>%s) start", device.c_str());
+	log->debug("Unicast::sendFromDevice() start");
 
 	PartedDevice *pedDev = PartedDevice::getInstance();
-	pedDev->initialize(Util::getDiskPath(device));
+	pedDev->initialize(Util::getDiskPath(this->_device));
 
 	Operation *waitOp = new Operation(
 				Doclone::OP_WAIT_CLIENTS, "");
@@ -259,7 +269,7 @@ void Unicast::sendFromDevice(const std::string &device) throw(Exception) {
 
 	dcl->markCompleted(Doclone::OP_WAIT_CLIENTS, "");
 
-	if(!Util::isBlockDevice(device)) {
+	if(!Util::isBlockDevice(this->_device)) {
 		NoBlockDeviceException ex;
 		throw ex;
 	}
@@ -269,7 +279,7 @@ void Unicast::sendFromDevice(const std::string &device) throw(Exception) {
 	Disk *dcDisk = DlFactory::createDiskLabel();
 	Image image;
 
-	if(Util::isDisk(device)) {
+	if(Util::isDisk(this->_device)) {
 		image.setType(Doclone::IMAGE_DISK);
 	}
 	else {
@@ -281,7 +291,7 @@ void Unicast::sendFromDevice(const std::string &device) throw(Exception) {
 
 	dcl->addOperation(readPartTableOp);
 
-	image.readPartitionTable(device);
+	image.readPartitionTable(this->_device);
 
 	// Mark the operation to read partition table as completed
 	dcl->markCompleted(Doclone::OP_READ_PARTITION_TABLE, target);
@@ -331,9 +341,9 @@ void Unicast::send() throw(Exception) {
 
 	try {
 		if(dcl->getDevice().empty()) {
-			this->sendFromImage(dcl->getImage());
+			this->sendFromImage();
 		} else {
-			this->sendFromDevice(dcl->getDevice());
+			this->sendFromDevice();
 		}
 	} catch (const CancelException &ex) {
 		this->closeConnection();
@@ -358,9 +368,9 @@ void Unicast::send() throw(Exception) {
  * \param image
  * 		The path for image.
  */
-void Unicast::receiveToImage(const std::string &image) throw(Exception) {
+void Unicast::receiveToImage() throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Unicast::receiveToImage(image=>%s) start", image.c_str());
+	log->debug("Unicast::receiveToImage() start");
 
 	Operation *waitOp = new Operation(
 			Doclone::OP_WAIT_SERVER, "");
@@ -372,8 +382,8 @@ void Unicast::receiveToImage(const std::string &image) throw(Exception) {
 
 	dcl->markCompleted(Doclone::OP_WAIT_SERVER, "");
 
-	Util::createFile(image);
-	int fd = Util::openFile(image);
+	Util::createFile(this->_image);
+	int fd = Util::openFile(this->_image);
 
 	Operation *transferOp = new Operation(
 			Doclone::OP_TRANSFER_DATA, "");
@@ -412,12 +422,12 @@ void Unicast::receiveToImage(const std::string &image) throw(Exception) {
  * \param device
  * 		The path for device.
  */
-void Unicast::receiveToDevice(const std::string &device) throw(Exception) {
+void Unicast::receiveToDevice() throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Unicast::receiveToDevice(device=>%s) start", device.c_str());
+	log->debug("Unicast::receiveToDevice() start");
 
 	PartedDevice *pedDev = PartedDevice::getInstance();
-	pedDev->initialize(Util::getDiskPath(device));
+	pedDev->initialize(Util::getDiskPath(this->_device));
 
 	Operation *waitOp = new Operation(
 				Doclone::OP_WAIT_SERVER, "");
@@ -429,7 +439,7 @@ void Unicast::receiveToDevice(const std::string &device) throw(Exception) {
 
 	dcl->markCompleted(Doclone::OP_WAIT_SERVER, "");
 
-	if(!Util::isBlockDevice(device)) {
+	if(!Util::isBlockDevice(this->_device)) {
 		NoBlockDeviceException ex;
 		throw ex;
 	}
@@ -458,14 +468,14 @@ void Unicast::receiveToDevice(const std::string &device) throw(Exception) {
 	Disk *dcDisk = DlFactory::createDiskLabel(image.getLabelType(),
 			pedDev->getPath());
 
-	if(image.canRestoreCheck(device, dcDisk->getSize()) == false) {
+	if(image.canRestoreCheck(this->_device, dcDisk->getSize()) == false) {
 		RestoreImageException ex;
 		throw ex;
 	}
 
-	image.initRestoreOperations(device);
-	image.writePartitionTable(device);
-	image.writePartitionsData(device);
+	image.initRestoreOperations(this->_device);
+	image.writePartitionTable(this->_device);
+	image.writePartitionsData(this->_device);
 
 	if(image.getHeader().image_type==(Doclone::imageType)IMAGE_DISK) {
 		dcDisk->setPartitions(image.getPartitions());
@@ -495,9 +505,9 @@ void Unicast::receive() throw(Exception) {
 
 	try {
 		if(dcl->getDevice().empty()) {
-			this->receiveToImage(dcl->getImage());
+			this->receiveToImage();
 		} else {
-			this->receiveToDevice(dcl->getDevice());
+			this->receiveToDevice();
 		}
 	} catch (const CancelException &ex) {
 		this->closeConnection();

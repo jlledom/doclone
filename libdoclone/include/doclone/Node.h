@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,33 +16,33 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <doclone/Net.h>
+#ifndef NODE_H_
+#define NODE_H_
 
-#include <unistd.h>
+#include <string>
 
-#include <doclone/Logger.h>
-#include <doclone/Clone.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 
 /**
- * \brief Sets the maximum number of nodes and the network interface
- * to be used if any.
+ * \class Node
+ * \brief Abstract class for all local and network nodes
+ * \date May, 2015
  */
-Net::Net(): _srcIP() {
-	Clone *dcl = Clone::getInstance();
+class Node {
+public:
+	Node();
+	virtual ~Node() {}
 
-	unsigned int nodes = dcl->getNodesNumber();
-	if(nodes == 0) {
-		this->_linksNum = Doclone::LINKS_NUM;
-		this->_nodesNum = 1;
-	}
-	else {
-		this->_linksNum = nodes;
-		this->_nodesNum = nodes;
-	}
+protected:
+	/// The path of the image
+	std::string _image;
 
-	this->_interface = dcl->getInterface();
-}
+	// The path of the device
+	std::string _device;
+};
 
 }
+
+#endif /* NODE_H_ */

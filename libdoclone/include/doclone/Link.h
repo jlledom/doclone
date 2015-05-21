@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include <doclone/Net.h>
+#include <doclone/NetNode.h>
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
@@ -46,7 +46,7 @@ namespace Doclone {
  * Class inherited from Net.
  * \date August, 2011
  */
-class Link : public Net {
+class Link : public NetNode {
 public:
 	Link();
 
@@ -62,17 +62,23 @@ private:
 	void linkServer() throw(Exception);
 	void linkClient() throw(Exception);
 
-	void sendFromImage(const std::string &image) throw(Exception);
-	void sendFromDevice(const std::string &device) throw(Exception);
+	void sendFromImage() throw(Exception);
+	void sendFromDevice() throw(Exception);
 
-	void receiveToImage(const std::string &image) throw(Exception);
-	void receiveToDevice(const std::string &device) throw(Exception);
+	void receiveToImage() throw(Exception);
+	void receiveToDevice() throw(Exception);
 
 	///Previous link socket
 	int _fdin;
 
 	///Next link socket
 	int _fdout;
+
+	/// Max number of links in the chain
+	unsigned int _linksNum;
+
+	/// Ip address of the interface to be used in the link mode
+	std::string _interface;
 
 	/// Next link IP (Human readable)
 	std::string _dstIP;

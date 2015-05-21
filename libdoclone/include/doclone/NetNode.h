@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NET_H_
-#define NET_H_
+#ifndef NETNODE_H_
+#define NETNODE_H_
 
 #include <arpa/inet.h>
 
 #include <string>
 
+#include <doclone/Node.h>
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
@@ -126,29 +127,31 @@ const dcCommand C_SERVER_OK = 1 << 3;
 const dcCommand C_RECEIVER_OK = 1 << 4;
 
 /**
- * \class Net
- * \brief Common methods and attributes for all network modes
+ * \class NetNode
+ * \brief Common methods and attributes for all network nodes
  * \date August, 2011
  */
-class Net {
+class NetNode : public Node {
 public:
-	Net();
-	virtual ~Net() {}
+	NetNode() : _srcIP() {}
+	virtual ~NetNode() {}
+
+	virtual void send() throw(Exception) = 0;
+	virtual void receive() throw(Exception) = 0;
 
 protected:
-	virtual void closeConnection() throw(Exception) {}
+	virtual void closeConnection() throw(Exception) = 0;
 
-	/// Origin IP (Human readable)
+	void sendFromImage() throw(Exception);
+	void sendFromDevice() throw(Exception);
+
+	void receiveToImage() throw(Exception);
+	void receiveToDevice() throw(Exception);
+
+	/// Human readable server's IP (only for clients)
 	std::string _srcIP;
-	
-	/// Number of receivers in multicast mode
-	unsigned int _nodesNum;
-	/// Max number of links in the chain
-	unsigned int _linksNum;
-	/// Ip address of the interface to be used in the link mode
-	std::string _interface;
 };
 
 }
 
-#endif /* NET_H_ */
+#endif /* NETNODE_H_ */

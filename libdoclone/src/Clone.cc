@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013-2015Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #include <pthread.h>
 
 #include <doclone/Logger.h>
-#include <doclone/Local.h>
+#include <doclone/LocalNode.h>
 #include <doclone/DataTransfer.h>
 #include <doclone/PartedDevice.h>
 #include <doclone/Util.h>
@@ -87,8 +87,7 @@ void Clone::create() throw(Exception) {
 		trns->initLocalRead();
 		trns->initLocalWrite();
 
-		Local local(this->_image, this->_device);
-
+		LocalNode local;
 		local.create();
 	} catch(const ErrorException &ex) {
 		// Alert to view
@@ -121,8 +120,7 @@ void Clone::restore() throw(Exception) {
 		trns->initLocalRead();
 		trns->initLocalWrite();
 
-		Local local(this->_image, this->_device);
-
+		LocalNode local;
 		local.restore();
 	} catch(const ErrorException &ex) {
 		// Alert to view
@@ -154,7 +152,6 @@ void Clone::send() throw(Exception) {
 
 	try {
 		Unicast unicast;
-
 		unicast.send();
 	} catch(const ErrorException &ex) {
 		// Alert to view
@@ -186,7 +183,6 @@ void Clone::receive() throw(Exception) {
 
 	try {
 		Unicast unicast;
-
 		unicast.receive();
 	} catch(const ErrorException &ex) {
 		// Alert to view
@@ -217,7 +213,6 @@ void Clone::chainOrigin() throw(Exception) {
 
 	try {
 		Link lnk;
-
 		lnk.send();
 	} catch(const ErrorException &ex) {
 		// Alert to view
@@ -248,7 +243,6 @@ void Clone::chainLink() throw(Exception) {
 
 	try {
 		Link lnk;
-
 		lnk.receive();
 	} catch(const ErrorException &ex) {
 		// Alert to view

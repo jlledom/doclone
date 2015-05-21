@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,30 +21,24 @@
 
 #include <string>
 
+#include <doclone/Node.h>
 #include <doclone/exception/Exception.h>
 
 namespace Doclone {
 
 /**
  * \class Local
- * \brief Implementation of the local mode.
+ * \brief Implementation of a local node.
  *
  * Methods and attributes to clone an image locally.
  * \date January, 2012
  */
-class Local {
+class LocalNode : public Node {
 public:
-	Local(const std::string &image, const std::string &device);
-	~Local(){}
+	~LocalNode(){}
 
 	void create() const throw(Exception);
 	void restore() const throw(Exception);
-private:
-	/// The path of the image
-	const std::string _image;
-
-	// The path of the device
-	const std::string _device;
 };
 
 }

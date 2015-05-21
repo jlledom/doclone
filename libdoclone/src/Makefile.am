@@ -132,9 +132,9 @@ libdoclone_la_SOURCES= \
 	Grub.cc \
 	Image.cc \
 	Link.cc \
-	Local.cc \
+	LocalNode.cc \
 	Logger.cc \
-	Net.cc \
+	Node.cc \
 	Operation.cc \
 	PartedDevice.cc \
 	Partition.cc \
@@ -151,9 +151,10 @@ libdoclone_la_SOURCES= \
 	$(top_srcdir)/include/doclone/Grub.h \
 	$(top_srcdir)/include/doclone/Image.h \
 	$(top_srcdir)/include/doclone/Link.h \
-	$(top_srcdir)/include/doclone/Local.h \
+	$(top_srcdir)/include/doclone/LocalNode.h \
 	$(top_srcdir)/include/doclone/Logger.h \
-	$(top_srcdir)/include/doclone/Net.h \
+	$(top_srcdir)/include/doclone/NetNode.h \
+	$(top_srcdir)/include/doclone/Node.h \
 	$(top_srcdir)/include/doclone/Operation.h \
 	$(top_srcdir)/include/doclone/PartedDevice.h \
 	$(top_srcdir)/include/doclone/Partition.h \
@@ -173,9 +174,9 @@ libdoclone_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/Grub.h \
 	$(top_srcdir)/include/doclone/Image.h \
 	$(top_srcdir)/include/doclone/Link.h \
-	$(top_srcdir)/include/doclone/Local.h \
+	$(top_srcdir)/include/doclone/LocalNode.h \
 	$(top_srcdir)/include/doclone/Logger.h \
-	$(top_srcdir)/include/doclone/Net.h \
+	$(top_srcdir)/include/doclone/NetNode.h \
 	$(top_srcdir)/include/doclone/Operation.h \
 	$(top_srcdir)/include/doclone/PartedDevice.h \
 	$(top_srcdir)/include/doclone/Partition.h \
@@ -187,7 +188,6 @@ libdoclone_la_CPPFLAGS = \
 	-DLOCALEDIR=\"$(localedir)\" \
 	-DLOGDIR=\"$(logdir)\" \
 	-D_FILE_OFFSET_BITS=64 \
-	$(GLIBMM_CFLAGS) \
 	$(ARCHIVE_CFLAGS) \
 	$(LOG4CPP_CFLAGS)
 
@@ -196,7 +196,6 @@ libdoclone_la_LIBADD = \
 	dl/libdcdisklabel.la \
 	xml/libdcxml.la \
 	$(PARTED_LIBS) \
-	$(GLIBMM_LIBS) \
 	$(ARCHIVE_LIBS) \
 	$(LOG4CPP_LIBS) \
 	$(LIBINTL)
