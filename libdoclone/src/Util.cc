@@ -69,7 +69,7 @@ namespace Doclone {
 std::string Util::getPathByMajorMinor (unsigned char major, unsigned char minor, int refresh) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::getPathByMajorMinor(major=>%d, minor=>%d, refresh=>%d) start", major, minor, refresh);
-	
+
 	std::string retValue="";
 	struct procpart {
 		unsigned char major;
@@ -107,7 +107,7 @@ std::string Util::getPathByMajorMinor (unsigned char major, unsigned char minor,
 			break;
 		}
 	}
-	
+
 	log->debug("Util::getPathByMajorMinor(retValue=>%s) end", retValue.c_str());
 	return retValue;
 }
@@ -122,15 +122,15 @@ std::string Util::getPathByMajorMinor (unsigned char major, unsigned char minor,
 uint8_t Util::getMajor (const std::string &dev) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::getMajor(dev=>%s) start", dev.c_str());
-	
+
 	struct stat info_d;
 	if (stat (dev.c_str(), &info_d) < 0) {
 		NoAccessToDeviceException ex(dev);
 		throw ex;
 	}
-	
+
 	unsigned char retValue = info_d.st_rdev >> 8;
-	
+
 	log->debug("Util::getMajor(retValue=>%d) end", retValue);
 	return retValue;
 }
@@ -145,15 +145,15 @@ uint8_t Util::getMajor (const std::string &dev) throw(Exception) {
 uint8_t Util::getMinor (const std::string &dev) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::getMinor(dev=>%s) start", dev.c_str());
-	
+
 	struct stat info_d;
 	if (stat (dev.c_str(), &info_d) < 0) {
 		NoAccessToDeviceException ex(dev);
 		throw ex;
 	}
-	
+
 	unsigned char retValue = info_d.st_rdev & 0xff;
-	
+
 	log->debug("Util::getMinor(retValue=>%d) end", retValue);
 	return retValue;
 }
@@ -203,19 +203,19 @@ uint8_t Util::getNumberOfMinors(const std::string &dev) throw(Exception) {
 std::string Util::getDiskPath(const std::string &path) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::getDiskPath(path=>%s) start", path.c_str());
-	
+
 	int disk_major, disk_minor;
 	disk_major = Util::getMajor(path.c_str());
 	disk_minor = Util::getMinor(path.c_str());
-	
+
 	disk_minor -= disk_minor % (Util::getNumberOfMinors(path));
 	std::string devPath = Util::getPathByMajorMinor (disk_major, disk_minor, 0);
-	
+
 	if(devPath.compare("") == 0) {
 		NoAccessToDeviceException ex(path);
 		throw ex;
 	}
-	
+
 	log->debug("Util::getDiskPath(devPath=>%s) end", devPath.c_str());
 	return devPath;
 }
@@ -276,10 +276,10 @@ uint64_t Util::getFileSize(const std::string &path) throw(Exception) {
 void Util::writeBinData(const std::string &file, const void *data, unsigned int offset, unsigned int size) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::writeBinData(file=>%s, data=>0x%x, offset=>%d, size=>%d) start", file.c_str(), data, offset, size);
-	
+
 	std::ofstream fstr(file.c_str(),
 			std::fstream::in|std::fstream::out|std::fstream::binary);
-	
+
 	if(!fstr) {
 		WriteDataException ex;
 		throw ex;
@@ -295,7 +295,7 @@ void Util::writeBinData(const std::string &file, const void *data, unsigned int 
 		throw ex;
 	}
 	fstr.close();
-	
+
 	log->debug("Util::writeBinData() end");
 }
 
@@ -313,7 +313,7 @@ void Util::addMtabEntry(const std::string &partPath, const std::string &mountPoi
 	Logger *log = Logger::getInstance();
 	log->debug("Util::addMtabEntry(partPath=>%s, mountPoint=>%s, mountName=>%s, mountOptions=>%s) start",
 		partPath.c_str(), mountPoint.c_str(), mountName.c_str(), mountOptions.c_str());
-	
+
 	struct mntent filesys;
 	FILE *f;
 	f = setmntent ("/etc/mtab", "a+");
@@ -321,7 +321,7 @@ void Util::addMtabEntry(const std::string &partPath, const std::string &mountPoi
 		FileNotFoundException ex("/etc/mtab");
 		throw ex;
 	}
-	
+
 	filesys.mnt_fsname = const_cast<char*>(partPath.c_str());
 	filesys.mnt_dir = const_cast<char*>(mountPoint.c_str());
 	filesys.mnt_type = const_cast<char*>(mountName.c_str());
@@ -331,7 +331,7 @@ void Util::addMtabEntry(const std::string &partPath, const std::string &mountPoi
 	addmntent(f, &filesys);
 
 	endmntent (f);
-	
+
 	log->debug("Util::addMtabEntry() end");
 }
 
@@ -344,12 +344,12 @@ void Util::addMtabEntry(const std::string &partPath, const std::string &mountPoi
 void Util::updateMtab(const std::string &partPath) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::updateMtab(partPath=>%s) start", partPath.c_str());
-	
+
 	// We need to remove the current /etc/mtab and create another one.
 
 	FILE *fp,*fp2;
 	struct mntent *tmp;
-	
+
 	fp = setmntent("/etc/mtab","r");
 	fp2 = setmntent("/etc/mtab.temp","w");
 
@@ -376,7 +376,7 @@ void Util::updateMtab(const std::string &partPath) throw(Exception) {
 
 	remove("/etc/mtab");
 	rename("/etc/mtab.temp","/etc/mtab");
-	
+
 	log->debug("Util::updateMtab() end");
 }
 
@@ -393,11 +393,11 @@ void Util::updateMtab(const std::string &partPath) throw(Exception) {
 std::string Util::buildPartPath(const std::string &path, int num) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Util::buildPartPath(path=>%s, num=>%d) start", path.c_str(), num);
-	
+
 	std::stringstream ss;
 	ss << num;
 	std::string partPath = path+ss.str();
-	
+
 	log->debug("Util::buildPartPath(partPath=>%s) end", partPath.c_str());
 	return partPath;
 }
@@ -920,6 +920,40 @@ char *Util::safe_strncpy(char *dest, const char *src, size_t n) {
 
 	log->loopDebug("Util::safe_strncpy(dest=>%s) end", dest);
 	return dest;
+}
+
+/**
+ * \brief Transforms a double into a char string
+ *
+ * \return a C string containing the representation of value
+ */
+char *Util::doubletoString(const double value, char *dst) {
+	std::stringstream ss;
+	ss << value;
+	std::string s = ss.str();
+	Util::safe_strncpy(dst, s.c_str(), s.length()+1);
+
+	return dst;
+}
+
+/**
+ * \brief Tranforms a C string into a double
+ *
+ * \return a double representation of str
+ */
+double Util::stringToDouble(const char* str) {
+
+	if(!str) {
+		return 0;
+	}
+
+	std::string s = str;
+	std::istringstream i(s);
+	double x;
+	if (!(i >> x)) {
+		return 0;
+	}
+	return x;
 }
 
 }

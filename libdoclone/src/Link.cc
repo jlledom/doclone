@@ -424,8 +424,8 @@ void Link::sendFromImage() throw(Exception) {
 	 */
 	Image dcImage;
 	dcImage.initFdReadArchive(fd);
-	dcImage.readImageHeader();
-	uint64_t totalSize = dcImage.getHeader().image_size;
+	dcImage.loadImageHeader();
+	uint64_t totalSize = dcImage.getSize();
 	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(totalSize);
 
@@ -475,7 +475,6 @@ void Link::sendFromDevice() throw(Exception) {
 
 	PartedDevice *pDevice = PartedDevice::getInstance();
 	std::string target = pDevice->getPath();
-	Disk *dcDisk = DlFactory::createDiskLabel();
 	Image image;
 
 	if(Util::isDisk(this->_device)) {
@@ -501,7 +500,6 @@ void Link::sendFromDevice() throw(Exception) {
 	}
 
 	image.initCreateOperations();
-	image.createImageHeader(dcDisk);
 	image.initDiskReadArchive();
 	image.initFdWriteArchive(this->_fdout);
 
@@ -511,11 +509,16 @@ void Link::sendFromDevice() throw(Exception) {
 	 * If the system is little-endian, it's necessary to convert totalSize to
 	 * big-endian.
 	 */
-	uint64_t tmpTotalSize = htobe64(image.getHeader().image_size);
+	Disk *disk = image.getDisk();
+	uint8_t numPartitions = disk->getPartitions().size();
+	uint64_t tmpTotalSize = 0;
+	for(int i = 0;i<numPartitions;i++) {
+		tmpTotalSize += disk->getPartitions().at(i)->getMinSize();
+	}
 	DataTransfer::sendData(this->_fdout, &tmpTotalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 
-	image.writeImageHeader();
+	image.saveImageHeader();
 
 	image.readPartitionsData();
 
@@ -523,8 +526,6 @@ void Link::sendFromDevice() throw(Exception) {
 	image.freeReadArchive();
 
 	this->closeConnection();
-
-	delete dcDisk;
 
 	log->debug("Link::sendFromDevice() end");
 }
@@ -676,14 +677,9 @@ void Link::receiveToDevice() throw(Exception) {
 	image.initFdReadArchive(this->_fdin);
 	image.initDiskWriteArchive();
 
-	image.readImageHeader();
+	image.loadImageHeader();
 
-	image.openImageHeader();
-
-	Disk *dcDisk = DlFactory::createDiskLabel(image.getLabelType(),
-			pedDev->getPath());
-
-	if(image.canRestoreCheck(this->_device, dcDisk->getSize()) == false) {
+	if(image.canRestoreCheck(this->_device) == false) {
 		RestoreImageException ex;
 		throw ex;
 	}
@@ -694,17 +690,10 @@ void Link::receiveToDevice() throw(Exception) {
 
 	image.writePartitionsData(this->_device);
 
-	if(image.getHeader().image_type==(Doclone::imageType)IMAGE_DISK) {
-		dcDisk->setPartitions(image.getPartitions());
-		dcDisk->restoreGrub();
-	}
-
 	image.freeWriteArchive();
 	image.freeReadArchive();
 
 	this->closeConnection();
-
-	delete dcDisk;
 
 	log->debug("Link::receiveToDevice() end");
 }

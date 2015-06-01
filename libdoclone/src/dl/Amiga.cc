@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Amiga::Amiga(const std::string &path) : DiskLabel(path) {
+Amiga::Amiga() {
 	this->_labelType = DISK_TYPE_AMIGA;
 	this->_partedName = "amiga";
 }

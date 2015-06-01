@@ -85,17 +85,17 @@ public:
 	static uint8_t getMajor (const std::string &dev) throw(Exception);
 	static uint8_t getMinor (const std::string &dev) throw(Exception);
 	static uint8_t getNumberOfMinors(const std::string &dev) throw(Exception);
-	
+
 	static std::string getDiskPath(const std::string &path) throw(Exception);
 	static uint8_t getPartNum(const std::string &path) throw(Exception);
-	
+
 	static uint64_t getFileSize(const std::string &path) throw(Exception);
 
 	static void writeBinData(const std::string &file, const void *data, unsigned int offset, unsigned int size) throw(Exception);
-	
+
 	static void addMtabEntry(const std::string &partPath, const std::string &mountPoint, const std::string &mountName, const std::string &mountOptions) throw(Exception);
 	static void updateMtab(const std::string &partPath) throw(Exception);
-	
+
 	static std::string buildPartPath(const std::string &path, int num) throw(Exception);
 
 	static void createFile(const std::string &name) throw(Exception);
@@ -127,6 +127,9 @@ public:
 	static void spawn_command_line_sync(const std::string &command, int *exitValue, std::string *output) throw(Exception);
 
 	static char * safe_strncpy(char *dest, const char *src, size_t n);
+
+	static char *doubletoString(const double value, char *dst);
+	static double stringToDouble(const char* str);
 };
 
 }

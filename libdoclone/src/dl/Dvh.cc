@@ -24,7 +24,7 @@
 
 namespace Doclone {
 
-Dvh::Dvh(const std::string &path) : DiskLabel(path) {
+Dvh::Dvh() {
 	this->_labelType = DISK_TYPE_DVH;
 	this->_partedName = "dvh";
 }
@@ -62,8 +62,8 @@ void Dvh::readPartitions() throw(Exception) {
 			try {
 				std::string path=
 						Util::buildPartPath(pedPart->disk->dev->path, pedPart->num);
-				// These Partition objects will be destroyed in Image::~Image()
-				Partition *part = new Partition (path);
+				Partition *part = new Partition();
+				part->initFromPath(path);
 				this->_partitions.push_back(part);
 			}
 			catch(const WarningException &ex) {

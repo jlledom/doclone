@@ -41,6 +41,7 @@
 #include <doclone/Operation.h>
 #include <doclone/DataTransfer.h>
 #include <doclone/DlFactory.h>
+#include <doclone/FsFactory.h>
 #include <doclone/xml/XMLDocument.h>
 #include <doclone/exception/Exception.h>
 #include <doclone/exception/ErrorException.h>
@@ -70,49 +71,32 @@ namespace Doclone {
 /**
  * \brief Initializes attributes
  */
-Image::Image(): _size(), _type(), _labelType(),_header(), _partitions(),
-		_partsInfo(), _archiveIn(), _archivesOut() {
+Image::Image(): _size(), _type(), _disk(), _archiveIn(), _archivesOut() {
 	Clone *dcl = Clone::getInstance();
 	this->_noData = dcl->getEmpty();
 }
 
 /**
- * \brief Frees the memory of the vector of partitions, and clears it.
- */
-Image::~Image() {
-	for(std::vector<Partition*>::iterator it = this->_partitions.begin();
-			it != this->_partitions.end();++it) {
-		if(*it != 0) {
-			delete *it;
-			*it = 0;
-		}
-	}
-
-	this->_partitions.clear();
-	this->_partsInfo.clear();
-}
-
-/**
  * \brief Checks if the image entered by the user is really a doclone image.
  *
- * To determine if the passed file is a valid .doclone image, this function amounts
+ * To determine if the passed file is a valid doclone image, this function amounts
  * every min_size of each partition and compare it with the header image_size.
  * If the amount of min_size's is equal to image_size, the passed file is a
- * valid .doclone image.
+ * valid doclone image.
  */
 bool Image::isValid() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::isValid() start");
 
 	uint64_t amount_bytes = 0;
-	int i;
 	bool retValue;
 
-	for (i = 0; i<this->_header.num_partitions; i++) {
-		amount_bytes += this->_partsInfo.at(i).min_size;
+	std::vector<Partition *> partitions = this->_disk->getPartitions();
+	for (unsigned int i = 0; i<partitions.size(); i++) {
+		amount_bytes += partitions.at(i)->getMinSize();
 	}
 
-	if (amount_bytes != this->_header.image_size) {
+	if (amount_bytes != this->_size) {
 		retValue = false;
 	}
 	else {
@@ -265,92 +249,24 @@ void Image::freeWriteArchive() {
  * \param dcDisk
  * 		For get the size of the disk.
  */
-bool Image::fitInDisk(uint64_t size) const throw(Exception) {
+bool Image::fitInDisk() const throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Image::fitInDisk(size=>%d) start", size);
+	log->debug("Image::fitInDisk() start");
 
-	bool retValue = this->_size < size;
+	bool retValue = this->_size < this->_disk->getSize();
 
 	log->debug("Image::fitInDisk(retValue=>%d) end", retValue);
 	return retValue;
 }
 
 /**
- * \brief Opens the metadata of the image and fills the values of the
- * attributes.
- *
- * Opposite function of createImageHeader.
- */
-void Image::openImageHeader() throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Image::openImageHeader() start");
-
-	if(!this->isValid()) {
-		InvalidImageException ex;
-		throw ex;
-	}
-
-	this->_size = this->_header.image_size;
-
-	this->_type = static_cast<Doclone::imageType>(this->_header.image_type);
-
-	this->_labelType =
-			static_cast<Doclone::diskLabelType>(this->_header.disk_type);
-
-	for (int i = 0; i<this->_header.num_partitions; i++) {
-		Partition *part = new Partition(this->_partsInfo.at(i));
-
-		this->_partitions.push_back(part);
-	}
-
-	log->debug("Image::openImageHeader() end");
-}
-
-/**
- * \brief Gets the necessary metadata and writes it into the image header.
- *
- * Opposite of openImageHeader.
- *
- * \param dcDisk
- * 		The disk on which we will work.
- */
-void Image::createImageHeader(Disk *dcDisk) throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Image::createImageHeader(dcDisk=>0x%x) start", dcDisk);
-
-	// Initialize to 0;
-	memset(&this->_header, 0, sizeof(this->_header));
-
-	this->_header.num_partitions = this->_partitions.size();
-
-	this->_header.image_size = 0;
-
-	for(int i = 0;i<this->_header.num_partitions;i++) {
-		this->_partitions[i]->createPartInfo();
-		this->_partsInfo.push_back(this->_partitions[i]->getPartition());
-		this->_header.image_size += this->_partsInfo.at(i).min_size;
-	}
-
-	this->_header.image_type = this->_type;
-
-	this->_header.disk_type = this->_labelType;
-
-	if(this->_type == Doclone::IMAGE_DISK) {
-		dcDisk->readBootCode();
-		memcpy(this->_header.boot_code, dcDisk->getBootCode(), sizeof(this->_header.boot_code));
-	}
-
-	log->debug("Image::createImageHeader() end");
-}
-
-/**
- * \brief Reads the all the necessary metadata in the image header.
+ * \brief Reads the all the necessary metadata from the image header.
  *
  * \return Number of bytes read
  */
-void Image::readImageHeader() throw(Exception) {
+void Image::loadImageHeader() throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Image::readImageHeader() start");
+	log->debug("Image::loadImageHeader() start");
 
 	DataTransfer *trns = DataTransfer::getInstance();
 	struct archive_entry *entry;
@@ -367,65 +283,106 @@ void Image::readImageHeader() throw(Exception) {
 
 	DOMElement *rootElement=doc.getRootElement();
 
-	this->_header.num_partitions = doc.getElementValueU8(
+	uint8_t numPartitions = doc.getElementValueU8(
 			rootElement, "numPartitions");
 
-	this->_header.image_size = doc.getElementValueU64(rootElement, "imageSize");
-	this->_header.image_type = doc.getElementValueU8(rootElement, "imageType");
+	this->_size = doc.getElementValueU64(rootElement, "imageSize");
+	this->_type = static_cast<Doclone::imageType>(
+			doc.getElementValueU8(rootElement, "imageType"));
 
-	const uint8_t *bootCode = doc.getElementValueBinary(rootElement, "bootCode");
-	for(int i=0; i<440; i++) {
-		this->_header.boot_code[i] = bootCode[i];
+	this->_disk = DlFactory::createDiskLabel();
+	this->_disk->setLabelType(
+			static_cast<Doclone::diskLabelType>(
+					doc.getElementValueU8(rootElement, "diskType")));
+
+	if(this->_type == Doclone::IMAGE_DISK) {
+		const uint8_t *bootCode =
+				doc.getElementValueBinary(rootElement, "bootCode");
+		char buffBootCode[440] = {};
+		for(int i=0; i<440; i++) {
+			buffBootCode[i] = bootCode[i];
+		}
+		this->_disk->setBootCode(buffBootCode);
 	}
-
-	this->_header.disk_type = doc.getElementValueU8(rootElement, "diskType");
 
 	const DOMElement *partitions = doc.getElement(rootElement, "partitions");
 	const DOMNodeList *partitionList = doc.getElements(partitions, "partition");
 
-	for(int i = 0; i<this->_header.num_partitions; i++) {
-		Doclone::partInfo part = {};
+	for(int i = 0; i<numPartitions; i++) {
+		DOMElement *xmlPartition =
+				dynamic_cast<DOMElement *>(partitionList->item(i));
 
-		DOMElement *partition = dynamic_cast<DOMElement *>(partitionList->item(i));
-
-		part.flags = doc.getElementValueU8(partition, "flags");
-		part.start_pos = doc.getElementValueU64(partition, "startPos");
-		part.used_part = doc.getElementValueU64(partition, "usedPart");
-		part.type = doc.getElementValueU8(partition, "type");
-		part.min_size = doc.getElementValueU64(partition, "minSize");
-
-		const char *fsName =
-				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "fsName"));
-		if(fsName != 0) {
-			Util::safe_strncpy(reinterpret_cast<char *>(part.fs_name), fsName,
-					strlen(fsName)+1);
+		Partition *part = new Partition();
+		if(this->_type == Doclone::IMAGE_PARTITION) {
+			Clone *dcl = Clone::getInstance();
+			part->setPath(dcl->getDevice());
+			part->setPartNum(Util::getPartNum(dcl->getDevice()));
 		}
 
-		const char *label =
-				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "label"));
-		if(label != 0) {
-			Util::safe_strncpy(reinterpret_cast<char *>(part.label), label,
-					strlen(label)+1);
-		}
+		part->setType(
+				(Doclone::partType)doc.getElementValueU8(xmlPartition, "type"));
 
-		const char *uuid =
-				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "uuid"));
-		if(uuid != 0) {
-			Util::safe_strncpy(reinterpret_cast<char *>(part.uuid), uuid,
-					strlen(uuid)+1);
-		}
+		Filesystem *fs = 0;
+		try {
+			const char *fsName =
+					reinterpret_cast<const char *>(
+							doc.getElementValueCString(xmlPartition, "fsName"));
 
-		const char *root_dir =
-				reinterpret_cast<const char *>(doc.getElementValueCString(partition, "rootDir"));
-		if(root_dir != 0) {
-			Util::safe_strncpy(reinterpret_cast<char *>(part.root_dir),
-					root_dir, strlen(root_dir)+1);
+			fs = FsFactory::createFilesystem(fsName?fsName:"");
+		} catch (const Exception &ex) {
+			fs = FsFactory::createFilesystem("nofs");
 		}
+		part->setFileSystem(fs);
 
-		this->_partsInfo.push_back(part);
+		part->setMinSize(doc.getElementValueU64(xmlPartition, "minSize"));
+
+		double startPos = Util::stringToDouble(
+				reinterpret_cast<const char *>(
+						doc.getElementValueCString(xmlPartition, "startPos")));
+		if(startPos > 1) {
+			InvalidImageException ex;
+			throw ex;
+		}
+		part->setStartPos(startPos);
+
+		double usedPart = Util::stringToDouble(
+				reinterpret_cast<const char *>(
+						doc.getElementValueCString(xmlPartition, "usedPart")));
+		if(usedPart>1) {
+			InvalidImageException ex;
+			throw ex;
+		}
+		part->setUsedPart(usedPart);
+
+		// Flags
+		part->setFlags(
+				doc.getElementValueU8(xmlPartition, "flags"));
+
+		// Label
+		const char *label = reinterpret_cast<const char *>(
+				doc.getElementValueCString(xmlPartition, "label"));
+		part->getFileSystem()->setLabel(label?label:"");
+
+		// UUID
+		const char *uuid = reinterpret_cast<const char *>(
+				doc.getElementValueCString(
+						xmlPartition, "uuid"));
+		part->getFileSystem()->setUUID(uuid?uuid:"");
+
+		//Root folder on header
+		const char *rootDir = reinterpret_cast<const char *>(
+				doc.getElementValueCString(xmlPartition, "rootDir"));
+		part->setRootDir(rootDir?rootDir:"");
+
+		this->_disk->getPartitions().push_back(part);
 	}
 
-	log->debug("Image::readImageHeader() end");
+	if(!this->isValid()) {
+		InvalidImageException ex;
+		throw ex;
+	}
+
+	log->debug("Image::loadImageHeader() end");
 }
 
 /**
@@ -433,33 +390,66 @@ void Image::readImageHeader() throw(Exception) {
  *
  * \return Number of bytes written
  */
-void Image::writeImageHeader() throw(Exception) {
+void Image::saveImageHeader() throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Image::writeImageHeader() start");
+	log->debug("Image::saveImageHeader() start");
 
 	XMLDocument doc;
 	doc.createNew();
 
-	DOMElement *rootElem = doc.getRootElement();
-	doc.createElement(rootElem, "numPartitions", this->_header.num_partitions);
-	doc.createElement(rootElem, "imageSize", this->_header.image_size);
-	doc.createElement(rootElem, "imageType", this->_header.image_type);
-	doc.createBinaryElement(rootElem, "bootCode", this->_header.boot_code, 440);
-	doc.createElement(rootElem, "diskType", this->_header.disk_type);
-	DOMElement *partsXML = doc.createElement(rootElem, "partitions");
-	for(int i=0; i<this->_header.num_partitions; i++) {
-		Doclone::partInfo part = this->_partsInfo.at(i);
+	uint8_t numPartitions = this->_disk->getPartitions().size();
 
+	uint64_t imageSize = 0;
+	for(int i = 0;i<numPartitions;i++) {
+		imageSize += this->_disk->getPartitions().at(i)->getMinSize();
+	}
+
+	DOMElement *rootElem = doc.getRootElement();
+	doc.createElement(rootElem, "numPartitions", numPartitions);
+	doc.createElement(rootElem, "imageSize", imageSize);
+	doc.createElement(rootElem, "imageType", static_cast<uint8_t>(this->_type));
+
+	doc.createBinaryElement(rootElem, "bootCode",
+			static_cast<const uint8_t*>(this->_disk->getBootCode()), 440);
+
+	doc.createElement(rootElem, "diskType",
+			static_cast<uint8_t>(this->_disk->getLabelType()));
+
+	DOMElement *partsXML = doc.createElement(rootElem, "partitions");
+	for(int i=0; i<numPartitions; i++) {
+		Partition *part = this->_disk->getPartitions().at(i);
+
+		//Set the root of this partition inside the image
+		std::string rootDir = "_part";
+		char partNum[2] = {};
+		sprintf(partNum,"%d", part->getPartNum());
+		rootDir.append(partNum);
+		part->setRootDir(rootDir);
+
+		char startPos[32];
+		char usedPart[32];
 		DOMElement *partitionXML = doc.createElement(partsXML, "partition");
-		doc.createElement(partitionXML, "flags", part.flags);
-		doc.createElement(partitionXML, "startPos", part.start_pos);
-		doc.createElement(partitionXML, "usedPart", part.used_part);
-		doc.createElement(partitionXML, "type", part.type);
-		doc.createElement(partitionXML, "minSize", part.min_size);
-		doc.createElement(partitionXML, "fsName", part.fs_name);
-		doc.createElement(partitionXML, "label", part.label);
-		doc.createElement(partitionXML, "uuid", part.uuid);
-		doc.createElement(partitionXML, "rootDir", part.root_dir);
+		doc.createElement(partitionXML, "flags", part->getFlags());
+		doc.createElement(partitionXML, "startPos",
+				reinterpret_cast<const uint8_t*>(
+						Util::doubletoString(part->getStartPos(), startPos)));
+		doc.createElement(partitionXML, "usedPart",
+				reinterpret_cast<const uint8_t*>(Util::doubletoString(
+						part->getUsedPart(), usedPart)));
+		doc.createElement(partitionXML, "type",
+				static_cast<uint8_t>(part->getType()));
+		doc.createElement(partitionXML, "minSize", part->getMinSize());
+		doc.createElement(partitionXML, "fsName",
+				reinterpret_cast<const uint8_t*>(
+						part->getFileSystem()->getdocloneName().c_str()));
+		doc.createElement(partitionXML, "label",
+				reinterpret_cast<const uint8_t*>(
+						part->getFileSystem()->getLabel().c_str()));
+		doc.createElement(partitionXML, "uuid",
+				reinterpret_cast<const uint8_t*>(
+						part->getFileSystem()->getUUID().c_str()));
+		doc.createElement(partitionXML, "rootDir",
+				reinterpret_cast<const uint8_t*>(rootDir.c_str()));
 	}
 
 	std::string xmlSer;
@@ -483,7 +473,7 @@ void Image::writeImageHeader() throw(Exception) {
 
 	archive_entry_free(headerEntry);
 
-	log->debug("Image::writeImageHeader() end");
+	log->debug("Image::saveImageHeader() end");
 }
 
 /**
@@ -646,26 +636,23 @@ void Image::writeDataToDisk() throw(Exception) {
 	DataTransfer *trns = DataTransfer::getInstance();
 
 	//Won't keep restoring partitions with errors
-	bool errorPartitions[this->_header.num_partitions];
-	memset(errorPartitions, false, this->_header.num_partitions);
+	uint8_t numPartitions = this->_disk->getPartitions().size();
+	bool errorPartitions[numPartitions];
+	memset(errorPartitions, false, numPartitions);
 
 	while(archive_read_next_header(this->_archiveIn, &entry) == ARCHIVE_OK) {
 		std::string abPath = archive_entry_pathname(entry);
 
-		for(int i = 0;i<this->_header.num_partitions
-			&& this->_partitions[i]->getPartition().used_part != 0; i++) {
+		for(int i = 0;i<numPartitions
+			&& this->_disk->getPartitions().at(i)->getUsedPart() != 0; i++) {
 
 			try {
-				Partition *part = this->_partitions[i];
-				Doclone::partInfo partInf = this->_partsInfo[i];
+				Partition *part = this->_disk->getPartitions().at(i);
 
-				if(abPath.find(
-						reinterpret_cast<const char*>(partInf.root_dir)) == 0
+				if(abPath.find(part->getRootDir().c_str()) == 0
 						&& !errorPartitions[i]) {
 
-					abPath.replace(0,
-							strlen(reinterpret_cast<const char*>(
-									partInf.root_dir)),
+					abPath.replace(0,part->getRootDir().length(),
 									part->getMountPoint().c_str());
 
 					archive_entry_update_pathname_utf8(entry, abPath.c_str());
@@ -675,9 +662,7 @@ void Image::writeDataToDisk() throw(Exception) {
 
 							std::string hardLinkPath =
 									archive_entry_hardlink(entry);
-							hardLinkPath.replace(0,
-									strlen(reinterpret_cast<const char*>(
-											partInf.root_dir)),
+							hardLinkPath.replace(0, part->getRootDir().length(),
 									part->getMountPoint().c_str());
 
 							archive_entry_update_hardlink_utf8(entry,
@@ -708,8 +693,7 @@ void Image::readPartition(int index) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::readPartition(numPart=>%d) start", index);
 
-	Partition *part = this->_partitions[index];
-	Doclone::partInfo partInf = this->_partsInfo[index];
+	Partition *part = this->_disk->getPartitions().at(index);
 	Clone *dcl = Clone::getInstance();
 
 	if(!this->_noData) {
@@ -724,8 +708,7 @@ void Image::readPartition(int index) throw(Exception) {
 				mountPoint.push_back('/');
 			}
 
-			this->readDataFromDisk(lResolv, mountPoint,
-					reinterpret_cast<const char*>(partInf.root_dir),
+			this->readDataFromDisk(lResolv, mountPoint, part->getRootDir(),
 					mountPoint.length());
 		} catch (const CancelException &ex) {
 			part->doUmount();
@@ -764,13 +747,13 @@ void Image::readPartitionsData() throw(Exception) {
 
 	// Initialize the counter of progress
 	DataTransfer *trns = DataTransfer::getInstance();
-	trns->setTotalSize(this->_header.image_size);
+	trns->setTotalSize(this->_size);
 
-	for(unsigned int i = 0;i<this->_partitions.size(); i++) {
+	for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
 		try {
 			this->readPartition(i);
 		}catch(const WarningException &ex) {
-			if(this->_partitions.size() == 1) {
+			if(this->_disk->getPartitions().size() == 1) {
 				throw;
 			}
 
@@ -790,49 +773,60 @@ void Image::writePartitionsData(const std::string &device) throw(Exception) {
 
 	// Initialize the counter of progress
 	DataTransfer *trns = DataTransfer::getInstance();
-	trns->setTotalSize(this->_header.image_size);
+	trns->setTotalSize(this->_size);
 
 	if(!this->_noData) {
 		try {
-			for(int i = 0;i<this->_header.num_partitions; i++) {
-				if(this->_partitions[i]->getMinSize() != 0) {
-					this->_partitions[i]->doMount();
+			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
+				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
+					this->_disk->getPartitions().at(i)->doMount();
 				}
 			}
 
 			this->writeDataToDisk();
 
 		} catch (const CancelException &ex) {
-			for(int i = 0;i<this->_header.num_partitions; i++) {
-				if(this->_partitions[i]->getMinSize() != 0) {
-					this->_partitions[i]->doUmount();
+			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
+				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
+					this->_disk->getPartitions().at(i)->doUmount();
 				}
 			}
 			throw;
 		} catch (const WriteDataException &ex) {
-			for(int i = 0;i<this->_header.num_partitions; i++) {
-				if(this->_partitions[i]->getMinSize() != 0) {
-					this->_partitions[i]->doUmount();
+			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
+				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
+					this->_disk->getPartitions().at(i)->doUmount();
 				}
 			}
 			throw;
 		} catch (const ReceiveDataException &ex) {
-			for(int i = 0;i<this->_header.num_partitions; i++) {
-				if(this->_partitions[i]->getMinSize() != 0) {
-					this->_partitions[i]->doUmount();
+			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
+				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
+					this->_disk->getPartitions().at(i)->doUmount();
 				}
 			}
 			throw;
+		} catch(WarningException &ex) {
+			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
+				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
+					this->_disk->getPartitions().at(i)->doUmount();
+				}
+			}
 		}
-		for(int i = 0;i<this->_header.num_partitions; i++) {
-			if(this->_partitions[i]->getMinSize() != 0) {
-				this->_partitions[i]->doUmount();
+		for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
+			if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
+				this->_disk->getPartitions().at(i)->doUmount();
 			}
 		}
 	}
 
 	Clone *dcl = Clone::getInstance();
 		dcl->markCompleted(Doclone::OP_WRITE_DATA, device);
+
+	//Restore Grub if this is a disk restoring
+	if(this->_type == Doclone::IMAGE_DISK) {
+		this->_disk->restoreGrub();
+	}
 
 	log->debug("Image::writePartitionsData() end");
 }
@@ -847,19 +841,14 @@ void Image::readPartitionTable(const std::string &device) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::readPartitionTable(device=>%s) start", device.c_str());
 
+	this->_disk = DlFactory::createDiskLabel();
 	if(this->_type == Doclone::IMAGE_DISK) {
-		Disk *dcDisk = DlFactory::createDiskLabel();
-
-		this->_labelType = dynamic_cast<DiskLabel*>(dcDisk)->getLabelType();
-
-		dcDisk->readPartitions();
-		this->_partitions = dcDisk->getPartitions();
-
-		delete dcDisk;
+		this->_disk->readBootCode();
+		this->_disk->readPartitions();
 	} else {
-		// This Partition object is destroyed in Image::~Image()
-		Partition *part = new Partition (device);
-		this->_partitions.push_back(part);
+		Partition *part = new Partition();
+		part->initFromPath(device);
+		this->_disk->getPartitions().push_back(part);
 	}
 
 	log->debug("Image::readPartitionTable() end");
@@ -878,14 +867,12 @@ void Image::writePartitionTable(const std::string &device) throw(Exception) {
 	Clone *dcl = Clone::getInstance();
 
 	if(this->_type == Doclone::IMAGE_DISK) {
-		Disk *dcDisk = DlFactory::createDiskLabel(this->_labelType, device);
 
-		dcDisk->setPartitions(this->_partitions);
-		dcDisk->writePartitions();
+		this->_disk->writePartitions();
 
-		for (int i = 0;i<this->_header.num_partitions &&
-			this->_partitions[i]->getPartition().used_part != 0; i++) {
-			Partition *part = this->_partitions[i];
+		for (unsigned int i = 0;i<this->_disk->getPartitions().size() &&
+		this->_disk->getPartitions()[i]->getUsedPart() != 0; i++) {
+			Partition *part = this->_disk->getPartitions()[i];
 
 			std::stringstream target;
 			target << device << ", #" << (i+1);
@@ -907,26 +894,24 @@ void Image::writePartitionTable(const std::string &device) throw(Exception) {
 					target.str());
 		}
 
-		delete dcDisk;
-
 	} else {
-		this->_partitions[0]->setPath(device);
-		this->_partitions[0]->setPartNum(Util::getPartNum(device));
+		this->_disk->getPartitions()[0]->setPath(device);
+		this->_disk->getPartitions()[0]->setPartNum(Util::getPartNum(device));
 
 		std::stringstream target;
 		target << device;
 
-		this->_partitions[0]->format();
+		this->_disk->getPartitions()[0]->format();
 		dcl->markCompleted(Doclone::OP_FORMAT_PARTITION, target.str());
 
-		this->_partitions[0]->writeFlags();
+		this->_disk->getPartitions()[0]->writeFlags();
 		dcl->markCompleted(Doclone::OP_WRITE_PARTITION_FLAGS,
 				target.str());
 
-		this->_partitions[0]->writeLabel();
+		this->_disk->getPartitions()[0]->writeLabel();
 		dcl->markCompleted(Doclone::OP_WRITE_FS_LABEL, target.str());
 
-		this->_partitions[0]->writeUUID();
+		this->_disk->getPartitions()[0]->writeUUID();
 		dcl->markCompleted(Doclone::OP_WRITE_FS_UUID, target.str());
 	}
 
@@ -947,9 +932,9 @@ bool Image::canCreateCheck() const throw(Exception) {
 
 	try {
 		// For each partition
-		for(unsigned int i = 0;i<this->_partitions.size()
-				&& this->_partitions[i]->getPartition().used_part != 0; i++) {
-			Partition *part = this->_partitions[i];
+		for(unsigned int i = 0;i<this->_disk->getPartitions().size()
+				&& this->_disk->getPartitions()[i]->getUsedPart()!= 0; i++) {
+			Partition *part = this->_disk->getPartitions()[i];
 
 			Filesystem *fs = part->getFileSystem();
 			if(fs->getCode() != Doclone::FS_NOFS) {
@@ -999,9 +984,9 @@ bool Image::canCreateCheck() const throw(Exception) {
  * 		Disk on which work
  * \return True or False
  */
-bool Image::canRestoreCheck(const std::string &device, uint64_t size) const throw(Exception) {
+bool Image::canRestoreCheck(const std::string &device) const throw(Exception) {
 	Logger *log = Logger::getInstance();
-	log->debug("Image::canRestoreCheck(device=>%s, size=>%d) start", device.c_str(), size);
+	log->debug("Image::canRestoreCheck(device=>%s) start", device.c_str());
 
 	bool retValue = true;
 
@@ -1036,26 +1021,27 @@ bool Image::canRestoreCheck(const std::string &device, uint64_t size) const thro
 		 * Check if the amount of partitions in the image is supported
 		 * by the kernel driver.
 		 */
-		if (this->_header.num_partitions > Util::getNumberOfMinors(device)) {
-			TooMuchPartitionsException ex(this->_header.num_partitions,
+		uint8_t numPartitions = this->_disk->getPartitions().size();
+		if (numPartitions > Util::getNumberOfMinors(device)) {
+			TooMuchPartitionsException ex(numPartitions,
 					Util::getNumberOfMinors(device));
 			ex.logMsg();
 			throw ex;
 		}
 
 		// Check if it fills in the entire device
-		if(!this->fitInDisk(size)) {
+		if(!this->fitInDisk()) {
 			NoFitInDeviceException ex;
 			ex.logMsg();
 			throw ex;
 		}
 
-		for(int i = 0;i<this->_header.num_partitions
-				&& this->_partitions[i]->getPartition().used_part != 0; i++) {
-			Partition *part = this->_partitions[i];
+		for(int i = 0;i<numPartitions
+				&& this->_disk->getPartitions()[i]->getUsedPart() != 0; i++) {
+			Partition *part = this->_disk->getPartitions()[i];
 
 			// Check if every partition fills in its assigned space in this disk
-			if(!part->fitInDevice()) {
+			if(!part->fitInDevice(this->_type == Doclone::IMAGE_DISK)) {
 				Clone *dcl = Clone::getInstance();
 				if(dcl->getForce() == false) {
 					NoFitInDeviceException ex;
@@ -1118,7 +1104,8 @@ void Image::initCreateOperations() throw(Exception) {
 
 	if(this->_noData == false) {
 		std::vector<Partition *>::iterator it;
-		for (it = this->_partitions.begin(); it != this->_partitions.end(); ++it) {
+		for (it =this->_disk->getPartitions().begin();
+				it != this->_disk->getPartitions().end(); ++it) {
 			Partition *part=(*it);
 
 			if(part->isWritable() == true) {
@@ -1149,15 +1136,16 @@ void Image::initRestoreOperations(const std::string &device) const throw(Excepti
 
 	Clone *dcl = Clone::getInstance();
 
+	uint8_t numPartitions = this->_disk->getPartitions().size();
 	std::string target = device;
 
-	if(this->_header.image_type == Doclone::IMAGE_DISK) {
+	if(this->_type == Doclone::IMAGE_DISK) {
 		Operation *diskLabelOp = new Operation(Doclone::OP_MAKE_DISKLABEL,
 				target);
 		dcl->addOperation(diskLabelOp);
 
-		for (int i = 0;i<this->_header.num_partitions &&
-				this->_partitions[i]->getPartition().used_part != 0; i++) {
+		for (int i = 0;i<numPartitions &&
+		this->_disk->getPartitions()[i]->getUsedPart() != 0; i++) {
 			std::stringstream partTarget;
 			partTarget << target << ", #" << (i+1);
 
@@ -1167,14 +1155,14 @@ void Image::initRestoreOperations(const std::string &device) const throw(Excepti
 		}
 	}
 
-	for (int i = 0;i<this->_header.num_partitions &&
-			this->_partitions[i]->getPartition().used_part != 0; i++) {
-		Partition *part = this->_partitions[i];
+	for (int i = 0;i<numPartitions &&
+	this->_disk->getPartitions()[i]->getUsedPart() != 0; i++) {
+		Partition *part = this->_disk->getPartitions()[i];
 		Filesystem *fs = part->getFileSystem();
 
 		std::stringstream partTarget;
 
-		if(this->_header.image_type == Doclone::IMAGE_DISK) {
+		if(this->_type == Doclone::IMAGE_DISK) {
 			partTarget << target << ", #" << (i+1);
 		} else {
 			partTarget << target;
@@ -1208,6 +1196,10 @@ void Image::initRestoreOperations(const std::string &device) const throw(Excepti
 	log->debug("Image::initRestoreOperations() end");
 }
 
+uint64_t Image::getSize() const {
+	return this->_size;
+}
+
 Doclone::imageType Image::getType() const {
 	return this->_type;
 }
@@ -1216,20 +1208,8 @@ void Image::setType(Doclone::imageType type) {
 	this->_type = type;
 }
 
-Doclone::imageHeader Image::getHeader() const {
-	return this->_header;
-}
-
-void Image::setHeader(Doclone::imageHeader header) {
-	this->_header = header;
-}
-
-const std::vector<Partition*> &Image::getPartitions() const {
-	return this->_partitions;
-}
-
-Doclone::diskLabelType Image::getLabelType() const {
-	return this->_labelType;
+Disk *Image::getDisk() {
+	return this->_disk;
 }
 
 struct archive *Image::getArchiveIn() const {

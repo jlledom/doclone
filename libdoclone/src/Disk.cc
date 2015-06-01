@@ -20,6 +20,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <vector>
 
 #include <parted/parted.h>
 
@@ -41,14 +42,10 @@
 namespace Doclone {
 
 /**
- * \brief Initialize attributes. Called to create an image
- *
- * \param path
- * 		The disk path
+ * \brief Initialize attributes.
  */
-Disk::Disk(const std::string &path) throw(Exception)
-		: _path(path), _size(), _partitions(), _bootCode() {
-	this->initSize();
+Disk::Disk()
+		: _path(), _size(), _partitions(), _bootCode() {
 }
 
 // Getters and setters
@@ -68,7 +65,7 @@ void Disk::setSize(uint64_t size) {
 	this->_size = size;
 }
 
-const std::vector<Partition*> &Disk::getPartitions() const {
+std::vector<Partition*> &Disk::getPartitions() {
 	return this->_partitions;
 }
 
@@ -82,6 +79,17 @@ const void *Disk::getBootCode() const {
 
 void Disk::setBootCode(const void *bCode) {
 	memcpy(this->_bootCode, bCode, sizeof(this->_bootCode));
+}
+
+/**
+ * \brief Initializes the disk from its path.
+ *
+ * \param path
+ * 		The disk path. e.g. /dev/sda
+ */
+void Disk::initFromPath(const std::string &path) throw(Exception) {
+	this->_path = path;
+	this->initSize();
 }
 
 /**
@@ -148,22 +156,22 @@ void Disk::writeBootCode() const throw(Exception) {
 void Disk::readPartitions() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Disk::readPartitions() start");
-	
+
 	this->_partitions.clear();
-	
+
 	PedPartition *pedPart = 0;
-	
+
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
 	PedDisk *pDisk = pedDev->getDisk();
-	
+
 	while ((pedPart = ped_disk_next_partition (pDisk, pedPart))) {
 		if (ped_partition_is_active (pedPart)) {
 			try {
 				std::string path=
 						Util::buildPartPath(pedPart->disk->dev->path, pedPart->num);
-				// These Partition objects will be destroyed in Image::~Image()
-				Partition *part = new Partition (path);
+				Partition *part = new Partition();
+				part->initFromPath(path);
 				this->_partitions.push_back(part);
 			}
 			catch(const WarningException &ex) {
@@ -171,9 +179,9 @@ void Disk::readPartitions() throw(Exception) {
 			}
 		}
 	}
-	
+
 	pedDev->close();
-	
+
 	log->debug("Disk::readPartitions() end");
 }
 
@@ -217,14 +225,14 @@ PedGeometry *Disk::calcGeometry(const PedDisk* pDisk,const Partition *part)
 	 * Libdoclone aligns partitions to MiB, aligning them also to sectors of
 	 * 4096 bytes.
 	 *
-	 * This variable contains the amount of sectors that fit on a MiB for this
+	 * This variable contains the amount of sectors that fits on a MiB for this
 	 * disk.
 	 */
 	PedSector mibAlignedMultiple=(1024*1024)/pDisk->dev->sector_size;
 
 	double usedPart = part->getUsedPart();
 	double startPos = part->getStartPos();
-	
+
 	PedSector startSector = (pDisk->dev->length * startPos);
 	PedSector endSector = startSector + (pDisk->dev->length * usedPart);
 
@@ -238,7 +246,7 @@ PedGeometry *Disk::calcGeometry(const PedDisk* pDisk,const Partition *part)
 	if(startSector<mibAlignedMultiple) {
 		startSector = mibAlignedMultiple;
 	}
-	
+
 	// If one partition exceeds the end of the disk, must be cut.
 	if(endSector > pDisk->dev->length) {
 		endSector = pDisk->dev->length;
@@ -298,9 +306,9 @@ PedConstraint *Disk::calcConstraint(const PedPartition* pPart,
 
 	PedConstraint *pConstraint = ped_constraint_new(startAlign, endAlign,
 			startRange, endRange, minSize, maxSize);
-		
+
 	log->debug("Disk::calcConstraint(pedGeom=>0x%x) end", pConstraint);
-	
+
 	return pConstraint;
 }
 
@@ -319,7 +327,7 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 	PedPartition *pedPart = 0 ;
 	PedConstraint *constraint = 0 ;
 	PedFileSystemType* fsType = 0 ;
-	
+
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
 	PedDisk *pDisk = pedDev->getDisk();
@@ -336,7 +344,7 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 		case Doclone::PARTITION_EXTENDED: {
 			type = PED_PARTITION_EXTENDED ;
 			break ;
-		}	
+		}
 		default	:
 			type = PED_PARTITION_FREESPACE;
 			break;
@@ -351,9 +359,9 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 
 	if (pedPart) {
 		constraint = this->calcConstraint(pedPart, part->getMinSize());
-		
+
 		if ( constraint ) {
-	
+
 			if ( ped_disk_add_partition(pDisk, pedPart, constraint )) {
 				pedDev->commit();
 			}
@@ -376,11 +384,11 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 					throw exc;
 				}
 			}
-			
+
 			// Set the new partition number and path
 			part->setPartNum(pedPart->num);
 			part->setPath(Util::buildPartPath(this->_path, pedPart->num));
-			
+
 			ped_constraint_destroy( constraint );
 		}
 	} else {
@@ -399,9 +407,9 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 void Disk::writePartitions() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Disk::writePartitions() start");
-	
+
 	this->makeLabel();
-	
+
 	Clone *dcl = Clone::getInstance();
 	dcl->markCompleted(Doclone::OP_MAKE_DISKLABEL, this->_path);
 
@@ -418,7 +426,7 @@ void Disk::writePartitions() const throw(Exception) {
 		target << this->_path << ", #" << (i+1);
 		dcl->markCompleted(Doclone::OP_CREATE_PARTITION, target.str());
 	}
-	
+
 	log->debug("Disk::writePartitions() end");
 }
 
@@ -443,6 +451,10 @@ void Disk::restoreGrub() throw(Exception) {
  * \brief Clears the partitions vector
  */
 Disk::~Disk() {
+	for(unsigned int i=0; i<this->_partitions.size(); i++) {
+		Partition *part = this->_partitions.at(i);
+		delete part;
+	}
 	this->_partitions.clear();
 }
 

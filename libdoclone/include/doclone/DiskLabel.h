@@ -60,12 +60,13 @@ enum diskLabelType {DISK_TYPE_NONE, DISK_TYPE_AIX, DISK_TYPE_BSD,
  */
 class DiskLabel : public Disk {
 public:
-	DiskLabel(const std::string &path);
+	DiskLabel();
 	virtual ~DiskLabel() {}
 
 	void makeLabel() const throw(Exception);
 
 	Doclone::diskLabelType getLabelType() const;
+	void setLabelType(Doclone::diskLabelType labelType);
 protected:
 	/// The type of the partition table
 	Doclone::diskLabelType _labelType;

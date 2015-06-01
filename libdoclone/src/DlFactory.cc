@@ -32,6 +32,10 @@
 
 namespace Doclone {
 
+/**
+ * \brief Creates a disk label from a PartedDevice instance
+ *
+ */
 DiskLabel *DlFactory::createDiskLabel() {
 	Logger *log = Logger::getInstance();
 	log->debug("FsFactory::createFilesystem() start");
@@ -40,106 +44,109 @@ DiskLabel *DlFactory::createDiskLabel() {
 
 	PartedDevice *pedDev = PartedDevice::getInstance();
 
-	pedDev->open();
-	PedDisk *pDisk = pedDev->getDisk();
+	if(!pedDev->getPath().empty()) {
+		pedDev->open();
+		PedDisk *pDisk = pedDev->getDisk();
 
-	std::string path = pedDev->getPath();
-	std::string dlName;
+		std::string dlName;
 
-	if(pDisk) {
-		dlName = pDisk->type->name;
-	}
+		if(pDisk) {
+			dlName = pDisk->type->name;
+		}
 
-	if(!dlName.compare("aix")) {
-		dLabel = new Aix(path);
-	} else if(!dlName.compare("amiga")) {
-		dLabel = new Amiga(path);
-	} else if(!dlName.compare("bsd")) {
-		dLabel = new Bsd(path);
-	} else if(!dlName.compare("dvh")) {
-		dLabel = new Dvh(path);
-	} else if(!dlName.compare("gpt")) {
-		dLabel = new Gpt(path);
-	} else if(!dlName.compare("mac")) {
-		dLabel = new Mac(path);
-	} else if(!dlName.compare("msdos")) {
-		dLabel = new Msdos(path);
-	} else if(!dlName.compare("pc98")) {
-		dLabel = new Pc98(path);
-	} else if(!dlName.compare("sun")) {
-		dLabel = new Sun(path);
-	} else if(!dlName.compare("loop")) {
-		dLabel = new Loop(path);
+		if(!dlName.compare("aix")) {
+			dLabel = new Aix();
+		} else if(!dlName.compare("amiga")) {
+			dLabel = new Amiga();
+		} else if(!dlName.compare("bsd")) {
+			dLabel = new Bsd();
+		} else if(!dlName.compare("dvh")) {
+			dLabel = new Dvh();
+		} else if(!dlName.compare("gpt")) {
+			dLabel = new Gpt();
+		} else if(!dlName.compare("mac")) {
+			dLabel = new Mac();
+		} else if(!dlName.compare("msdos")) {
+			dLabel = new Msdos();
+		} else if(!dlName.compare("pc98")) {
+			dLabel = new Pc98();
+		} else if(!dlName.compare("sun")) {
+			dLabel = new Sun();
+		} else if(!dlName.compare("loop")) {
+			dLabel = new Loop();
+		} else {
+			dLabel = new Msdos();
+		}
+
+		dLabel->setPath(pedDev->getPath());
+		dLabel->setSize(pedDev->getDevSize());
+
+		pedDev->close();
 	} else {
-		dLabel = new Msdos(path);
+		// No device path given, return empty Msdos disk
+		dLabel = new Msdos();
 	}
-
-	pedDev->close();
 
 	log->debug("FsFactory::createFilesystem(dLabel=>0x%x) end", dLabel);
 
 	return dLabel;
 }
 
-DiskLabel *DlFactory::createDiskLabel(diskLabelType dlType,
-		const std::string &path) {
+/**
+ * \brief Creates a disk label from a Doclone::diskLabelType
+ *
+ * \param dlType
+ * 		The type of the disk label to be created
+ */
+DiskLabel *DlFactory::createDiskLabel(diskLabelType dlType) {
 	Logger *log = Logger::getInstance();
-	log->debug("FsFactory::createFilesystem(dlType=>%d, path=>%s) start",
-			dlType, path.c_str());
+	log->debug("FsFactory::createFilesystem() start");
 
 	DiskLabel *dLabel = 0;
 
 	switch(dlType) {
-	case DISK_TYPE_NONE: {
-		/* If the disk label is not specified, probably the image had been
-		 * created using some previous version of libdoclone. So we use the MSDOS
-		 * label by default, the only one supported by previous versions.
-		 */
-		dLabel = new Msdos(path);
-		break;
-	}
 	case DISK_TYPE_AIX: {
-		dLabel = new Aix(path);
+		dLabel = new Aix();
 		break;
 	}
 	case DISK_TYPE_AMIGA: {
-		dLabel = new Amiga(path);
+		dLabel = new Amiga();
 		break;
 	}
 	case DISK_TYPE_BSD: {
-		dLabel = new Bsd(path);
+		dLabel = new Bsd();
 		break;
 	}
 	case DISK_TYPE_DVH: {
-		dLabel = new Dvh(path);
+		dLabel = new Dvh();
 		break;
 	}
 	case DISK_TYPE_GPT: {
-		dLabel = new Gpt(path);
+		dLabel = new Gpt();
 		break;
 	}
 	case DISK_TYPE_MAC: {
-		dLabel = new Mac(path);
+		dLabel = new Mac();
 		break;
 	}
 	case DISK_TYPE_MSDOS: {
-		dLabel = new Msdos(path);
+		dLabel = new Msdos();
 		break;
 	}
 	case DISK_TYPE_PC98: {
-		dLabel = new Pc98(path);
+		dLabel = new Pc98();
 		break;
 	}
 	case DISK_TYPE_SUN: {
-		dLabel = new Sun(path);
+		dLabel = new Sun();
 		break;
 	}
 	case DISK_TYPE_LOOP: {
-		dLabel = new Loop(path);
+		dLabel = new Loop();
 		break;
 	}
 	default: {
-		dLabel = new Msdos(path);
+		dLabel = new Msdos();
 		break;
 	}
 	}

@@ -25,7 +25,7 @@ int main () {
 		retVal = 1;
 	}
 
-    return retVal;
+	return retVal;
 }
 ], [], AC_MSG_ERROR([The implementation is not IEEE-754 compliant]))
 
@@ -41,10 +41,10 @@ PKG_CHECK_MODULES([LOG4CPP], [log4cpp >= 1.0])
 logdir="${localstatedir}/log/libdoclone"
 AC_ARG_WITH(logdir,
 	AS_HELP_STRING([--with-logdir=DIR],
-		       [system logging directory [[LOCALSTATEDIR/log/libdoclone]]]),
+			[system logging directory [[LOCALSTATEDIR/log/libdoclone]]]),
 [case "$with_logdir" in
-      "") AC_MSG_ERROR([invalid logdir specified]) ;;
-      *) logdir="$with_logdir" ;;
+		"") AC_MSG_ERROR([invalid logdir specified]) ;;
+		*) logdir="$with_logdir" ;;
 esac])
 AC_SUBST(logdir)
 

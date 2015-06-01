@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Msdos : public DiskLabel {
 public:
-	Msdos(const std::string &path);
+	Msdos();
 };
 
 } /* namespace Doclone */

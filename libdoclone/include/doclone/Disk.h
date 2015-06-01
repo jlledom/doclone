@@ -41,21 +41,22 @@ namespace Doclone {
  */
 class Disk {
 public:
-	Disk(const std::string &path) throw(Exception);
+	Disk();
 	virtual ~Disk();
-	
+
 	virtual void readBootCode() throw(Exception);
 	virtual void writeBootCode() const throw(Exception);
 	virtual void readPartitions() throw(Exception);
 	virtual void writePartitions() const throw(Exception);
-	
+
+	void initFromPath(const std::string &path) throw(Exception);
 	void restoreGrub() throw(Exception);
 
 	void setPath(const std::string &path);
 	const std::string &getPath() const;
 	void setSize(uint64_t size);
 	uint64_t getSize() const;
-	const std::vector<Partition*> &getPartitions() const;
+	std::vector<Partition*> &getPartitions();
 	void setPartitions(const std::vector<Partition*> &parts);
 	const void *getBootCode() const;
 	void setBootCode(const void *bCode);
@@ -69,7 +70,7 @@ protected:
 	std::vector<Partition*> _partitions;
 	/// The Master Boot Record of the disk. The first 440 bytes that contains the code to boot
 	char _bootCode[440];
-	
+
 	void initSize() throw(Exception);
 
 	PedGeometry *calcGeometry(const PedDisk* pDisk,
@@ -77,7 +78,7 @@ protected:
 	PedConstraint *calcConstraint(const PedPartition* pPart,
 			uint64_t usedBytes) const throw(Exception);
 	void writePartitionToDisk(Partition *part) const throw(Exception);
-	
+
 	virtual void makeLabel() const throw(Exception) = 0;
 };
 

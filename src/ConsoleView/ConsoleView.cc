@@ -53,7 +53,7 @@ void ConsoleView::notify(Doclone::dcTransferEvent event, const uint64_t numBytes
 	case Doclone::TRANS_TRANSFERRED_BYTES: {
 		if(this->_totalSize>0) {
 			// Calculate and print the percentage of data transferred
-			float rate = numBytes/static_cast<float>(this->_totalSize);
+			double rate = numBytes/static_cast<double>(this->_totalSize);
 			int percent = floor(rate*100);
 			if(this->_percent != percent) {
 				this->_percent = percent;
@@ -275,7 +275,7 @@ void ConsoleView::initView(int argc, char **argv) const {
 			break;
 		}
 		case 'f': {
-			if (!strrchr (optarg, '/'))	{ // If it is a relative path 
+			if (!strrchr (optarg, '/'))	{ // If it is a relative path
 				char tmp[256];
 				snprintf (tmp, sizeof(tmp), "./%s", optarg);
 				image = tmp;

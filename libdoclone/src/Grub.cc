@@ -39,7 +39,7 @@ namespace Doclone {
  * \param disk
  * 		The disk on which we will work
  */
-Grub::Grub(const Disk *disk) throw(Exception) : _disk(disk) {
+Grub::Grub(Disk *disk) throw(Exception) : _disk(disk) {
 	// Formatting support
 	if(Util::find_program_in_path(GRUB_COMMAND).empty()) {
 		GrubException ex;
@@ -104,7 +104,7 @@ void Grub::searchPartition() throw(Exception) {
 			continue;
 		}
 	}
-	
+
 	log->debug("Grub::searchPartition() end");
 }
 
@@ -114,14 +114,14 @@ void Grub::searchPartition() throw(Exception) {
 void Grub::install() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Grub::install() start");
-	
+
 	int exitValue=-1;
-	
+
 	if(this->_grubParts.empty()) {
 		GrubException ex;
 		throw ex;
 	}
-	
+
 	// In the no-data mode, it is not possible to install GRUB
 	Clone *dcl = Clone::getInstance();
 	if(dcl->getEmpty() == true) {
@@ -171,16 +171,16 @@ void Grub::install() throw(Exception) {
 			continue;
 		}
 	}
-	
+
 	if (exitValue<0) {
 		GrubException ex;
 		throw ex;
 	}
-	
+
 	dcl->markCompleted(Doclone::OP_GRUB_INSTALL,
 			this->_disk->getPath());
 
 	log->debug("Grub::install() end");
 }
-	
+
 }

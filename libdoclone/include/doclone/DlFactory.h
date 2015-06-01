@@ -35,8 +35,7 @@ namespace Doclone {
 class DlFactory {
 public:
 	static DiskLabel *createDiskLabel();
-	static DiskLabel *createDiskLabel(diskLabelType dlType,
-			const std::string &path);
+	static DiskLabel *createDiskLabel(diskLabelType dlType);
 };
 
 } /* namespace Doclone */

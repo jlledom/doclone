@@ -42,16 +42,16 @@ namespace Doclone {
  */
 class Grub {
 public:
-	Grub(const Disk *disk) throw(Exception);
+	Grub( Disk *disk) throw(Exception);
 	~Grub();
 	void install() throw(Exception);
-	
+
 private:
 	/// The device on which work
-	const Disk *_disk;
+	Disk *_disk;
 	/// Vector of partitions where maybe grub is installed
 	std::map<unsigned int, std::string> _grubParts;
-	
+
 	void searchPartition() throw(Exception);
 };
 

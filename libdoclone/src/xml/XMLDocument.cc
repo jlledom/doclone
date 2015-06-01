@@ -480,6 +480,7 @@ void XMLDocument::openFromMem(const char *buf) {
 			strlen(buf), Doclone::XML_ROOT_ELEMENT);
 
 	DOMLSInput *input = implLS->createLSInput();
+	input->setEncoding(XMLUni::fgUTF8EncodingString);
 	input->setByteStream(&source);
 	this->_doc = this->_parser->parse(input);
 

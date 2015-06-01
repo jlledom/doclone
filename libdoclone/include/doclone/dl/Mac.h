@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Mac : public DiskLabel {
 public:
-	Mac(const std::string &path);
+	Mac();
 
 	void readPartitions() throw(Exception);
 

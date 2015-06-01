@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Pc98::Pc98(const std::string &path) : DiskLabel(path) {
+Pc98::Pc98() {
 	this->_labelType = DISK_TYPE_PC98;
 	this->_partedName = "pc98";
 }

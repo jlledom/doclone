@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Amiga: public DiskLabel {
 public:
-	Amiga(const std::string &path);
+	Amiga();
 };
 
 } /* namespace Doclone */

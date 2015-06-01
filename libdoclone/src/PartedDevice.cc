@@ -84,10 +84,26 @@ void PartedDevice::setDisk(PedDisk *pDisk) {
 uint64_t PartedDevice::getDevSize() const {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::getDevSize() start");
-	
+
 	uint64_t devSize=(this->_pDevice->length * this->_pDevice->sector_size);
-	
+
 	log->debug("PartedDevice::getDevSize(devSize=>%d) end", devSize);
+	return devSize;
+}
+
+/**
+ * \brief Gets the size of the given partition in the opened device
+ *
+ * \return Size in bytes
+ */
+uint64_t PartedDevice::getPartitionSize(unsigned int numPartition) const {
+	Logger *log = Logger::getInstance();
+	log->debug("PartedDevice::getPartitionSize(numPartition=>%d) start", numPartition);
+
+	PedPartition *pPart = ped_disk_get_partition(this->_pDisk, numPartition);
+	uint64_t devSize=(pPart->geom.length * this->_pDevice->sector_size);
+
+	log->debug("PartedDevice::getPartitionSize(devSize=>%d) end", devSize);
 	return devSize;
 }
 
@@ -99,7 +115,7 @@ void PartedDevice::initialize(const std::string &device) {
 	log->debug("PartedDevice::initialize(device=>%s) start", device.c_str());
 
 	this->_path = device;
-	
+
 	log->debug("PartedDevice::initialize() end");
 }
 
@@ -111,17 +127,17 @@ void PartedDevice::initialize(const std::string &device) {
 void PartedDevice::open() {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::open() start");
-	
+
 	if(!this->_pDevice) {
 		this->_pDevice = ped_device_get( this->_path.c_str() );
 	}
-	
+
 	if(!this->_pDisk) {
 		this->_pDisk = ped_disk_new( this->_pDevice  );
 	}
-	
+
 	this->_openings++;
-	
+
 	log->debug("PartedDevice::open() end");
 }
 
@@ -133,24 +149,24 @@ void PartedDevice::open() {
 void PartedDevice::close() {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::close() start");
-	
+
 	if(this->_openings>1) {
 		this->_openings--;
 		return;
 	}
-	
+
 	if(this->_pDisk) {
 		ped_disk_destroy( this->_pDisk );
 		this->_pDisk = 0;
 	}
-	
+
 	if(this->_pDevice) {
 		ped_device_destroy( this->_pDevice );
 		this->_pDevice = 0;
 	}
-	
+
 	this->_openings = 0;
-	
+
 	log->debug("PartedDevice::close() end");
 }
 
@@ -160,12 +176,12 @@ void PartedDevice::close() {
 void PartedDevice::commit() const {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::commit() start");
-	
+
 	if(!ped_disk_commit_to_dev(this->_pDisk)) {
 		CommitException ex;
 		throw ex;
 	}
-	
+
 	int i = 0;
 
 	// Wait up to 30 seconds if the device is busy
@@ -189,7 +205,7 @@ void PartedDevice::commit() const {
 			throw ex;
 		}
 	}
-	
+
 	log->debug("PartedDevice::commit() end");
 }
 

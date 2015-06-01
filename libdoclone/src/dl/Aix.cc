@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Aix::Aix(const std::string &path) : DiskLabel(path) {
+Aix::Aix() {
 	this->_labelType = DISK_TYPE_AIX;
 	this->_partedName = "aix";
 }

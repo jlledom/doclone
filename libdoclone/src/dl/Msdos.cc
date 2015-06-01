@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Msdos::Msdos(const std::string &path) : DiskLabel(path) {
+Msdos::Msdos() {
 	this->_labelType = DISK_TYPE_MSDOS;
 	this->_partedName = "msdos";
 }

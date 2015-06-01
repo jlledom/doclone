@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Bsd::Bsd(const std::string &path) : DiskLabel(path) {
+Bsd::Bsd() {
 	this->_labelType = DISK_TYPE_BSD;
 	this->_partedName = "bsd";
 }

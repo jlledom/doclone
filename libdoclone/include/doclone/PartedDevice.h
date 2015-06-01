@@ -36,25 +36,26 @@ namespace Doclone {
 class PartedDevice {
 public:
 	~PartedDevice();
-	
+
 	static PartedDevice* getInstance();
-	
+
 	void initialize(const std::string &device);
-	
+
 	std::string getPath();
 	PedDevice *getDevice() ;
 	PedDisk *getDisk();
 	void setDisk(PedDisk *pDisk);
 	uint64_t getDevSize() const;
-	
+	uint64_t getPartitionSize(unsigned int numPartition) const;
+
 	void open();
 	void commit() const;
     void close();
-	 
+
 private:
     /// Private constructor to implement singleton pattern
     PartedDevice();
-    
+
     /// Used to know if a new parted disk or device must be opened or closed.
     int _openings;
     /// The path of the disk what we work in

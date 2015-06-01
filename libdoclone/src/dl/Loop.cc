@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Loop::Loop(const std::string &path) : DiskLabel(path) {
+Loop::Loop() {
 	this->_labelType = DISK_TYPE_LOOP;
 	this->_partedName = "loop";
 }

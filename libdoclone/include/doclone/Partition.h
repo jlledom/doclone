@@ -79,36 +79,6 @@ const dcFlag F_DIAG					= 1 << 13;
 enum partType {PARTITION_PRIMARY, PARTITION_LOGICAL, PARTITION_EXTENDED};
 
 /**
- * \struct partInfo
- * \brief Contains all the data necessary to restore a partition in the
- * destination
- *
- * All its data is contained in fixed-size variables, in order to make the
- * transfer over the network safer and compatible with 32 and 64 bits
- * processors.
- */
-struct partInfo {
-	/// Flags for this partition
-	dcFlag flags;
-	/// Percentage that represents the position of this partition in the disk
-	uint64_t start_pos;
-	/// Percentage of disk used by the partition
-	uint64_t used_part;
-	/// Value of partType enumerator: Logical, primary, extended
-	uint8_t type;
-	/// Minimum size of the partition (bytes)
-	uint64_t min_size;
-	/// The name for filesystem in libdoclone
-	uint8_t fs_name[32];
-	/// The partition's label
-	uint8_t label[28];
-	/// The partition's uuid
-	uint8_t uuid[37];
-	/// Root directory of the partition in the image
-	uint8_t root_dir[32];
-};
-
-/**
  * \class Partition
  * \brief Partition of the hard disk.
  *
@@ -119,22 +89,31 @@ struct partInfo {
  */
 class Partition {
 public:
-	Partition(const std::string &path) throw(Exception);
-	Partition(Doclone::partInfo header) throw(Exception);
+	Partition();
 	~Partition();
 
 	// Getters and setters
 	Doclone::partType getType() const;
+	void setType(Doclone::partType type);
 	uint64_t getMinSize() const;
+	void setMinSize(uint64_t minSize);
 	double getStartPos() const;
+	void setStartPos(double startPos);
 	double getUsedPart() const;
-	Doclone::partInfo getPartition() const;
-	void setPath(const std::string &path);
+	void setUsedPart(double usedPart);
 	const std::string &getPath() const;
-	void setPartNum(unsigned int);
+	Doclone::dcFlag getFlags() const;
+	void setFlags(Doclone::dcFlag flags);
+	void setPath(const std::string &path);
 	unsigned int getPartNum() const;
-	Filesystem * getFileSystem();
+	void setPartNum(unsigned int);
+	Filesystem *getFileSystem() const;
+	void setFileSystem(Filesystem *fs);
 	const std::string &getMountPoint() const;
+	const std::string &getRootDir() const;
+	void setRootDir(const std::string &rootDir);
+
+	void initFromPath(const std::string &path) throw(Exception);
 
 	void format() const throw(Exception);
 	void writeLabel() const throw(Exception);
@@ -144,10 +123,8 @@ public:
 	void doMount() throw(Exception);
 	void doUmount() throw(Exception);
 
-	void createPartInfo() throw(Exception);
-
 	bool isWritable() const throw(Exception);
-	bool fitInDevice() throw(Exception);
+	bool fitInDevice(bool diskImage) throw(Exception);
 
 private:
 	/// The partition path
@@ -168,8 +145,8 @@ private:
 	Doclone::dcFlag _flags;
 	/// Path to the mount point
 	std::string _mountPoint;
-	/// Metadata of the partition
-	Doclone::partInfo _partition;
+	/// Root directory of the partition in the image header
+	std::string _rootDir;
 
 	bool isMounted() throw(Exception);
 	void externalMount() throw(Exception);
@@ -182,8 +159,6 @@ private:
 	void initStartPos() throw(Exception);
 	void initUsedPart() throw(Exception);
 	void initFlags() throw(Exception);
-	void initLabel() throw(Exception);
-	void initUUID() throw(Exception);
 
 	uint64_t usedSpace() throw(Exception);
 };

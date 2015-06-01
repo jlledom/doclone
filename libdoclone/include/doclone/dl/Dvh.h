@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Dvh : public DiskLabel {
 public:
-	Dvh(const std::string &path);
+	Dvh();
 
 	void readPartitions() throw(Exception);
 

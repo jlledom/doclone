@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Pc98 : public DiskLabel {
 public:
-	Pc98(const std::string &path);
+	Pc98();
 };
 
 } /* namespace Doclone */

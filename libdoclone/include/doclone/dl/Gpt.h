@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Gpt : public DiskLabel {
 public:
-	Gpt(const std::string &path);
+	Gpt();
 };
 
 } /* namespace Doclone */

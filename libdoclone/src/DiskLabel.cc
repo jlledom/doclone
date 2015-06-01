@@ -23,12 +23,16 @@
 
 namespace Doclone {
 
-DiskLabel::DiskLabel(const std::string &path) : Disk(path), _labelType(),
+DiskLabel::DiskLabel() : _labelType(),
 		_partedName() {
 }
 
 Doclone::diskLabelType DiskLabel::getLabelType() const {
 	return this->_labelType;
+}
+
+void DiskLabel::setLabelType(Doclone::diskLabelType labelType) {
+	this->_labelType = labelType;
 }
 
 /**

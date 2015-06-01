@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Aix : public DiskLabel {
 public:
-	Aix(const std::string &path);
+	Aix();
 };
 
 } /* namespace Doclone */

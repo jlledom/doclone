@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Sun::Sun(const std::string &path) : DiskLabel(path) {
+Sun::Sun() {
 	this->_labelType = DISK_TYPE_SUN;
 	this->_partedName = "sun";
 }

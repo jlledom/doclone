@@ -50,72 +50,12 @@
 namespace Doclone {
 
 /**
- * \brief This constructor is used in the process of creation of an image
+ * \brief Initializes attributtes
  *
- * \param path
- * 		The device path of the partition
  */
-Partition::Partition(const std::string &path) throw(Exception)
-		: _path(path), _partNum(), _minSize(), _startPos(), _usedPart(),
-		  _fs(), _type(), _flags(), _partition() {
-	this->initNum();
-	this->initType();
-	this->initFS();
-	this->initUUID();
-	this->initMinSize();
-	this->initStartPos();
-	this->initUsedPart();
-	this->initFlags();
-	this->initLabel();
+Partition::Partition() : _path(), _partNum(), _minSize(), _startPos(),
+		_usedPart(), _fs(), _type(), _flags(), _mountPoint(), _rootDir() {
 }
-
-/**
- * \brief Called for each partition to be restored
- *
- * \param partition
- * 		Metadata of the current partition
- */
-Partition::Partition(Doclone::partInfo partition) throw(Exception)
-		: _path(), _partNum(), _minSize(), _startPos(), _usedPart(),
-		  _fs(), _type(), _flags(), _partition() {
-	this->_partition = partition;
-	
-	this->_type=(Doclone::partType)partition.type;
-	
-	try {
-		this->_fs = FsFactory::createFilesystem(reinterpret_cast<char*>(partition.fs_name));
-	} catch (const Exception &ex) {
-		this->_fs = FsFactory::createFilesystem("nofs");
-	}
-	
-	this->_minSize = partition.min_size;
-	
-	double *tmpStartPos = reinterpret_cast<double*>(&partition.start_pos);
-	this->_startPos = *tmpStartPos;
-	if(this->_startPos>1) {
-		InvalidImageException ex;
-		throw ex;
-	}
-
-	double *tmpUsedPart = reinterpret_cast<double*>(&partition.used_part);
-	this->_usedPart = *tmpUsedPart;
-	if(this->_usedPart>1) {
-		InvalidImageException ex;
-		throw ex;
-	}
-	
-	// Flags
-	this->_flags = partition.flags;
-	
-	// Label
-	std::string label = reinterpret_cast<char*>(partition.label);
-	this->_fs->setLabel(label);
-	
-	// UUID
-	std::string uuid = reinterpret_cast<char*>(partition.uuid);
-	this->_fs->setUUID(uuid);
-}
-
 /**
  * \brief Free this->_fs
  */
@@ -133,16 +73,40 @@ Doclone::partType Partition::getType() const {
 	return this->_type;
 }
 
+void Partition::setType(Doclone::partType type) {
+	this->_type = type;
+}
+
 uint64_t Partition::getMinSize() const {
 	return this->_minSize;
+}
+
+void Partition::setMinSize(uint64_t minSize) {
+	this->_minSize = minSize;
 }
 
 double Partition::getStartPos() const {
 	return this->_startPos;
 }
 
+void Partition::setStartPos(double startPos) {
+	this->_startPos = startPos;
+}
+
 double Partition::getUsedPart() const {
 	return this->_usedPart;
+}
+
+void Partition::setUsedPart(double usedPart) {
+	this->_usedPart = usedPart;
+}
+
+Doclone::dcFlag Partition::getFlags() const {
+	return this->_flags;
+}
+
+void Partition::setFlags(Doclone::dcFlag flags) {
+	this->_flags = flags;
 }
 
 const std::string &Partition::getPath() const {
@@ -153,10 +117,6 @@ void Partition::setPath(const std::string &path) {
 	this->_path = path;
 }
 
-Doclone::partInfo Partition::getPartition() const {
-	return this->_partition;
-}
-
 void Partition::setPartNum(unsigned int num) {
 	this->_partNum = num;
 }
@@ -165,12 +125,41 @@ unsigned int Partition::getPartNum() const {
 	return this->_partNum;
 }
 
-Filesystem * Partition::getFileSystem() {
+Filesystem * Partition::getFileSystem() const {
 	return this->_fs;
+}
+
+void Partition::setFileSystem(Filesystem *fs) {
+	this->_fs = fs;
 }
 
 const std::string &Partition::getMountPoint()const {
 	return this->_mountPoint;
+}
+
+const std::string &Partition::getRootDir() const {
+	return this->_rootDir;
+}
+
+void Partition::setRootDir(const std::string &rootDir) {
+	this->_rootDir = rootDir;
+}
+
+/**
+ * \brief Initializes the partition from its path
+ *
+ * \param path
+ * 		The path of the partition e.g /dev/sda1
+ */
+void Partition::initFromPath(const std::string &path) throw(Exception) {
+	this->_path = path;
+	this->initNum();
+	this->initType();
+	this->initFS();
+	this->initMinSize();
+	this->initStartPos();
+	this->initUsedPart();
+	this->initFlags();
 }
 
 /**
@@ -184,7 +173,7 @@ void Partition::initType() throw(Exception) {
 	pedDev->open();
 	PedDisk *pDisk = pedDev->getDisk();
 	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
-	
+
 	switch (pPart->type) {
 		case PED_PARTITION_NORMAL: {
 			this->_type = Doclone::PARTITION_PRIMARY;
@@ -202,9 +191,9 @@ void Partition::initType() throw(Exception) {
 			break;
 		}
 	}
-	
+
 	pedDev->close();
-	
+
 	log->debug("Partition::initType() end");
 }
 
@@ -238,8 +227,10 @@ void Partition::initFS() throw(Exception) {
 		blkid_tag_iterate_end(iter);
 	}
 	blkid_put_cache(cache);
-	
+
 	this->_fs = FsFactory::createFilesystem(info);
+	this->_fs->readLabel(this->_path);
+	this->_fs->readUUID(this->_path);
 
 	log->debug("Partition::initFS() end");
 }
@@ -258,7 +249,7 @@ void Partition::initMinSize() throw(Exception) {
 	else {
 		this->_minSize = this->usedSpace();
 	}
-	
+
 	log->debug("Partition::initMinSize() end");
 }
 
@@ -294,11 +285,11 @@ void Partition::initUsedPart() throw(Exception) {
 	PedDevice *pDev = pedDev->getDevice();
 	PedDisk *pDisk = pedDev->getDisk();
 	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
-	
+
 	this->_usedPart = static_cast<double>(pPart->geom.length) / pDev->length;
-		  
+
 	pedDev->close();
-	
+
 	log->debug("Partition::initUsedPart() end");
 }
 
@@ -308,14 +299,14 @@ void Partition::initUsedPart() throw(Exception) {
 void Partition::initFlags() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::initFlags() start");
-	
+
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
 	PedDisk *pDisk = pedDev->getDisk();
 	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
-	
+
 	this->_flags = 0;
-	
+
 	if(ped_partition_get_flag(pPart, PED_PARTITION_BOOT)) {
 		this->_flags|=Doclone::F_BOOT;
 	}
@@ -358,9 +349,9 @@ void Partition::initFlags() throw(Exception) {
 	if(ped_partition_get_flag(pPart, PED_PARTITION_DIAG)) {
 		this->_flags|=Doclone::F_DIAG;
 	}
-	
+
 	pedDev->close();
-	
+
 	log->debug("Partition::initFlags() end");
 }
 
@@ -372,32 +363,8 @@ void Partition::initNum() throw(Exception) {
 	log->debug("Partition::initNum() start");
 
 	this->_partNum = Util::getPartNum(this->_path);
-	
+
 	log->debug("Partition::initNum() end");
-}
-
-/**
- * \brief Initializes the attribute this->_label
- */
-void Partition::initLabel() throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Partition::initLabel() start");
-
-	this->_fs->readLabel(this->_path);
-
-	log->debug("Partition::initLabel() end");
-}
-
-/**
- * \brief Initializes the attribute this->_uuid
- */
-void Partition::initUUID() throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Partition::initUUID() start");
-
-	this->_fs->readUUID(this->_path);
-
-	log->debug("Partition::initUUID() end");
 }
 
 /**
@@ -408,12 +375,12 @@ void Partition::initUUID() throw(Exception) {
 uint64_t Partition::usedSpace() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::usedSpace() start");
-	
+
 	struct statvfs info;
 	uint64_t used_blocks;
 
 	this->doMount();
-	
+
 	try {
 		if (statvfs (this->_mountPoint.c_str(), &info) < 0) {
 			FileNotFoundException ex(this->_mountPoint);
@@ -425,11 +392,11 @@ uint64_t Partition::usedSpace() throw(Exception) {
 		this->doUmount();
 		throw;
 	}
-	
+
 	this->doUmount();
-	
+
 	uint64_t retValue = used_blocks * info.f_frsize;
-	
+
 	log->debug("Partition::usedSpace(retValue=>%d) end", retValue);
 	return retValue;
 }
@@ -437,20 +404,30 @@ uint64_t Partition::usedSpace() throw(Exception) {
 /**
  * \brief Checks if the image fits in the assigned device
  *
+ * \param diskImage Whether we are working with a disk image.
+ * 		For a disk image, device size must be all the disk size, for a
+ * 		partition image, only the partition size.
+ *
  * \return True or false
  */
-bool Partition::fitInDevice() throw(Exception) {
+bool Partition::fitInDevice(bool diskImage) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::fitInDevice() start");
-	
+
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
-	
-	uint64_t devSize=(pedDev->getDevSize() * this->_usedPart);
+
+	uint64_t devSize = 0;
+	if(diskImage) {
+		devSize=(pedDev->getDevSize() * this->_usedPart);
+	} else {
+		devSize=(pedDev->getPartitionSize(this->_partNum));
+	}
+
 	bool retValue = this->_minSize < devSize;
-	
+
 	pedDev->close();
-		
+
 	log->debug("Partition::fitInDevice(retValue=>%d) end", retValue);
 	return retValue;
 }
@@ -461,16 +438,16 @@ bool Partition::fitInDevice() throw(Exception) {
 void Partition::externalMount() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::externalMount() start");
-	
+
 	char tmpDir[32]=TMP_PREFIX;
-	
+
 	if(!mkdtemp(tmpDir)) {
 		MountException ex(this->_path);
 		throw ex;
 	}
-	
+
 	this->_mountPoint = tmpDir;
-	
+
 	std::string cmdline="mount."+this->_fs->getMountName();
 	cmdline.append(" ")
 	.append(this->_path.c_str())
@@ -482,7 +459,7 @@ void Partition::externalMount() throw(Exception) {
 	.append("rw")
 	.append(" ")
 	.append(">/dev/null 2>&1");
-			 
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -490,7 +467,7 @@ void Partition::externalMount() throw(Exception) {
 		MountException ex(this->_path);
 		throw ex;
 	}
-	
+
 	log->debug("Partition::externalMount() end");
 }
 
@@ -500,7 +477,7 @@ void Partition::externalMount() throw(Exception) {
 void Partition::doMount() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::doMount() start");
-	
+
 	if(!this->_fs->getMountSupport()) {
 		MountException ex(this->_path);
 		throw ex;
@@ -517,15 +494,15 @@ void Partition::doMount() throw(Exception) {
 	}
 	else {
 		char tmpDir[32]=TMP_PREFIX;
-		
+
 		if(!mkdtemp(tmpDir)) {
 			MountException ex(this->_path);
 			ex.logMsg();
 			throw ex;
 		}
-		
+
 		this->_mountPoint = tmpDir;
-		
+
 		if(mount (this->_path.c_str(), tmpDir,
 			this->_fs->getMountName().c_str(), 0,
 			this->_fs->getMountOptions().c_str()) < 0) {
@@ -534,11 +511,11 @@ void Partition::doMount() throw(Exception) {
 			throw ex;
 		}
 	}
-	
+
 	// After mounting, write a new line in /etc/mtab
 	Util::addMtabEntry(this->_path, this->_mountPoint,
 		this->_fs->getMountName(), this->_fs->getMountOptions());
-	
+
 	log->debug("Partition::doMount() end");
 }
 
@@ -548,7 +525,7 @@ void Partition::doMount() throw(Exception) {
 void Partition::doUmount() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::doUmount() start");
-	
+
 	if(!this->isMounted() // If it is not mounted or is mounted but not in /tmp
 			|| !Util::match(this->_mountPoint, TMP_PREFIX_REGEXP)) {
 		/*
@@ -570,7 +547,7 @@ void Partition::doUmount() throw(Exception) {
 
 	// After unmounting, we must delete the entry of /etc/mtab
 	Util::updateMtab(this->_path);
-	
+
 	log->debug("Partition::doUmount() end");
 }
 
@@ -582,7 +559,7 @@ bool Partition::isMounted() throw(Exception) {
 	log->debug("Partition::isMounted() start");
 
 	bool retValue = false;
-	
+
 	struct mntent *filesys;
 	FILE *f;
 	f = setmntent ("/etc/mtab", "r");
@@ -609,7 +586,7 @@ bool Partition::isMounted() throw(Exception) {
 	}
 
 	endmntent (f);
-	
+
 	log->debug("Partition::isMounted(retValue=>%d) end", retValue);
 	return retValue;
 }
@@ -620,9 +597,9 @@ bool Partition::isMounted() throw(Exception) {
 void Partition::format() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::format() start");
-	
+
 	std::string cmdline;
-	
+
 	cmdline+=this->_fs->getCommand()+" "+this->_fs->getFormatOptions()+
 		" "+this->_path.c_str()+" >/dev/null 2>&1";
 
@@ -638,49 +615,12 @@ void Partition::format() const throw(Exception) {
 }
 
 /**
- * \brief Creates the partition metadata
- */
-void Partition::createPartInfo() throw(Exception) {
-	Logger *log = Logger::getInstance();
-	log->debug("Partition::createPartInfo() start");
-
-	// Initialize to 0
-	memset(&this->_partition, 0, sizeof(this->_partition));
-	
-	this->_partition.type = this->_type;
-	this->_partition.min_size = this->_minSize;
-
-	uint64_t *tmpStartPos = reinterpret_cast<uint64_t*>(&this->_startPos);
-	this->_partition.start_pos = *tmpStartPos;
-
-	uint64_t *tmpUsedPart = reinterpret_cast<uint64_t*>(&this->_usedPart);
-	this->_partition.used_part = *tmpUsedPart;
-
-	this->_partition.flags = this->_flags;
-	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.fs_name),
-			this->_fs->getdocloneName().c_str(), 32);
-	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.label),
-			this->_fs->getLabel().c_str(), 28);
-	Util::safe_strncpy(reinterpret_cast<char*>(this->_partition.uuid),
-			this->_fs->getUUID().c_str(), 37);
-	//Set the root of this partition inside the image
-	std::string rootDir = "_part";
-	char partNum[2] = {};
-	sprintf(partNum,"%d",this->_partNum);
-	rootDir.append(partNum);
-	Util::safe_strncpy(reinterpret_cast<char *>(this->_partition.root_dir),
-			rootDir.c_str(), rootDir.length()+1);
-	
-	log->debug("Partition::createPartInfo() end");
-}
-
-/**
  * \brief Writes fs label
  */
 void Partition::writeLabel() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::writeLabel() start");
-	
+
 	this->_fs->writeLabel(this->_path);
 
 	log->debug("Partition::writeLabel() end");
@@ -692,7 +632,7 @@ void Partition::writeLabel() const throw(Exception) {
 void Partition::writeUUID() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::writeUUID() start");
-	
+
 	this->_fs->writeUUID(this->_path);
 
 	log->debug("Partition::writeUUID() end");
@@ -704,7 +644,7 @@ void Partition::writeUUID() const throw(Exception) {
 void Partition::writeFlags() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::writeFlags() start");
-	
+
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
 	PedDisk *pDisk = pedDev->getDisk();
@@ -767,10 +707,10 @@ void Partition::writeFlags() const throw(Exception) {
 	if(ped_partition_is_flag_available(pPart, PED_PARTITION_DIAG) == 1) {
 		ped_partition_set_flag(pPart, PED_PARTITION_DIAG, fDiag);
 	}
-	
+
 	pedDev->commit();
 	pedDev->close();
-	
+
 	Clone *dcl = Clone::getInstance();
 	dcl->markCompleted(Doclone::OP_WRITE_PARTITION_FLAGS, this->_path);
 
@@ -785,9 +725,9 @@ void Partition::writeFlags() const throw(Exception) {
 bool Partition::isWritable() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::isWritable() start");
-	
+
 	bool retValue;
-	
+
 	if(this->_type == Doclone::PARTITION_EXTENDED // It is extended
 		|| this->_fs->getType() == Doclone::FSTYPE_NONE // It doesn't have a unix or dos filesystem
 		|| !this->_fs->getMountSupport() // System can't mount it
@@ -797,7 +737,7 @@ bool Partition::isWritable() const throw(Exception) {
 	else {
 		retValue = true;
 	}
-	
+
 	log->debug("Partition::isWritable(retValue=>%d) end", retValue);
 	return retValue;
 }

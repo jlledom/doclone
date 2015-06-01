@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Bsd : public DiskLabel {
 public:
-	Bsd(const std::string &path);
+	Bsd();
 
 	void writeBootCode() const throw(Exception);
 };

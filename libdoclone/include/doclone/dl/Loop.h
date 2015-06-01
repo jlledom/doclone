@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Loop : public DiskLabel {
 public:
-	Loop(const std::string &path);
+	Loop();
 };
 
 } /* namespace Doclone */

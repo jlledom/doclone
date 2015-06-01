@@ -20,7 +20,7 @@
 
 namespace Doclone {
 
-Gpt::Gpt(const std::string &path) : DiskLabel(path) {
+Gpt::Gpt() {
 	this->_labelType = DISK_TYPE_GPT;
 	this->_partedName = "gpt";
 }

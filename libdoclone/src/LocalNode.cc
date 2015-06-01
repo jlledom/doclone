@@ -45,7 +45,6 @@ void LocalNode::create() const throw(Exception) {
 
 	PartedDevice *pDevice = PartedDevice::getInstance();
 	std::string target = pDevice->getPath();
-	Disk *dcDisk = DlFactory::createDiskLabel();
 
 	Util::createFile(this->_image);
 	int fd = Util::openFile(this->_image);
@@ -80,9 +79,7 @@ void LocalNode::create() const throw(Exception) {
 
 	image.initCreateOperations();
 
-	image.createImageHeader(dcDisk);
-
-	image.writeImageHeader();
+	image.saveImageHeader();
 
 	image.readPartitionsData();
 
@@ -90,8 +87,6 @@ void LocalNode::create() const throw(Exception) {
 	image.freeReadArchive();
 
 	Util::closeFile(fd);
-
-	delete dcDisk;
 
 	log->debug("Local::create() end");
 }
@@ -115,15 +110,9 @@ void LocalNode::restore() const throw(Exception) {
 	image.initFdReadArchive(fd);
 	image.initDiskWriteArchive();
 
-	image.readImageHeader();
+	image.loadImageHeader();
 
-	image.openImageHeader();
-
-	PartedDevice *pDevice = PartedDevice::getInstance();
-	Disk *dcDisk = DlFactory::createDiskLabel(image.getLabelType(),
-			pDevice->getPath());
-
-	if(image.canRestoreCheck(this->_device, dcDisk->getSize()) == false) {
+	if(image.canRestoreCheck(this->_device) == false) {
 		RestoreImageException ex;
 		throw ex;
 	}
@@ -133,13 +122,6 @@ void LocalNode::restore() const throw(Exception) {
 	image.writePartitionTable(this->_device);
 
 	image.writePartitionsData(this->_device);
-
-	if(image.getHeader().image_type==(Doclone::imageType)IMAGE_DISK) {
-		dcDisk->setPartitions(image.getPartitions());
-		dcDisk->restoreGrub();
-	}
-
-	delete dcDisk;
 
 	image.freeWriteArchive();
 	image.freeReadArchive();

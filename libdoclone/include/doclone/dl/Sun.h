@@ -31,7 +31,7 @@ namespace Doclone {
  */
 class Sun : public DiskLabel {
 public:
-	Sun(const std::string &path);
+	Sun();
 };
 
 } /* namespace Doclone */

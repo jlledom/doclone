@@ -225,8 +225,8 @@ void Unicast::sendFromImage() throw(Exception) {
 	 */
 	Image dcImage;
 	dcImage.initFdReadArchive(fd);
-	dcImage.readImageHeader();
-	uint64_t totalSize = dcImage.getHeader().image_size;
+	dcImage.loadImageHeader();
+	uint64_t totalSize = dcImage.getSize();
 	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(totalSize);
 
@@ -276,7 +276,6 @@ void Unicast::sendFromDevice() throw(Exception) {
 
 	PartedDevice *pDevice = PartedDevice::getInstance();
 	std::string target = pDevice->getPath();
-	Disk *dcDisk = DlFactory::createDiskLabel();
 	Image image;
 
 	if(Util::isDisk(this->_device)) {
@@ -302,7 +301,6 @@ void Unicast::sendFromDevice() throw(Exception) {
 	}
 
 	image.initCreateOperations();
-	image.createImageHeader(dcDisk);
 	image.initDiskReadArchive();
 	image.initFdWriteArchive(this->_fds);
 
@@ -312,11 +310,16 @@ void Unicast::sendFromDevice() throw(Exception) {
 	 * If the system is little-endian, it's necessary to convert totalSize to
 	 * big-endian.
 	 */
-	uint64_t tmpTotalSize = htobe64(image.getHeader().image_size);
+	Disk *disk = image.getDisk();
+	uint8_t numPartitions = disk->getPartitions().size();
+	uint64_t tmpTotalSize = 0;
+	for(int i = 0;i<numPartitions;i++) {
+		tmpTotalSize += disk->getPartitions().at(i)->getMinSize();
+	}
 	DataTransfer::sendData(this->_fds, &tmpTotalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 
-	image.writeImageHeader();
+	image.saveImageHeader();
 
 	image.readPartitionsData();
 
@@ -324,8 +327,6 @@ void Unicast::sendFromDevice() throw(Exception) {
 	image.freeReadArchive();
 
 	this->closeConnection();
-
-	delete dcDisk;
 
 	log->debug("Unicast::sendFromDevice() end");
 }
@@ -462,13 +463,9 @@ void Unicast::receiveToDevice() throw(Exception) {
 	Image image;
 	image.initFdReadArchive(this->_fds[0]);
 	image.initDiskWriteArchive();
-	image.readImageHeader();
-	image.openImageHeader();
+	image.loadImageHeader();
 
-	Disk *dcDisk = DlFactory::createDiskLabel(image.getLabelType(),
-			pedDev->getPath());
-
-	if(image.canRestoreCheck(this->_device, dcDisk->getSize()) == false) {
+	if(image.canRestoreCheck(this->_device) == false) {
 		RestoreImageException ex;
 		throw ex;
 	}
@@ -477,17 +474,10 @@ void Unicast::receiveToDevice() throw(Exception) {
 	image.writePartitionTable(this->_device);
 	image.writePartitionsData(this->_device);
 
-	if(image.getHeader().image_type==(Doclone::imageType)IMAGE_DISK) {
-		dcDisk->setPartitions(image.getPartitions());
-		dcDisk->restoreGrub();
-	}
-
 	image.freeWriteArchive();
 	image.freeReadArchive();
 
 	this->closeConnection();
-
-	delete dcDisk;
 
 	log->debug("Unicast::receiveToDevice() end");
 }
