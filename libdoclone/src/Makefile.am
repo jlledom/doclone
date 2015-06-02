@@ -56,7 +56,8 @@ libdcexception_la_SOURCES= \
 	$(top_srcdir)/include/doclone/exception/WriteErrorsInDirectoryException.h \
 	$(top_srcdir)/include/doclone/exception/WriteLabelException.h \
 	$(top_srcdir)/include/doclone/exception/WriteUuidException.h \
-	$(top_srcdir)/include/doclone/exception/WrongImageTypeException.h
+	$(top_srcdir)/include/doclone/exception/WrongImageTypeException.h \
+	$(top_srcdir)/include/doclone/exception/XMLParseException.h
 
 libdcexception_la_includedir= \
 	$(includedir)/doclone/exception
@@ -106,7 +107,8 @@ libdcexception_la_include_HEADERS = \
 	$(top_srcdir)/include/doclone/exception/WriteErrorsInDirectoryException.h \
 	$(top_srcdir)/include/doclone/exception/WriteLabelException.h \
 	$(top_srcdir)/include/doclone/exception/WriteUuidException.h \
-	$(top_srcdir)/include/doclone/exception/WrongImageTypeException.h
+	$(top_srcdir)/include/doclone/exception/WrongImageTypeException.h \
+	$(top_srcdir)/include/doclone/exception/XMLParseException.h
 
 libdcobserver_la_SOURCES= \
 	$(top_srcdir)/include/doclone/observer/AbstractObserver.h \

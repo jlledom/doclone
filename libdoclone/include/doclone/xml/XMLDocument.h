@@ -21,10 +21,7 @@
 
 #include <stdint.h>
 
-#include <vector>
-
 #include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLString.hpp>
 
 #include <doclone/exception/Exception.h>
 
@@ -50,8 +47,7 @@ const char XML_SYSTEM_ID[] = "http://doclone.nongnu.org/xml/image-1.0.dtd";
  * \brief XML document to store de metadata of a doclone image
  *
  * The main purpose of this class is to provide an interface for the reduced
- * set of functionality that doclone needs and delegate the handling of the
- * memory management for the transcoded strings.
+ * set of functionality that libdoclone needs.
  *
  * \date February, 2015
  */
@@ -72,7 +68,7 @@ public:
 	const char *serialize(std::string &buf);
 
 	//Read methods
-	void openFromMem(const char *buf);
+	void openFromMem(const char *buf) throw(Exception);
 	const DOMElement *getElement(const DOMElement *parent, const char *name);
 	const DOMNodeList *getElements(const DOMElement *parent, const char *name);
 	const uint8_t *getElementValueCString(const DOMElement *parent, const char *name);
@@ -81,22 +77,11 @@ public:
 	const uint64_t getElementValueU64(const DOMElement *parent, const char *name);
 	const uint8_t *getElementValueBinary(const DOMElement *parent, const char *name);
 private:
-	//String handling methods
-	const XMLCh *toXMLText(const uint8_t *c_str);
-	const XMLCh *toXMLText(const char *c_str);
-	const uint8_t *toCString(const XMLCh *xmlch);
-
 	///XML document
 	DOMDocument *_doc;
 
 	/// Xerces XML parser
 	DOMLSParser *_parser;
-
-	///Storage for the transcoded strings
-	std::vector<XMLCh*> _listXmlchData;
-
-	///Storage for the C strings
-	std::vector<uint8_t*> _listXmlByteData;
 };
 
 }

@@ -6,13 +6,17 @@
 noinst_LTLIBRARIES=libdcxml.la
 
 libdcxml_la_SOURCES= \
-	XMLDocument.cc
+	XMLDocument.cc \
+	XMLErrorHandler.cc \
+	XMLStringHandler.cc
 
 libdcxml_la_includedir= \
 	$(includedir)/doclone/xml
 
 libdcxml_la_include_HEADERS = \
-	$(top_srcdir)/include/doclone/xml/XMLDocument.h
+	$(top_srcdir)/include/doclone/xml/XMLDocument.h \
+	$(top_srcdir)/include/doclone/xml/XMLErrorHandler.h \
+	$(top_srcdir)/include/doclone/xml/XMLStringHandler.h
 
 libdcxml_la_CPPFLAGS = \
 	-I$(top_srcdir)/include \
