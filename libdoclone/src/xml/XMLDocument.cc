@@ -403,10 +403,9 @@ void XMLDocument::openFromMem(const char *buf) throw(Exception) {
 	DOMConfiguration *config = this->_parser->getDomConfig();
 	XMLErrorHandler errorHandler;
 
-	config->setParameter(XMLUni::fgDOMNamespaces, true);
-	config->setParameter(XMLUni::fgXercesSchema, true);
-	config->setParameter(XMLUni::fgXercesHandleMultipleImports, true);
 	config->setParameter(XMLUni::fgXercesSchemaFullChecking, true);
+	config->setParameter(XMLUni::fgDOMWellFormed, true);
+	config->setParameter(XMLUni::fgDOMValidate, true);
 	config->setParameter(XMLUni::fgDOMErrorHandler, &errorHandler);
 
 	this->_parser->resetDocumentPool();
@@ -418,9 +417,22 @@ void XMLDocument::openFromMem(const char *buf) throw(Exception) {
 	input->setEncoding(XMLUni::fgUTF8EncodingString);
 	input->setByteStream(&source);
 	this->_doc = this->_parser->parse(input);
+
 	if(errorHandler.getErrors()) {
-		XMLParseException ex;
-		throw ex;
+		/*
+		 * There have been errors while parsing the XML.
+		 * Trying to parse without validation
+		 */
+		errorHandler.resetErrors();
+		config->setParameter(XMLUni::fgDOMValidate, false);
+		config->setParameter(XMLUni::fgXercesLoadExternalDTD, false);
+		this->_doc = this->_parser->parse(input);
+
+		if(errorHandler.getErrors()) {
+			//Parse error persists without validation. Abort.
+			XMLParseException ex;
+			throw ex;
+		}
 	}
 
 	log->debug("XMLDocument::openFromMem() end");

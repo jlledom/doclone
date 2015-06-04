@@ -51,14 +51,9 @@ bool XMLErrorHandler::handleError(const DOMError &domError) {
 		retVal = true;
 	}
 
-	if(severity == DOMError::DOM_SEVERITY_ERROR) {
+	if(severity == DOMError::DOM_SEVERITY_ERROR
+			|| severity == DOMError::DOM_SEVERITY_FATAL_ERROR) {
 		log->error("ERROR: At line %d, column: %d: %s", lineNum, colNum, msg);
-		retVal = false;
-		this->_errors = true;
-	}
-
-	if(severity == DOMError::DOM_SEVERITY_FATAL_ERROR) {
-		log->fatal("FATAL: At line %d, column: %d: %s", lineNum, colNum, msg);
 		retVal = false;
 		this->_errors = true;
 	}
