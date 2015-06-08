@@ -551,8 +551,8 @@ const uint64_t XMLDocument::getElementValueU64(const DOMElement *parent,
 	DOMNodeList *nodeList = parent->getElementsByTagName(xmlStr->toXMLText(name));
 
 	if(nodeList->getLength() == 1) {
-		const char *tmpVal = reinterpret_cast<const char *>(xmlStr->toCString(
-				nodeList->item(0)->getTextContent()));
+		const char *tmpVal =
+				xmlStr->toCString(nodeList->item(0)->getTextContent());
 		if(tmpVal != 0) {
 			retVal = atol(tmpVal);
 		}

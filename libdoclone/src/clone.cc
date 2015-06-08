@@ -73,11 +73,8 @@ int doclone_create(const dc_doclone *dc_obj) {
 	int retVal = 0;
 
 	try {
-		const char *image = reinterpret_cast<const char *>(dc_obj->_image);
-		dcl->setImage(image);
-
-		const char *device = reinterpret_cast<const char *>(dc_obj->_device);
-		dcl->setDevice(device);
+		dcl->setImage(dc_obj->_image);
+		dcl->setDevice(dc_obj->_device);
 
 		dcl->create();
 	} catch(const Doclone::Exception &ex) {
@@ -102,11 +99,8 @@ int doclone_restore(const dc_doclone *dc_obj) {
 	int retVal = 0;
 
 	try {
-		const char *image = reinterpret_cast<const char *>(dc_obj->_image);
-		dcl->setImage(image);
-
-		const char *device = reinterpret_cast<const char *>(dc_obj->_device);
-		dcl->setDevice(device);
+		dcl->setImage(dc_obj->_image);
+		dcl->setDevice(dc_obj->_device);
 
 		dcl->restore();
 	} catch(const Doclone::Exception &ex) {
@@ -132,11 +126,8 @@ int doclone_send(const dc_doclone *dc_obj) {
 	int retVal = 0;
 
 	try {
-		const char *image = reinterpret_cast<const char *>(dc_obj->_image);
-		dcl->setImage(image);
-
-		const char *device = reinterpret_cast<const char *>(dc_obj->_device);
-		dcl->setDevice(device);
+		dcl->setImage(dc_obj->_image);
+		dcl->setDevice(dc_obj->_device);
 
 		dcl->setNodesNumber(dc_obj->_nodesNumber);
 
@@ -164,14 +155,9 @@ int doclone_receive(const dc_doclone *dc_obj) {
 	int retVal = 0;
 
 	try {
-		const char *image = reinterpret_cast<const char *>(dc_obj->_image);
-		dcl->setImage(image);
-
-		const char *device = reinterpret_cast<const char *>(dc_obj->_device);
-		dcl->setDevice(device);
-
-		const char *address = reinterpret_cast<const char *>(dc_obj->_address);
-		dcl->setAddress(address);
+		dcl->setImage(dc_obj->_image);
+		dcl->setDevice(dc_obj->_device);
+		dcl->setAddress(dc_obj->_address);
 
 		dcl->receive();
 	} catch(const Doclone::Exception &ex) {
@@ -196,11 +182,8 @@ int doclone_chain_origin(const dc_doclone *dc_obj) {
 	int retVal = 0;
 
 	try {
-		const char *image = reinterpret_cast<const char *>(dc_obj->_image);
-		dcl->setImage(image);
-
-		const char *device = reinterpret_cast<const char *>(dc_obj->_device);
-		dcl->setDevice(device);
+		dcl->setImage(dc_obj->_image);
+		dcl->setDevice(dc_obj->_device);
 
 		dcl->chainOrigin();
 	} catch(const Doclone::Exception &ex) {
@@ -225,11 +208,8 @@ int doclone_chain_link(const dc_doclone *dc_obj) {
 		int retVal = 0;
 
 		try {
-			const char *image = reinterpret_cast<const char *>(dc_obj->_image);
-			dcl->setImage(image);
-
-			const char *device = reinterpret_cast<const char *>(dc_obj->_device);
-			dcl->setDevice(device);
+			dcl->setImage(dc_obj->_image);
+			dcl->setDevice(dc_obj->_device);
 
 			dcl->chainLink();
 		} catch(const Doclone::Exception &ex) {
@@ -296,8 +276,7 @@ void doclone_subscribe_to_notifications(dc_doclone *dc_obj,
  * \brief Sets the image path of the given dc_doclone object
  */
 void doclone_set_image(dc_doclone *dc_obj, const char *image) {
-	char *dst = reinterpret_cast<char *>(dc_obj->_image);
-	snprintf(dst, sizeof(dc_obj->_image), "%s", image);
+	snprintf(dc_obj->_image, sizeof(dc_obj->_image), "%s", image);
 }
 
 /**
@@ -305,8 +284,7 @@ void doclone_set_image(dc_doclone *dc_obj, const char *image) {
  * \brief Sets the device path of the given dc_doclone object
  */
 void doclone_set_device(dc_doclone *dc_obj, const char *device) {
-	char *dst = reinterpret_cast<char *>(dc_obj->_device);
-	snprintf(dst, sizeof(dc_obj->_device), "%s", device);
+	snprintf(dc_obj->_device, sizeof(dc_obj->_device), "%s", device);
 }
 
 /**
@@ -314,8 +292,7 @@ void doclone_set_device(dc_doclone *dc_obj, const char *device) {
  * \brief Sets the IP address of the server for the given dc_doclone object
  */
 void doclone_set_address(dc_doclone *dc_obj, const char *address) {
-	char *dst = reinterpret_cast<char *>(dc_obj->_address);
-	snprintf(dst, sizeof(dc_obj->_address), "%s", address);
+	snprintf(dc_obj->_address, sizeof(dc_obj->_address), "%s", address);
 }
 
 /**
@@ -323,8 +300,7 @@ void doclone_set_address(dc_doclone *dc_obj, const char *address) {
  * \brief Sets the IP address of the interface to be used in the link mode
  */
 void doclone_set_interface(dc_doclone *dc_obj, const char *interface) {
-	char *dst = reinterpret_cast<char *>(dc_obj->_interface);
-	snprintf(dst, sizeof(dc_obj->_interface), "%s", interface);
+	snprintf(dc_obj->_interface, sizeof(dc_obj->_interface), "%s", interface);
 }
 
 /**

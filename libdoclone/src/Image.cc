@@ -298,8 +298,8 @@ void Image::loadImageHeader() throw(Exception) {
 	if(this->_type == Doclone::IMAGE_DISK) {
 		const uint8_t *bootCode =
 				doc.getElementValueBinary(rootElement, "bootCode");
-		uint8_t buffBootCode[440] = {};
-		for(int i=0; i<440; i++) {
+		uint8_t buffBootCode[Doclone::MBR_SIZE] = {};
+		for(int i=0; i<Doclone::MBR_SIZE; i++) {
 			buffBootCode[i] = bootCode[i];
 		}
 		this->_disk->setBootCode(reinterpret_cast<const char *>(buffBootCode));
@@ -402,7 +402,7 @@ void Image::saveImageHeader() throw(Exception) {
 	doc.createElement(rootElem, "imageType", static_cast<uint8_t>(this->_type));
 
 	doc.createBinaryElement(rootElem, "bootCode",
-			reinterpret_cast<const uint8_t*>(this->_disk->getBootCode()), 440);
+			reinterpret_cast<const uint8_t*>(this->_disk->getBootCode()), Doclone::MBR_SIZE);
 
 	doc.createElement(rootElem, "diskType",
 			static_cast<uint8_t>(this->_disk->getLabelType()));

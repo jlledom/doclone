@@ -93,7 +93,7 @@ void Disk::initFromPath(const std::string &path) throw(Exception) {
 }
 
 /**
- * \brief Reads the first 440 bytes of the disk
+ * \brief Reads the first Doclone::MBR_SIZE bytes of the disk
  */
 void Disk::readBootCode() throw(Exception) {
 	Logger *log = Logger::getInstance();
@@ -108,7 +108,7 @@ void Disk::readBootCode() throw(Exception) {
 
 	try {
 		fstr.seekg(0, std::ios_base::beg);
-		fstr.read(this->_bootCode, 440);
+		fstr.read(this->_bootCode, Doclone::MBR_SIZE);
 		fstr.close();
 
 	}catch(...) {
@@ -120,7 +120,7 @@ void Disk::readBootCode() throw(Exception) {
 }
 
 /**
- * \brief Writes the first 440 bytes of the disk
+ * \brief Writes the first Doclone::MBR_SIZE bytes of the disk
  */
 void Disk::writeBootCode() const throw(Exception) {
 	Logger *log = Logger::getInstance();
@@ -135,7 +135,7 @@ void Disk::writeBootCode() const throw(Exception) {
 
 	try {
 		fstr.seekp(0, std::ios_base::beg);
-		fstr.write(this->_bootCode, 440);
+		fstr.write(this->_bootCode, Doclone::MBR_SIZE);
 		fstr.close();
 
 	}catch(...) {

@@ -29,6 +29,9 @@
 
 namespace Doclone {
 
+/// Size of the Master Boot Record of the disk
+const uint16_t MBR_SIZE = 440;
+
 /**
  * \class Disk
  * \brief Represents a full disk.
@@ -69,7 +72,7 @@ protected:
 	/// Vector of partitions that will be read of written from/to the disk
 	std::vector<Partition*> _partitions;
 	/// The Master Boot Record of the disk. The first 440 bytes that contains the code to boot
-	char _bootCode[440];
+	char _bootCode[Doclone::MBR_SIZE];
 
 	void initSize() throw(Exception);
 
