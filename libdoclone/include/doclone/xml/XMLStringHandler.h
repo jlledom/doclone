@@ -44,10 +44,9 @@ public:
 	~XMLStringHandler();
 
 	//String handling methods
-	const XMLCh *toXMLText(const uint8_t *c_str);
 	const XMLCh *toXMLText(const char *c_str);
-	const uint8_t *toCString(const XMLCh *xmlch);
-	const uint8_t *toCString(XMLByte *xmlbyte);
+	const char *toCString(const XMLCh *xmlch);
+	const uint8_t *toBinaryArray(XMLByte *xmlbyte);
 private:
 	/// Private constructor for singleton pattern
 	XMLStringHandler() throw(Exception);

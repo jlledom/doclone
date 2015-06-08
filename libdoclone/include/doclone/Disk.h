@@ -58,8 +58,8 @@ public:
 	uint64_t getSize() const;
 	std::vector<Partition*> &getPartitions();
 	void setPartitions(const std::vector<Partition*> &parts);
-	const void *getBootCode() const;
-	void setBootCode(const void *bCode);
+	const char *getBootCode() const;
+	void setBootCode(const char *bCode);
 
 protected:
 	/// The disk path

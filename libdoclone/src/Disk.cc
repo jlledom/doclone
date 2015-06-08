@@ -73,11 +73,11 @@ void Disk::setPartitions(const std::vector<Partition*> &parts) {
 	this->_partitions = parts;
 }
 
-const void *Disk::getBootCode() const {
+const char *Disk::getBootCode() const {
 	return this->_bootCode;
 }
 
-void Disk::setBootCode(const void *bCode) {
+void Disk::setBootCode(const char *bCode) {
 	memcpy(this->_bootCode, bCode, sizeof(this->_bootCode));
 }
 

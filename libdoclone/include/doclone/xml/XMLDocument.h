@@ -60,7 +60,7 @@ public:
 	void createNew();
 	DOMElement *getRootElement();
 	DOMElement *createElement(DOMElement *parent, const char *name) throw(Exception);
-	DOMElement *createElement(DOMElement *parent, const char *name, const uint8_t *value) throw(Exception);
+	DOMElement *createElement(DOMElement *parent, const char *name, const char *value) throw(Exception);
 	DOMElement *createElement(DOMElement *parent, const char *name, const uint8_t value) throw(Exception);
 	DOMElement *createElement(DOMElement *parent, const char *name, const uint16_t value) throw(Exception);
 	DOMElement *createElement(DOMElement *parent, const char *name, const uint64_t value) throw(Exception);
@@ -71,7 +71,7 @@ public:
 	void openFromMem(const char *buf) throw(Exception);
 	const DOMElement *getElement(const DOMElement *parent, const char *name);
 	const DOMNodeList *getElements(const DOMElement *parent, const char *name);
-	const uint8_t *getElementValueCString(const DOMElement *parent, const char *name);
+	const char *getElementValueCString(const DOMElement *parent, const char *name);
 	const uint8_t getElementValueU8(const DOMElement *parent, const char *name);
 	const uint16_t getElementValueU16(const DOMElement *parent, const char *name);
 	const uint64_t getElementValueU64(const DOMElement *parent, const char *name);

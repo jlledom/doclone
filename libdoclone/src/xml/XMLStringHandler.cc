@@ -95,24 +95,6 @@ XMLStringHandler* XMLStringHandler::getInstance() {
  *
  * \param c_str Pointer to the C string to be transcoded
  *
- * \return A transcoded string
- */
-const XMLCh *XMLStringHandler::toXMLText(const uint8_t *c_str) {
-	Logger *log = Logger::getInstance();
-	log->debug("XMLDocument::toXMLText(c_str=>%s) start", c_str);
-
-	const XMLCh *retVal =
-			this->toXMLText(reinterpret_cast<const char *>(c_str));
-
-	log->debug("XMLDocument::toXMLText(retVal=>0x%x) end", retVal);
-	return retVal;
-}
-
-/**
- * \brief Transforms a C string into a transcoded XML string
- *
- * \param c_str Pointer to the C string to be transcoded
- *
  * \return An transcoded string
  */
 const XMLCh *XMLStringHandler::toXMLText(const char *c_str) {
@@ -133,14 +115,14 @@ const XMLCh *XMLStringHandler::toXMLText(const char *c_str) {
  *
  * \return An old C string
  */
-const uint8_t *XMLStringHandler::toCString(const XMLCh *xmlch) {
+const char *XMLStringHandler::toCString(const XMLCh *xmlch) {
 	Logger *log = Logger::getInstance();
 	log->debug("XMLDocument::toCString(xmlch=>0x%x) start", xmlch);
 
 	TranscodeToStr trns(xmlch, "UTF-8");
-	uint8_t *retVal = reinterpret_cast<uint8_t *>(trns.adopt());
+	char *retVal = reinterpret_cast<char *>(trns.adopt());
 
-	this->_listXmlByteData.push_back(retVal);
+	this->_listXmlByteData.push_back(reinterpret_cast<uint8_t *>(retVal));
 
 	log->debug("XMLDocument::toCString(retVal=>%s) end", retVal);
 	return retVal;
@@ -153,12 +135,11 @@ const uint8_t *XMLStringHandler::toCString(const XMLCh *xmlch) {
  *
  * \return An old C string
  */
-const uint8_t *XMLStringHandler::toCString(XMLByte *xmlbyte) {
+const uint8_t *XMLStringHandler::toBinaryArray(XMLByte *xmlbyte) {
 	Logger *log = Logger::getInstance();
 	log->debug("XMLDocument::toCString(xmlbyte=>0x%x) start", xmlbyte);
 
 	uint8_t *retVal = reinterpret_cast<uint8_t *>(xmlbyte);
-
 	this->_listXmlByteData.push_back(retVal);
 
 	log->debug("XMLDocument::toCString(retVal=>%s) end", retVal);

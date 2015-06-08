@@ -298,11 +298,11 @@ void Image::loadImageHeader() throw(Exception) {
 	if(this->_type == Doclone::IMAGE_DISK) {
 		const uint8_t *bootCode =
 				doc.getElementValueBinary(rootElement, "bootCode");
-		char buffBootCode[440] = {};
+		uint8_t buffBootCode[440] = {};
 		for(int i=0; i<440; i++) {
 			buffBootCode[i] = bootCode[i];
 		}
-		this->_disk->setBootCode(buffBootCode);
+		this->_disk->setBootCode(reinterpret_cast<const char *>(buffBootCode));
 	}
 
 	const DOMElement *partitions = doc.getElement(rootElement, "partitions");
@@ -324,9 +324,7 @@ void Image::loadImageHeader() throw(Exception) {
 
 		Filesystem *fs = 0;
 		try {
-			const char *fsName =
-					reinterpret_cast<const char *>(
-							doc.getElementValueCString(xmlPartition, "fsName"));
+			const char *fsName =doc.getElementValueCString(xmlPartition, "fsName");
 
 			fs = FsFactory::createFilesystem(fsName?fsName:"");
 		} catch (const Exception &ex) {
@@ -337,8 +335,7 @@ void Image::loadImageHeader() throw(Exception) {
 		part->setMinSize(doc.getElementValueU64(xmlPartition, "minSize"));
 
 		double startPos = Util::stringToDouble(
-				reinterpret_cast<const char *>(
-						doc.getElementValueCString(xmlPartition, "startPos")));
+						doc.getElementValueCString(xmlPartition, "startPos"));
 		if(startPos > 1) {
 			InvalidImageException ex;
 			throw ex;
@@ -346,8 +343,7 @@ void Image::loadImageHeader() throw(Exception) {
 		part->setStartPos(startPos);
 
 		double usedPart = Util::stringToDouble(
-				reinterpret_cast<const char *>(
-						doc.getElementValueCString(xmlPartition, "usedPart")));
+				doc.getElementValueCString(xmlPartition, "usedPart"));
 		if(usedPart>1) {
 			InvalidImageException ex;
 			throw ex;
@@ -359,19 +355,15 @@ void Image::loadImageHeader() throw(Exception) {
 				doc.getElementValueU8(xmlPartition, "flags"));
 
 		// Label
-		const char *label = reinterpret_cast<const char *>(
-				doc.getElementValueCString(xmlPartition, "label"));
+		const char *label = doc.getElementValueCString(xmlPartition, "label");
 		part->getFileSystem()->setLabel(label?label:"");
 
 		// UUID
-		const char *uuid = reinterpret_cast<const char *>(
-				doc.getElementValueCString(
-						xmlPartition, "uuid"));
+		const char *uuid = doc.getElementValueCString(xmlPartition, "uuid");
 		part->getFileSystem()->setUUID(uuid?uuid:"");
 
 		//Root folder on header
-		const char *rootDir = reinterpret_cast<const char *>(
-				doc.getElementValueCString(xmlPartition, "rootDir"));
+		const char *rootDir = doc.getElementValueCString(xmlPartition, "rootDir");
 		part->setRootDir(rootDir?rootDir:"");
 
 		this->_disk->getPartitions().push_back(part);
@@ -410,7 +402,7 @@ void Image::saveImageHeader() throw(Exception) {
 	doc.createElement(rootElem, "imageType", static_cast<uint8_t>(this->_type));
 
 	doc.createBinaryElement(rootElem, "bootCode",
-			static_cast<const uint8_t*>(this->_disk->getBootCode()), 440);
+			reinterpret_cast<const uint8_t*>(this->_disk->getBootCode()), 440);
 
 	doc.createElement(rootElem, "diskType",
 			static_cast<uint8_t>(this->_disk->getLabelType()));
@@ -431,25 +423,19 @@ void Image::saveImageHeader() throw(Exception) {
 		DOMElement *partitionXML = doc.createElement(partsXML, "partition");
 		doc.createElement(partitionXML, "flags", part->getFlags());
 		doc.createElement(partitionXML, "startPos",
-				reinterpret_cast<const uint8_t*>(
-						Util::doubletoString(part->getStartPos(), startPos)));
+				Util::doubletoString(part->getStartPos(), startPos));
 		doc.createElement(partitionXML, "usedPart",
-				reinterpret_cast<const uint8_t*>(Util::doubletoString(
-						part->getUsedPart(), usedPart)));
+				Util::doubletoString(part->getUsedPart(), usedPart));
 		doc.createElement(partitionXML, "type",
 				static_cast<uint8_t>(part->getType()));
 		doc.createElement(partitionXML, "minSize", part->getMinSize());
 		doc.createElement(partitionXML, "fsName",
-				reinterpret_cast<const uint8_t*>(
-						part->getFileSystem()->getdocloneName().c_str()));
+						part->getFileSystem()->getdocloneName().c_str());
 		doc.createElement(partitionXML, "label",
-				reinterpret_cast<const uint8_t*>(
-						part->getFileSystem()->getLabel().c_str()));
+						part->getFileSystem()->getLabel().c_str());
 		doc.createElement(partitionXML, "uuid",
-				reinterpret_cast<const uint8_t*>(
-						part->getFileSystem()->getUUID().c_str()));
-		doc.createElement(partitionXML, "rootDir",
-				reinterpret_cast<const uint8_t*>(rootDir.c_str()));
+						part->getFileSystem()->getUUID().c_str());
+		doc.createElement(partitionXML, "rootDir",rootDir.c_str());
 	}
 
 	std::string xmlSer;

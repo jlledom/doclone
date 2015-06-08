@@ -29,6 +29,7 @@
 #include <xercesc/dom/DOMLSParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
+#include <xercesc/util/TransService.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/Base64.hpp>
@@ -147,7 +148,7 @@ DOMElement *XMLDocument::createElement(DOMElement *parent,
  * \return The new element
  */
 DOMElement *XMLDocument::createElement(DOMElement *parent, const char *name,
-		const uint8_t *value) throw(Exception) {
+		const char *value) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("XMLDocument::createElement(parent=>0x%x, name=>%s, value=>%s) start", parent, name, value);
 
@@ -322,9 +323,9 @@ DOMElement *XMLDocument::createBinaryElement(DOMElement *parent,
 		XMLSize_t outputSize;
 		XMLByte *base64str =
 				Base64::encode(reinterpret_cast<const XMLByte *>(buf), len, &outputSize);
+		TranscodeFromStr trans(base64str, outputSize, "UTF-8");
 		DOMText *prodDataVal =
-				this->_doc->createTextNode(xmlStr->toXMLText(
-						reinterpret_cast<const uint8_t *>(base64str)));
+				this->_doc->createTextNode(trans.str());
 		retVal->appendChild(prodDataVal);
 		delete base64str;
 
@@ -371,8 +372,8 @@ const char *XMLDocument::serialize(std::string &buf) {
 	MemBufFormatTarget target;
 
 	DOMLSOutput *output = implLS->createLSOutput();
+	output->setEncoding(XMLUni::fgUTF8EncodingString);
 	output->setByteStream(&target);
-
 	serializer->write(this->_doc, output);
 
 	buf = reinterpret_cast<const char*>(target.getRawBuffer());
@@ -446,12 +447,12 @@ void XMLDocument::openFromMem(const char *buf) throw(Exception) {
  *
  * \return A C string with the text content of the element
  */
-const uint8_t *XMLDocument::getElementValueCString(const DOMElement *parent,
+const char *XMLDocument::getElementValueCString(const DOMElement *parent,
 		const char *name) {
 	Logger *log = Logger::getInstance();
 	log->debug("XMLDocument::getElementValueCString(parent=>0x%x, name=>%s) start", parent, name);
 
-	const uint8_t *retVal = 0;
+	const char *retVal = 0;
 	XMLStringHandler *xmlStr = XMLStringHandler::getInstance();
 
 	DOMNodeList *nodeList = parent->getElementsByTagName(xmlStr->toXMLText(name));
@@ -587,7 +588,7 @@ const uint8_t *XMLDocument::getElementValueBinary(const DOMElement *parent,
 		XMLSize_t outputSize;
 		XMLByte *binaryContent = Base64::decodeToXMLByte(content, &outputSize);
 		if(outputSize > 0) {
-			retVal = xmlStr->toCString(binaryContent);
+			retVal = xmlStr->toBinaryArray(binaryContent);
 		}
 	}
 
