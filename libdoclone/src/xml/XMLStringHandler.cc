@@ -79,7 +79,7 @@ XMLStringHandler::~XMLStringHandler() {
  * \return Logger* object
  */
 XMLStringHandler* XMLStringHandler::getInstance() {
-    static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+	static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 	pthread_mutex_lock(&mutex);
 

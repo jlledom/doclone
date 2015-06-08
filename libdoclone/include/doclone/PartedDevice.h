@@ -50,20 +50,20 @@ public:
 
 	void open();
 	void commit() const;
-    void close();
+	void close();
 
 private:
-    /// Private constructor to implement singleton pattern
-    PartedDevice();
+	/// Private constructor to implement singleton pattern
+	PartedDevice();
 
-    /// Used to know if a new parted disk or device must be opened or closed.
-    int _openings;
-    /// The path of the disk what we work in
-    std::string _path;
-    /// Libparted device object
-    PedDevice* _pDevice;
-    /// Libparted disk object
-    PedDisk* _pDisk;
+	/// Used to know if a new parted disk or device must be opened or closed.
+	int _openings;
+	/// The path of the disk what we work in
+	std::string _path;
+	/// Libparted device object
+	PedDevice* _pDevice;
+	/// Libparted disk object
+	PedDisk* _pDisk;
 };
 
 }

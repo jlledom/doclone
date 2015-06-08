@@ -39,7 +39,7 @@ namespace Doclone {
 LinuxSwap::LinuxSwap() {
 	Logger *log = Logger::getInstance();
 	log->debug("LinuxSwap::LinuxSwap() start");
-	
+
 	this->_type = Doclone::FSTYPE_NONE;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="linux-swap";
@@ -49,9 +49,9 @@ LinuxSwap::LinuxSwap() {
 	this->_formatOptions="-v1";
 	this->_adminCommand="";
 	this->_code = Doclone::FS_LINUXSWAP;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("LinuxSwap::LinuxSwap() end");
 }
 
@@ -61,10 +61,10 @@ LinuxSwap::LinuxSwap() {
 void LinuxSwap::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("LinuxSwap::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = false;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -72,13 +72,13 @@ void LinuxSwap::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID and label support
 	this->_uuidSupport = true;
 
 	// Label support
 	this->_labelSupport = true;
-	
+
 	log->debug("LinuxSwap::checkSupport() end");
 }
 

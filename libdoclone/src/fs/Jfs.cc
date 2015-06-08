@@ -37,7 +37,7 @@ namespace Doclone {
 Jfs::Jfs() {
 	Logger *log = Logger::getInstance();
 	log->debug("Jfs::Jfs() start");
-	
+
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="jfs";
@@ -47,9 +47,9 @@ Jfs::Jfs() {
 	this->_formatOptions="-q";
 	this->_adminCommand="jfs_tune";
 	this->_code = Doclone::FS_JFS;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Jfs::Jfs() end");
 }
 
@@ -59,10 +59,10 @@ Jfs::Jfs() {
 void Jfs::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Jfs::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -70,7 +70,7 @@ void Jfs::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID and label support
 	if(Util::find_program_in_path(this->_adminCommand) .empty()) {
 		this->_uuidSupport = false;
@@ -80,7 +80,7 @@ void Jfs::checkSupport() {
 		this->_uuidSupport = true;
 		this->_labelSupport = true;
 	}
-	
+
 	log->debug("Jfs::checkSupport() end");
 }
 
@@ -93,7 +93,7 @@ void Jfs::checkSupport() {
 void Jfs::writeLabel(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Jfs::writeLabel(dev=>%s) start", dev.c_str());
-	
+
 	std::string cmdline=this->_adminCommand;
 	cmdline.append(" ")
 	.append(dev)
@@ -101,7 +101,7 @@ void Jfs::writeLabel(const std::string &dev) const throw(Exception) {
 	.append(this->_label)
 	.append(" ")
 	.append(">/dev/null 2>&1");
-	
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -109,7 +109,7 @@ void Jfs::writeLabel(const std::string &dev) const throw(Exception) {
 		WriteLabelException ex(dev);
 		throw ex;
 	}
-	
+
 	log->debug("Jfs::writeLabel() end");
 }
 
@@ -122,7 +122,7 @@ void Jfs::writeLabel(const std::string &dev) const throw(Exception) {
 void Jfs::writeUUID(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Jfs::writeUUID(dev=>%s) start", dev.c_str());
-	
+
 	std::string cmdline=this->_adminCommand;
 	cmdline.append(" ")
 	.append(dev)
@@ -130,7 +130,7 @@ void Jfs::writeUUID(const std::string &dev) const throw(Exception) {
 	.append(this->_uuid)
 	.append(" ")
 	.append(">/dev/null 2>&1");
-	
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -138,7 +138,7 @@ void Jfs::writeUUID(const std::string &dev) const throw(Exception) {
 		WriteUuidException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Jfs::writeUUID() end");
 }
 /**@}*/

@@ -48,7 +48,7 @@ namespace Doclone {
 class Ntfs : public Filesystem {
 public:
 	Ntfs();
-	
+
 	void writeLabel(const std::string &dev) const throw(Exception);
 	void writeUUID(const std::string &dev) const throw(Exception);
 

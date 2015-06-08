@@ -48,7 +48,7 @@ namespace Doclone {
 class Xfs : public Filesystem {
 public:
 	Xfs();
-	
+
 	void writeLabel(const std::string &dev) const throw(Exception);
 	void writeUUID(const std::string &dev) const throw(Exception);
 

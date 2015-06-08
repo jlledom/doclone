@@ -548,4 +548,3 @@ void DataTransfer::setTotalSize(uint64_t size) {
 }
 
 }
-

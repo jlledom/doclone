@@ -41,7 +41,7 @@ namespace Doclone {
 Fat32::Fat32() {
 	Logger *log = Logger::getInstance();
 	log->debug("Fat32::Fat32() start");
-	
+
 	this->_type = Doclone::FSTYPE_DOS;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="fat32";
@@ -51,9 +51,9 @@ Fat32::Fat32() {
 	this->_formatOptions="-F 32";
 	this->_adminCommand="";
 	this->_code = Doclone::FS_FAT32;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Fat32::Fat32() end");
 }
 
@@ -63,10 +63,10 @@ Fat32::Fat32() {
 void Fat32::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Fat32::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -74,11 +74,11 @@ void Fat32::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID and label support
 	this->_uuidSupport = true;
 	this->_labelSupport = true;
-	
+
 	log->debug("Fat32::checkSupport() end");
 }
 
@@ -91,7 +91,7 @@ void Fat32::checkSupport() {
 void Fat32::writeLabel(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Fat32::writeLabel(dev=>%s) start", dev.c_str(), this->_label.c_str());
-	
+
 	try {
 		Util::writeBinData(dev, this->_label.c_str(), 0x47, 11);
 	}
@@ -99,7 +99,7 @@ void Fat32::writeLabel(const std::string &dev) const throw(Exception) {
 		WriteLabelException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Fat32::writeLabel() end");
 }
 
@@ -112,7 +112,7 @@ void Fat32::writeLabel(const std::string &dev) const throw(Exception) {
 void Fat32::writeUUID(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Fat32::writeUUID(dev=>%s) start", dev.c_str());
-	
+
 	try {
 		// Delete the hyphen from the Vol ID. Example, 2CB4-B7C5 -> 2CB4B7C5
 		std::string result;
@@ -147,7 +147,7 @@ void Fat32::writeUUID(const std::string &dev) const throw(Exception) {
 		WriteUuidException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Fat32::writeUUID() end");
 }
 /**@}*/

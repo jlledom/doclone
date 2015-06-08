@@ -37,7 +37,7 @@ namespace Doclone {
 Xfs::Xfs() {
 	Logger *log = Logger::getInstance();
 	log->debug("Xfs::Xfs() start");
-	
+
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="xfs";
@@ -47,9 +47,9 @@ Xfs::Xfs() {
 	this->_formatOptions="-f";
 	this->_adminCommand="xfs_admin";
 	this->_code = Doclone::FS_XFS;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Xfs::Xfs() end");
 }
 
@@ -59,10 +59,10 @@ Xfs::Xfs() {
 void Xfs::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Xfs::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -70,7 +70,7 @@ void Xfs::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID and label support
 	if(Util::find_program_in_path(this->_adminCommand).empty()) {
 		this->_uuidSupport = false;
@@ -80,7 +80,7 @@ void Xfs::checkSupport() {
 		this->_uuidSupport = true;
 		this->_labelSupport = true;
 	}
-	
+
 	log->debug("Xfs::checkSupport() end");
 }
 
@@ -93,7 +93,7 @@ void Xfs::checkSupport() {
 void Xfs::writeLabel(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Xfs::writeLabel(dev=>%s) start", dev.c_str());
-	
+
 	std::string cmdline=this->_adminCommand;
 	cmdline.append(" -L ")
 	.append(this->_label)
@@ -101,7 +101,7 @@ void Xfs::writeLabel(const std::string &dev) const throw(Exception) {
 	.append(dev)
 	.append(" ")
 	.append(">/dev/null 2>&1");
-	
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -109,7 +109,7 @@ void Xfs::writeLabel(const std::string &dev) const throw(Exception) {
 		WriteLabelException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Xfs::writeLabel() end");
 }
 
@@ -122,14 +122,14 @@ void Xfs::writeLabel(const std::string &dev) const throw(Exception) {
 void Xfs::writeUUID(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Xfs::writeUUID(dev=>%s) start", dev.c_str());
-	
+
 	std::string cmdline=this->_adminCommand;
 	cmdline.append(" -U ")
 	.append(this->_uuid)
 	.append(" ")
 	.append(dev)
 	.append(">/dev/null 2>&1");
-	
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -137,7 +137,7 @@ void Xfs::writeUUID(const std::string &dev) const throw(Exception) {
 		WriteUuidException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Xfs::writeUUID() end");
 }
 /**@}*/

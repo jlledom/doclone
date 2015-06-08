@@ -34,7 +34,7 @@ namespace Doclone {
 Ext4::Ext4() {
 	Logger *log = Logger::getInstance();
 	log->debug("Ext4::Ext4() start");
-	
+
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="ext4";
@@ -44,9 +44,9 @@ Ext4::Ext4() {
 	this->_formatOptions="-t ext4 -O extent";
 	this->_adminCommand="";
 	this->_code = Doclone::FS_EXT4;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Ext4::Ext4() end");
 }
 
@@ -56,10 +56,10 @@ Ext4::Ext4() {
 void Ext4::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Ext4::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -67,11 +67,11 @@ void Ext4::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// uuid and label support
 	this->_uuidSupport = true;
 	this->_labelSupport = true;
-	
+
 	log->debug("Ext4::checkSupport() end");
 }
 /**@}*/

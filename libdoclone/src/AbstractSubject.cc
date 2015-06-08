@@ -30,7 +30,7 @@ AbstractSubject::AbstractSubject(): _observers() {
  * 		An object whose class extends AbstractObserver
  */
 void AbstractSubject::addObserver(AbstractObserver* ob) {
-    this->_observers.insert(ob);
+	this->_observers.insert(ob);
 }
 
 /**

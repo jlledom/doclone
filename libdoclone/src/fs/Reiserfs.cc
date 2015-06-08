@@ -37,7 +37,7 @@ namespace Doclone {
 Reiserfs::Reiserfs() {
 	Logger *log = Logger::getInstance();
 	log->debug("Reiserfs::Reiserfs() start");
-	
+
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="reiserfs";
@@ -47,9 +47,9 @@ Reiserfs::Reiserfs() {
 	this->_formatOptions="-f";
 	this->_adminCommand="reiserfstune";
 	this->_code = Doclone::FS_REISERFS;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Reiserfs::Reiserfs() end");
 }
 
@@ -59,10 +59,10 @@ Reiserfs::Reiserfs() {
 void Reiserfs::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Reiserfs::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -70,7 +70,7 @@ void Reiserfs::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID and label support
 	if(Util::find_program_in_path(this->_adminCommand).empty()) {
 		this->_uuidSupport = false;
@@ -80,7 +80,7 @@ void Reiserfs::checkSupport() {
 		this->_uuidSupport = true;
 		this->_labelSupport = true;
 	}
-	
+
 	log->debug("Reiserfs::checkSupport() end");
 }
 
@@ -93,7 +93,7 @@ void Reiserfs::checkSupport() {
 void Reiserfs::writeLabel(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Reiserfs::writeLabel(dev=>%s) start", dev.c_str());
-	
+
 	std::string cmdline=this->_adminCommand;
 	cmdline.append(" ")
 	.append(dev)
@@ -101,7 +101,7 @@ void Reiserfs::writeLabel(const std::string &dev) const throw(Exception) {
 	.append(this->_label)
 	.append(" ")
 	.append(">/dev/null 2>&1");
-	
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -109,7 +109,7 @@ void Reiserfs::writeLabel(const std::string &dev) const throw(Exception) {
 		WriteLabelException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Reiserfs::writeLabel() end");
 }
 
@@ -122,7 +122,7 @@ void Reiserfs::writeLabel(const std::string &dev) const throw(Exception) {
 void Reiserfs::writeUUID(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Reiserfs::writeUUID(dev=>%s) start", dev.c_str());
-	
+
 	std::string cmdline=this->_adminCommand;
 	cmdline.append(" ")
 	.append(dev)
@@ -130,7 +130,7 @@ void Reiserfs::writeUUID(const std::string &dev) const throw(Exception) {
 	.append(this->_uuid)
 	.append(" ")
 	.append(">/dev/null 2>&1");
-	
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -138,7 +138,7 @@ void Reiserfs::writeUUID(const std::string &dev) const throw(Exception) {
 		WriteUuidException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Reiserfs::writeUUID() end");
 }
 /**@}*/

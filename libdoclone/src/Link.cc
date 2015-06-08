@@ -385,7 +385,6 @@ void Link::linkClient() throw(Exception) {
 		this->_dstIP = inet_ntoa (host_receiver.sin_addr);
 	}
 
-
 	log->debug("Link::linkClient() end");
 }
 

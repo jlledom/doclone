@@ -166,4 +166,3 @@ private:
 }
 
 #endif /* PARTITION_H_ */
-

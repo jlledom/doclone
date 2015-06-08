@@ -40,7 +40,7 @@ namespace Doclone {
 Ext2::Ext2() {
 	Logger *log = Logger::getInstance();
 	log->debug("Ext2::Ext2() start");
-	
+
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="ext2";
@@ -50,9 +50,9 @@ Ext2::Ext2() {
 	this->_formatOptions="-t ext2";
 	this->_adminCommand="";
 	this->_code = Doclone::FS_EXT2;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Ext2::Ext2() end");
 }
 
@@ -62,10 +62,10 @@ Ext2::Ext2() {
 void Ext2::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Ext2::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command).empty()) {
 		this->_formatSupport = false;
@@ -73,11 +73,11 @@ void Ext2::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID and label support
 	this->_uuidSupport = true;
 	this->_labelSupport = true;
-	
+
 	log->debug("Ext2::checkSupport() end");
 }
 
@@ -90,7 +90,7 @@ void Ext2::checkSupport() {
 void Ext2::writeLabel(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Ext2::writeLabel(dev=>%s) start", dev.c_str());
-	
+
 	ext2_filsys fs;
 	ext2_super_block *sb;
 	dgrp_t i;
@@ -103,7 +103,7 @@ void Ext2::writeLabel(const std::string &dev) const throw(Exception) {
 		WriteLabelException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	sb = fs->super;
 	fs->flags &= ~EXT2_FLAG_MASTER_SB_ONLY;
 	fs->flags |= EXT2_FLAG_SUPER_ONLY;
@@ -134,7 +134,7 @@ void Ext2::writeLabel(const std::string &dev) const throw(Exception) {
 
 	ext2fs_mark_super_dirty(fs);
 	ext2fs_close(fs);
-	
+
 	log->debug("Ext2::writeLabel() end");
 }
 
@@ -147,7 +147,7 @@ void Ext2::writeLabel(const std::string &dev) const throw(Exception) {
 void Ext2::writeUUID(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Ext2::writeUUID(dev=>%s) start", dev.c_str());
-	
+
 	ext2_filsys fs;
 	ext2_super_block *sb;
 	dgrp_t i;
@@ -160,11 +160,11 @@ void Ext2::writeUUID(const std::string &dev) const throw(Exception) {
 		WriteUuidException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	sb = fs->super;
 	fs->flags &= ~EXT2_FLAG_MASTER_SB_ONLY;
 	fs->flags |= EXT2_FLAG_SUPER_ONLY;
-	
+
 	if (sb->s_feature_ro_compat &
 		EXT4_FEATURE_RO_COMPAT_GDT_CSUM) {
 		/*
@@ -178,22 +178,22 @@ void Ext2::writeUUID(const std::string &dev) const throw(Exception) {
 		if (i >= fs->group_desc_count)
 			set_csum = 1;
 	}
-	
+
 	// Write the uuid
 	if (uuid_parse (this->_uuid.c_str(), sb->s_uuid)<0) {
 		WriteUuidException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	if (set_csum) {
 		for (i = 0; i < fs->group_desc_count; i++)
 			ext2fs_group_desc_csum_set(fs, i);
 		fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
 	}
-	
+
 	ext2fs_mark_super_dirty (fs);
 	ext2fs_close(fs);
-	
+
 	log->debug("Ext2::writeUUID() end");
 }
 /**@}*/

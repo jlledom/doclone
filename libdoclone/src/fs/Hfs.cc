@@ -34,7 +34,7 @@ namespace Doclone {
 Hfs::Hfs() {
 	Logger *log = Logger::getInstance();
 	log->debug("Hfs::Hfs() start");
-	
+
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="hfs";
@@ -44,9 +44,9 @@ Hfs::Hfs() {
 	this->_formatOptions="";
 	this->_adminCommand="";
 	this->_code = Doclone::FS_HFS;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Hfs::Hfs() end");
 }
 
@@ -56,10 +56,10 @@ Hfs::Hfs() {
 void Hfs::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Hfs::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -67,13 +67,13 @@ void Hfs::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID support
 	this->_uuidSupport = false;
-	
+
 	// Label support
 	this->_labelSupport = false;
-	
+
 	log->debug("Hfs::checkSupport() end");
 }
 /**@}*/

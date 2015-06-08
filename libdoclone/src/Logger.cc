@@ -52,7 +52,7 @@ Logger::Logger() : _app(0), _layout(0), _cat(0), _backTrace() {
 
 	this->_cat = &log4cpp::Category::getInstance("libdoclone");
 	this->_cat->setAdditivity(false);
-	
+
 	// log4cpp::Priority::INFO for release version,
 	// log4cpp::Priority::DEBUG to debug,
 	// 750 for log functions called by loops
@@ -82,7 +82,7 @@ Logger::~Logger() {
  * \return Logger* object
  */
 Logger* Logger::getInstance() {
-    static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+	static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 	pthread_mutex_lock(&mutex);
 
@@ -106,12 +106,12 @@ Logger* Logger::getInstance() {
  */
 void Logger::loopDebug(const std::string &msg, ...) const {
 	char tmpStr[1024];
-	
+
 	va_list vl;
 	va_start(vl, msg);
 	vsnprintf (tmpStr, sizeof(tmpStr), msg.c_str(), vl);
 	va_end (vl);
-	
+
 	std::string str = tmpStr;
 	this->_cat->log(750, str);
 }
@@ -129,12 +129,12 @@ void Logger::loopDebug(const std::string &msg, ...) const {
  */
 void Logger::debug(const std::string &msg, ...) const {
 	char tmpStr[1024];
-	
+
 	va_list vl;
 	va_start(vl, msg);
 	vsnprintf (tmpStr, sizeof(tmpStr), msg.c_str(), vl);
 	va_end (vl);
-	
+
 	std::string str = tmpStr;
 	this->_cat->debug(str);
 }
@@ -152,12 +152,12 @@ void Logger::debug(const std::string &msg, ...) const {
  */
 void Logger::info(const std::string &msg, ...) const {
 	char tmpStr[1024];
-	
+
 	va_list vl;
 	va_start(vl, msg);
 	vsnprintf (tmpStr, sizeof(tmpStr), msg.c_str(), vl);
 	va_end (vl);
-	
+
 	std::string str = tmpStr;
 	this->_cat->info(str);
 }
@@ -175,12 +175,12 @@ void Logger::info(const std::string &msg, ...) const {
  */
 void Logger::warn(const std::string &msg, ...) {
 	char tmpStr[1024];
-	
+
 	va_list vl;
 	va_start(vl, msg);
 	vsnprintf (tmpStr, sizeof(tmpStr), msg.c_str(), vl);
 	va_end (vl);
-	
+
 	// Append to log
 	std::string str = tmpStr;
 	this->_cat->warn(str);
@@ -205,12 +205,12 @@ void Logger::warn(const std::string &msg, ...) {
  */
 void Logger::error(const std::string &msg, ...) {
 	char tmpStr[1024];
-	
+
 	va_list vl;
 	va_start(vl, msg);
 	vsnprintf (tmpStr, sizeof(tmpStr), msg.c_str(), vl);
 	va_end (vl);
-	
+
 	// Append to log
 	std::string str = tmpStr;
 	this->_cat->error(str);
@@ -235,12 +235,12 @@ void Logger::error(const std::string &msg, ...) {
  */
 void Logger::fatal(const std::string &msg, ...) {
 	char tmpStr[1024];
-	
+
 	va_list vl;
 	va_start(vl, msg);
 	vsnprintf (tmpStr, sizeof(tmpStr), msg.c_str(), vl);
 	va_end (vl);
-	
+
 	// Append to log
 	std::string str = tmpStr;
 	this->_cat->fatal(str);

@@ -41,7 +41,7 @@ namespace Doclone {
 Ntfs::Ntfs() {
 	Logger *log = Logger::getInstance();
 	log->debug("Ntfs::Ntfs() start");
-	
+
 	this->_type = Doclone::FSTYPE_DOS;
 	this->_mountType = Doclone::MOUNT_EXTERNAL;
 	this->_docloneName="ntfs";
@@ -51,9 +51,9 @@ Ntfs::Ntfs() {
 	this->_formatOptions="-Q";
 	this->_adminCommand="ntfslabel";
 	this->_code = Doclone::FS_NTFS;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Ntfs::Ntfs() end");
 }
 
@@ -63,7 +63,7 @@ Ntfs::Ntfs() {
 void Ntfs::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Ntfs::checkSupport() start");
-	
+
 	// Mounting support
 	if(Util::find_program_in_path("mount."+this->_mountName).empty()) {
 		this->_mountSupport = false;
@@ -71,7 +71,7 @@ void Ntfs::checkSupport() {
 	else {
 		this->_mountSupport = true;
 	}
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command).empty()) {
 		this->_formatSupport = false;
@@ -79,10 +79,10 @@ void Ntfs::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID support
 	this->_uuidSupport = true;
-	
+
 	// Label support
 	if(Util::find_program_in_path(this->_adminCommand).empty()) {
 		this->_labelSupport = false;
@@ -90,7 +90,7 @@ void Ntfs::checkSupport() {
 	else {
 		this->_labelSupport = true;
 	}
-	
+
 	log->debug("Ntfs::checkSupport() end");
 }
 
@@ -103,7 +103,7 @@ void Ntfs::checkSupport() {
 void Ntfs::writeLabel(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Ntfs::writeLabel(dev=>%s) start", dev.c_str());
-	
+
 	std::string cmdline=this->_adminCommand;
 	cmdline.append(" ")
 	.append(dev)
@@ -111,7 +111,7 @@ void Ntfs::writeLabel(const std::string &dev) const throw(Exception) {
 	.append(this->_label)
 	.append(" ")
 	.append(">/dev/null 2>&1");
-	
+
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
@@ -119,7 +119,7 @@ void Ntfs::writeLabel(const std::string &dev) const throw(Exception) {
 		WriteLabelException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Ntfs::writeLabel() end");
 }
 
@@ -132,7 +132,7 @@ void Ntfs::writeLabel(const std::string &dev) const throw(Exception) {
 void Ntfs::writeUUID(const std::string &dev) const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Ntfs::writeUUID(dev=>%s) start", dev.c_str());
-	
+
 	try {
 		// Delete the hyphen from the Vol ID. Example, 2CB4-B7C5 -> 2CB4B7C5
 		std::string result;
@@ -167,7 +167,7 @@ void Ntfs::writeUUID(const std::string &dev) const throw(Exception) {
 		WriteUuidException ex(dev);
 		ex.logMsg();
 	}
-	
+
 	log->debug("Ntfs::writeUUID() end");
 }
 /**@}*/

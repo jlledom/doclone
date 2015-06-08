@@ -145,7 +145,7 @@ public:
 	bool getLabelSupport() const;
 	void setLabel(const std::string &label);
 	void setUUID(const std::string &uuid);
-	
+
 	void readLabel(const std::string &dev) throw(Exception);
 	void readUUID(const std::string &dev) throw(Exception);
 
@@ -172,10 +172,10 @@ protected:
 	/// Command to format
 	std::string _command;
 	/// Options to the format command
-	std::string _formatOptions; 
+	std::string _formatOptions;
 	/// Command to admin
 	std::string _adminCommand;
-	
+
 	/// If it has mounting support
 	bool _mountSupport;
 	/// If it has formatting support

@@ -47,7 +47,7 @@ namespace Doclone {
 class Reiserfs : public Filesystem {
 public:
 	Reiserfs();
-	
+
 	void writeLabel(const std::string &dev) const throw(Exception);
 	void writeUUID(const std::string &dev) const throw(Exception);
 

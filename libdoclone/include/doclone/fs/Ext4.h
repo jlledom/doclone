@@ -43,7 +43,7 @@ namespace Doclone {
 class Ext4 : public Ext2 {
 public:
 	Ext4();
-	
+
 private:
 	void checkSupport();
 };

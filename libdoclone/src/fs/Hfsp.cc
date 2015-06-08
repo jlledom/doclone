@@ -34,7 +34,7 @@ namespace Doclone {
 Hfsp::Hfsp() {
 	Logger *log = Logger::getInstance();
 	log->debug("Hfsp::Hfsp() start");
-	
+
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
 	this->_docloneName="hfs+";
@@ -44,9 +44,9 @@ Hfsp::Hfsp() {
 	this->_formatOptions="";
 	this->_adminCommand="";
 	this->_code = Doclone::FS_HFSP;
-	
+
 	this->checkSupport();
-	
+
 	log->debug("Hfsp::Hfsp() end");
 }
 
@@ -56,10 +56,10 @@ Hfsp::Hfsp() {
 void Hfsp::checkSupport() {
 	Logger *log = Logger::getInstance();
 	log->debug("Hfsp::checkSupport() start");
-	
+
 	// Mounting support
 	this->_mountSupport = true;
-	
+
 	// Formatting support
 	if(Util::find_program_in_path(this->_command) .empty()) {
 		this->_formatSupport = false;
@@ -67,13 +67,13 @@ void Hfsp::checkSupport() {
 	else {
 		this->_formatSupport = true;
 	}
-	
+
 	// UUID support
 	this->_uuidSupport = false;
-	
+
 	// Label support
 	this->_labelSupport = false;
-	
+
 	log->debug("Hfsp::checkSupport() end");
 }
 /**@}*/

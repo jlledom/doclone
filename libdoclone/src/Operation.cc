@@ -26,7 +26,6 @@ namespace Doclone {
 Operation::Operation(dcOperationType type, const std::string &target)
 	: _type(type), _completed(false), _target(target) {}
 
-
 // Getters and setters
 void Operation::setType(dcOperationType type) {
 	this->_type = type;
@@ -53,4 +52,3 @@ const std::string &Operation::getTarget() const{
 }
 
 }
-

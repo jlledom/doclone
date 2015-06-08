@@ -33,7 +33,7 @@ namespace Doclone {
 NoFS::NoFS() {
 	Logger *log = Logger::getInstance();
 	log->debug("NoFS::NoFS() start");
-	
+
 	this->_type = Doclone::FSTYPE_NONE;
 	this->_docloneName="";
 	this->_mountName="";
@@ -41,7 +41,7 @@ NoFS::NoFS() {
 	this->_command="";
 	this->_formatOptions="";
 	this->_code = Doclone::FS_NOFS;
-	
+
 	log->debug("NoFS::NoFS() end");
 }
 /**@}*/
