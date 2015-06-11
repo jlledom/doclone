@@ -236,11 +236,17 @@ PedGeometry *Disk::calcGeometry(const PedDisk* pDisk,const Partition *part)
 	PedSector startSector = (pDisk->dev->length * startPos);
 	PedSector endSector = startSector + (pDisk->dev->length * usedPart);
 
-	// The partition begins in the next sector aligned to MiB
-	startSector += (mibAlignedMultiple-(startSector % mibAlignedMultiple));
+	// If the start sector is not aligned to MiB
+	if((startSector % mibAlignedMultiple)!=0) {
+		// The partition begins in the next sector aligned to MiB
+		startSector += (mibAlignedMultiple-(startSector % mibAlignedMultiple));
+	}
 
-	// The end is also aligned as possible
-	endSector += (mibAlignedMultiple-(endSector % mibAlignedMultiple));
+	//If the end sector is not aligned to MiB
+	if((endSector % mibAlignedMultiple)!=0) {
+		// The end is also aligned as possible
+		endSector += (mibAlignedMultiple-(endSector % mibAlignedMultiple));
+	}
 
 	// If a partition starts before the first MiB, must be moved.
 	if(startSector<mibAlignedMultiple) {

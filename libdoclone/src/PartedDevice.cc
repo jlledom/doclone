@@ -177,6 +177,11 @@ void PartedDevice::commit() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::commit() start");
 
+	if(!ped_device_open(this->_pDevice)) {
+		CommitException ex;
+		throw ex;
+	}
+
 	if(!ped_disk_commit_to_dev(this->_pDisk)) {
 		CommitException ex;
 		throw ex;
@@ -204,6 +209,11 @@ void PartedDevice::commit() const throw(Exception) {
 			ex.logMsg();
 			throw ex;
 		}
+	}
+
+	if(!ped_device_close(this->_pDevice)) {
+		CommitException ex;
+		throw ex;
 	}
 
 	log->debug("PartedDevice::commit() end");
