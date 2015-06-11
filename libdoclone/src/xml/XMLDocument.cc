@@ -322,10 +322,10 @@ DOMElement *XMLDocument::createBinaryElement(DOMElement *parent,
 
 		XMLSize_t outputSize;
 		XMLByte *base64str =
-				Base64::encode(reinterpret_cast<const XMLByte *>(buf), len, &outputSize);
+				Base64::encode(xmlStr->toXMLByteArray(buf, false), len, &outputSize);
 		TranscodeFromStr trans(base64str, outputSize, "UTF-8");
 		DOMText *prodDataVal =
-				this->_doc->createTextNode(trans.str());
+				this->_doc->createTextNode(trans.adopt());
 		retVal->appendChild(prodDataVal);
 		delete base64str;
 
@@ -588,7 +588,7 @@ const uint8_t *XMLDocument::getElementValueBinary(const DOMElement *parent,
 		XMLSize_t outputSize;
 		XMLByte *binaryContent = Base64::decodeToXMLByte(content, &outputSize);
 		if(outputSize > 0) {
-			retVal = xmlStr->toBinaryArray(binaryContent);
+			retVal = xmlStr->toBinaryArray(binaryContent, true);
 		}
 	}
 

@@ -56,14 +56,15 @@ XMLStringHandler::XMLStringHandler() throw(Exception):
  */
 XMLStringHandler::~XMLStringHandler() {
 	//Release the transcoded data
-	for (std::vector<XMLCh*>::iterator it = this->_listXmlchData.begin();
+	for (std::vector<const XMLCh*>::iterator it = this->_listXmlchData.begin();
 			it!=this->_listXmlchData.end(); ++it) {
-		XMLString::release(&(*it));
+		XMLCh *ptr = const_cast<XMLCh*>(*it);
+		XMLString::release(&ptr);
 	}
 	this->_listXmlchData.clear();
 
 	//Release the byte data
-	for (std::vector<uint8_t*>::iterator it = this->_listXmlByteData.begin();
+	for (std::vector<const uint8_t*>::iterator it = this->_listXmlByteData.begin();
 			it!=this->_listXmlByteData.end(); ++it) {
 		delete *it;
 	}
@@ -111,7 +112,7 @@ const XMLCh *XMLStringHandler::toXMLText(const char *c_str) {
 /**
  * \brief Transforms a transcoded XML string into a C string
  *
- * \param c_str Pointer to the transcoded XML string
+ * \param xmlch Pointer to the transcoded XML string
  *
  * \return An old C string
  */
@@ -129,18 +130,40 @@ const char *XMLStringHandler::toCString(const XMLCh *xmlch) {
 }
 
 /**
- * \brief Transforms a transcoded XML string into a C string
+ * \brief Transforms a C string into a XML byte
  *
- * \param c_str Pointer to the transcoded XML string
+ * \param c_str Pointer to the C string to be transcoded
  *
- * \return An old C string
+ * \return An XMLByte array
  */
-const uint8_t *XMLStringHandler::toBinaryArray(XMLByte *xmlbyte) {
+const XMLByte *XMLStringHandler::toXMLByteArray(const uint8_t *data, bool adopt) {
+	Logger *log = Logger::getInstance();
+	log->debug("XMLDocument::toXMLByteArray(data=>0x%x) start", data);
+
+	const XMLByte *retVal = reinterpret_cast<const XMLByte *>(data);
+	if(adopt){
+		this->_listXmlByteData.push_back(data);
+	}
+
+	log->debug("XMLDocument::toXMLByteArray(retVal=>0x%x) end", retVal);
+	return retVal;
+}
+
+/**
+ * \brief Transforms a XML byte array into a C binary array
+ *
+ * \param xmlbyte Pointer to the XML byte
+ *
+ * \return Binary array
+ */
+const uint8_t *XMLStringHandler::toBinaryArray(const XMLByte *xmlbyte, bool adopt) {
 	Logger *log = Logger::getInstance();
 	log->debug("XMLDocument::toCString(xmlbyte=>0x%x) start", xmlbyte);
 
-	uint8_t *retVal = reinterpret_cast<uint8_t *>(xmlbyte);
-	this->_listXmlByteData.push_back(retVal);
+	const uint8_t *retVal = reinterpret_cast<const uint8_t *>(xmlbyte);
+	if(adopt) {
+		this->_listXmlByteData.push_back(retVal);
+	}
 
 	log->debug("XMLDocument::toCString(retVal=>%s) end", retVal);
 	return retVal;

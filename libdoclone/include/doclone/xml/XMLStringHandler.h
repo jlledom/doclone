@@ -46,16 +46,17 @@ public:
 	//String handling methods
 	const XMLCh *toXMLText(const char *c_str);
 	const char *toCString(const XMLCh *xmlch);
-	const uint8_t *toBinaryArray(XMLByte *xmlbyte);
+	const XMLByte *toXMLByteArray(const uint8_t *data, bool adopt);
+	const uint8_t *toBinaryArray(const XMLByte *xmlbyte, bool adopt);
 private:
 	/// Private constructor for singleton pattern
 	XMLStringHandler() throw(Exception);
 
 	///Storage for the transcoded strings
-	std::vector<XMLCh*> _listXmlchData;
+	std::vector<const XMLCh*> _listXmlchData;
 
 	///Storage for the C strings
-	std::vector<uint8_t*> _listXmlByteData;
+	std::vector<const uint8_t*> _listXmlByteData;
 };
 
 }
