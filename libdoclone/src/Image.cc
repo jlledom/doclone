@@ -863,21 +863,55 @@ void Image::writePartitionTable(const std::string &device) throw(Exception) {
 			std::stringstream target;
 			target << device << ", #" << (i+1);
 
-			part->format();
-			dcl->markCompleted(Doclone::OP_FORMAT_PARTITION,
-					target.str());
+			try {
+				part->format();
+				dcl->markCompleted(Doclone::OP_FORMAT_PARTITION,
+						target.str());
+			} catch (const WarningException &ex) {
+				/*
+				 * This partition won't be restored.
+				 * Show the message and skip to the next partition.
+				 */
+				ex.logMsg();
+				continue;
+			}
 
-			part->writeFlags();
-			dcl->markCompleted(Doclone::OP_WRITE_PARTITION_FLAGS,
-					target.str());
+			try {
+				part->writeFlags();
+				dcl->markCompleted(Doclone::OP_WRITE_PARTITION_FLAGS,
+						target.str());
+			} catch (const WarningException &ex) {
+				/*
+				 * This error doesn't prevent the partition to be restored.
+				 * Show the message and continue.
+				 */
+				ex.logMsg();
+			}
 
-			part->writeLabel();
-			dcl->markCompleted(Doclone::OP_WRITE_FS_LABEL,
-					target.str());
 
-			part->writeUUID();
-			dcl->markCompleted(Doclone::OP_WRITE_FS_UUID,
-					target.str());
+			try {
+				part->writeLabel();
+				dcl->markCompleted(Doclone::OP_WRITE_FS_LABEL,
+						target.str());
+			} catch (const WarningException &ex) {
+				/*
+				 * This error doesn't prevent the partition to be restored.
+				 * Show the message and continue.
+				 */
+				ex.logMsg();
+			}
+
+			try {
+				part->writeUUID();
+				dcl->markCompleted(Doclone::OP_WRITE_FS_UUID,
+						target.str());
+			} catch (const WarningException &ex) {
+				/*
+				 * This error doesn't prevent the partition to be restored.
+				 * Show the message and continue.
+				 */
+				ex.logMsg();
+			}
 		}
 
 	} else {
@@ -887,18 +921,51 @@ void Image::writePartitionTable(const std::string &device) throw(Exception) {
 		std::stringstream target;
 		target << device;
 
-		this->_disk->getPartitions()[0]->format();
-		dcl->markCompleted(Doclone::OP_FORMAT_PARTITION, target.str());
+		try {
+			this->_disk->getPartitions()[0]->format();
+			dcl->markCompleted(Doclone::OP_FORMAT_PARTITION, target.str());
+		} catch (const WarningException &ex) {
+			/*
+			 * This partition won't be restored. Since this is the
+			 * only partition, execution must stop.
+			 */
+			ex.logMsg();
+			throw;
+		}
 
-		this->_disk->getPartitions()[0]->writeFlags();
-		dcl->markCompleted(Doclone::OP_WRITE_PARTITION_FLAGS,
-				target.str());
+		try {
+			this->_disk->getPartitions()[0]->writeFlags();
+			dcl->markCompleted(Doclone::OP_WRITE_PARTITION_FLAGS,
+					target.str());
+		} catch (const WarningException &ex) {
+			/*
+			 * This error doesn't prevent the partition to be restored.
+			 * Show the message and continue.
+			 */
+			ex.logMsg();
+		}
 
-		this->_disk->getPartitions()[0]->writeLabel();
-		dcl->markCompleted(Doclone::OP_WRITE_FS_LABEL, target.str());
+		try {
+			this->_disk->getPartitions()[0]->writeLabel();
+			dcl->markCompleted(Doclone::OP_WRITE_FS_LABEL, target.str());
+		} catch (const WarningException &ex) {
+			/*
+			 * This error doesn't prevent the partition to be restored.
+			 * Show the message and continue.
+			 */
+			ex.logMsg();
+		}
 
-		this->_disk->getPartitions()[0]->writeUUID();
-		dcl->markCompleted(Doclone::OP_WRITE_FS_UUID, target.str());
+		try {
+			this->_disk->getPartitions()[0]->writeUUID();
+			dcl->markCompleted(Doclone::OP_WRITE_FS_UUID, target.str());
+		} catch (const WarningException &ex) {
+			/*
+			 * This error doesn't prevent the partition to be restored.
+			 * Show the message and continue.
+			 */
+			ex.logMsg();
+		}
 	}
 
 	log->debug("Image::writePartitionTable() end");

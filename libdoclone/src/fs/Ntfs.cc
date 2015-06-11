@@ -117,7 +117,7 @@ void Ntfs::writeLabel(const std::string &dev) const throw(Exception) {
 
 	if (exitValue<0) {
 		WriteLabelException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Ntfs::writeLabel() end");
@@ -165,7 +165,7 @@ void Ntfs::writeUUID(const std::string &dev) const throw(Exception) {
 	}
 	catch(const Exception &e) {
 		WriteUuidException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Ntfs::writeUUID() end");

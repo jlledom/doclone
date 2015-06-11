@@ -136,7 +136,7 @@ void Jfs::writeUUID(const std::string &dev) const throw(Exception) {
 
 	if (exitValue<0) {
 		WriteUuidException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Jfs::writeUUID() end");

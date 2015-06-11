@@ -107,7 +107,7 @@ void Reiserfs::writeLabel(const std::string &dev) const throw(Exception) {
 
 	if (exitValue<0) {
 		WriteLabelException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Reiserfs::writeLabel() end");
@@ -136,7 +136,7 @@ void Reiserfs::writeUUID(const std::string &dev) const throw(Exception) {
 
 	if (exitValue<0) {
 		WriteUuidException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Reiserfs::writeUUID() end");

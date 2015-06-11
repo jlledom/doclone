@@ -107,7 +107,7 @@ void Xfs::writeLabel(const std::string &dev) const throw(Exception) {
 
 	if (exitValue<0) {
 		WriteLabelException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Xfs::writeLabel() end");
@@ -135,7 +135,7 @@ void Xfs::writeUUID(const std::string &dev) const throw(Exception) {
 
 	if (exitValue<0) {
 		WriteUuidException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Xfs::writeUUID() end");

@@ -173,7 +173,7 @@ void PartedDevice::close() {
 /**
  * \brief Commits the changes to disk.
  */
-void PartedDevice::commit() const {
+void PartedDevice::commit() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::commit() start");
 
@@ -188,7 +188,7 @@ void PartedDevice::commit() const {
 	while(!ped_disk_commit_to_os (this->_pDisk)) {
 		if (errno == EBUSY) {
 			if(i<30) {
-				 // Device busy, wait one more second
+				 // Device busy, let's wait one more second
 				sleep(1);
 				i++;
 				continue;

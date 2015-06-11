@@ -97,7 +97,7 @@ void Fat16::writeLabel(const std::string &dev) const throw(Exception) {
 	}
 	catch(const Exception &e) {
 		WriteLabelException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Fat16::writeLabel() end");
@@ -145,7 +145,7 @@ void Fat16::writeUUID(const std::string &dev) const throw(Exception) {
 	}
 	catch(const Exception &e) {
 		WriteUuidException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("Fat16::writeUUID() end");

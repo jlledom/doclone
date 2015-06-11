@@ -101,7 +101,7 @@ void Ext2::writeLabel(const std::string &dev) const throw(Exception) {
 
 	if (!fs) {
 		WriteLabelException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	sb = fs->super;
@@ -158,7 +158,7 @@ void Ext2::writeUUID(const std::string &dev) const throw(Exception) {
 
 	if (!fs) {
 		WriteUuidException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	sb = fs->super;

@@ -23,6 +23,8 @@
 
 #include <parted/parted.h>
 
+#include <doclone/exception/Exception.h>
+
 namespace Doclone {
 
 /**
@@ -49,7 +51,7 @@ public:
 	uint64_t getPartitionSize(unsigned int numPartition) const;
 
 	void open();
-	void commit() const;
+	void commit() const throw(Exception);
 	void close();
 
 private:

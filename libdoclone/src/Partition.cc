@@ -711,9 +711,6 @@ void Partition::writeFlags() const throw(Exception) {
 	pedDev->commit();
 	pedDev->close();
 
-	Clone *dcl = Clone::getInstance();
-	dcl->markCompleted(Doclone::OP_WRITE_PARTITION_FLAGS, this->_path);
-
 	log->debug("Partition::writeFlags() end");
 }
 

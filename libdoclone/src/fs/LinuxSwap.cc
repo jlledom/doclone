@@ -96,7 +96,7 @@ void LinuxSwap::writeLabel(const std::string &dev) const throw(Exception) {
 	}
 	catch(const Exception &e) {
 		WriteLabelException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("LinuxSwap::writeLabel() end");
@@ -125,7 +125,7 @@ void LinuxSwap::writeUUID(const std::string &dev) const throw(Exception) {
 	}
 	catch(const Exception &e) {
 		WriteUuidException ex(dev);
-		ex.logMsg();
+		throw ex;
 	}
 
 	log->debug("LinuxSwap::writeUUID() end");
