@@ -635,7 +635,8 @@ void Image::writeDataToDisk() throw(Exception) {
 			try {
 				Partition *part = this->_disk->getPartitions().at(i);
 
-				if(abPath.find(part->getRootDir().c_str()) == 0
+				if(part->isMounted()
+						&& abPath.find(part->getRootDir().c_str()) == 0
 						&& !errorPartitions[i]) {
 
 					abPath.replace(0,part->getRootDir().length(),
@@ -765,53 +766,39 @@ void Image::writePartitionsData(const std::string &device) throw(Exception) {
 		try {
 			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
 				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
-					this->_disk->getPartitions().at(i)->doMount();
+					try {
+						this->_disk->getPartitions().at(i)->doMount();
+					} catch(WarningException &ex) {
+						//Ignore it, this partition just won't be restored
+					} catch (const Exception &ex) {
+						throw;
+					}
 				}
 			}
 
 			this->writeDataToDisk();
 
-		} catch (const CancelException &ex) {
+			Clone *dcl = Clone::getInstance();
+			dcl->markCompleted(Doclone::OP_WRITE_DATA, device);
+
+			//Restore Grub if this is a disk restoring
+			if(this->_type == Doclone::IMAGE_DISK) {
+				this->_disk->restoreGrub();
+			}
+		} catch (const Exception &ex) {
 			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
 				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
 					this->_disk->getPartitions().at(i)->doUmount();
 				}
 			}
 			throw;
-		} catch (const WriteDataException &ex) {
-			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
-				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
-					this->_disk->getPartitions().at(i)->doUmount();
-				}
-			}
-			throw;
-		} catch (const ReceiveDataException &ex) {
-			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
-				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
-					this->_disk->getPartitions().at(i)->doUmount();
-				}
-			}
-			throw;
-		} catch(WarningException &ex) {
-			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
-				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
-					this->_disk->getPartitions().at(i)->doUmount();
-				}
-			}
 		}
+
 		for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
 			if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
 				this->_disk->getPartitions().at(i)->doUmount();
 			}
 		}
-	}
-
-	Clone *dcl = Clone::getInstance();
-		dcl->markCompleted(Doclone::OP_WRITE_DATA, device);
-
-	//Restore Grub if this is a disk restoring
-	if(this->_type == Doclone::IMAGE_DISK) {
-		this->_disk->restoreGrub();
 	}
 
 	log->debug("Image::writePartitionsData() end");

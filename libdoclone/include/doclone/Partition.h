@@ -122,6 +122,7 @@ public:
 
 	void doMount() throw(Exception);
 	void doUmount() throw(Exception);
+	bool isMounted() throw(Exception);
 
 	bool isWritable() const throw(Exception);
 	bool fitInDevice(bool diskImage) throw(Exception);
@@ -148,7 +149,6 @@ private:
 	/// Root directory of the partition in the image header
 	std::string _rootDir;
 
-	bool isMounted() throw(Exception);
 	void externalMount() throw(Exception);
 
 	// Initialize functions
