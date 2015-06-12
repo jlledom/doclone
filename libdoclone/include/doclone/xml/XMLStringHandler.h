@@ -48,6 +48,10 @@ public:
 	const char *toCString(const XMLCh *xmlch);
 	const XMLByte *toXMLByteArray(const uint8_t *data, bool adopt);
 	const uint8_t *toBinaryArray(const XMLByte *xmlbyte, bool adopt);
+
+	//Conversion methods
+	const XMLByte *cStringToByteArray(const char *src, XMLByte *dst, uint64_t size);
+	const char *byteArrayToCString(const XMLByte *src, char *dst, uint64_t size);
 private:
 	/// Private constructor for singleton pattern
 	XMLStringHandler() throw(Exception);

@@ -85,6 +85,7 @@ void XMLDocument::createNew() {
 					xmlStr->toXMLText(Doclone::XML_SYSTEM_ID));
 
 	this->_doc = impl->createDocument(0, xmlStr->toXMLText(Doclone::XML_ROOT_ELEMENT), docType);
+	this->_doc->setXmlStandalone(true);
 
 	log->debug("XMLDocument::createNew() end");
 }
@@ -363,12 +364,6 @@ const char *XMLDocument::serialize(std::string &buf) {
 
 	DOMLSSerializer *serializer = implLS->createLSSerializer();
 
-	if (serializer->getDomConfig()->canSetParameter(
-			XMLUni::fgDOMWRTFormatPrettyPrint, true)) {
-		serializer->getDomConfig()->setParameter(
-				XMLUni::fgDOMWRTFormatPrettyPrint, true);
-	}
-
 	MemBufFormatTarget target;
 
 	DOMLSOutput *output = implLS->createLSOutput();
@@ -376,7 +371,10 @@ const char *XMLDocument::serialize(std::string &buf) {
 	output->setByteStream(&target);
 	serializer->write(this->_doc, output);
 
-	buf = reinterpret_cast<const char*>(target.getRawBuffer());
+	uint64_t size = target.getLen();
+	char dst[size+1];
+	memset(dst, 0, size+1);
+	buf = xmlStr->byteArrayToCString(target.getRawBuffer(), dst, size);
 
 	serializer->release();
 	output->release();
@@ -411,8 +409,11 @@ void XMLDocument::openFromMem(const char *buf) throw(Exception) {
 
 	this->_parser->resetDocumentPool();
 
-	MemBufInputSource source(reinterpret_cast<const XMLByte*>(buf),
-			strlen(buf), Doclone::XML_ROOT_ELEMENT);
+	uint64_t size = strlen(buf);
+	XMLByte byteData[size+1];
+	memset(byteData, 0, size+1);
+	MemBufInputSource source(xmlStr->cStringToByteArray(buf, byteData, size),
+			size, Doclone::XML_ROOT_ELEMENT);
 
 	DOMLSInput *input = implLS->createLSInput();
 	input->setEncoding(XMLUni::fgUTF8EncodingString);

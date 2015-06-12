@@ -66,7 +66,7 @@ XMLStringHandler::~XMLStringHandler() {
 	//Release the byte data
 	for (std::vector<const uint8_t*>::iterator it = this->_listXmlByteData.begin();
 			it!=this->_listXmlByteData.end(); ++it) {
-		delete *it;
+		delete[] *it;
 	}
 	this->_listXmlByteData.clear();
 
@@ -121,8 +121,11 @@ const char *XMLStringHandler::toCString(const XMLCh *xmlch) {
 	log->debug("XMLDocument::toCString(xmlch=>0x%x) start", xmlch);
 
 	TranscodeToStr trns(xmlch, "UTF-8");
-	char *retVal = reinterpret_cast<char *>(trns.adopt());
-
+	const XMLByte *data = trns.str();
+	uint64_t size = trns.length();
+	char *retVal = new char[size+1];
+	memset(retVal, 0, size+1);
+	this->byteArrayToCString(data, retVal, size);
 	this->_listXmlByteData.push_back(reinterpret_cast<uint8_t *>(retVal));
 
 	log->debug("XMLDocument::toCString(retVal=>%s) end", retVal);
@@ -133,6 +136,7 @@ const char *XMLStringHandler::toCString(const XMLCh *xmlch) {
  * \brief Transforms a C string into a XML byte
  *
  * \param c_str Pointer to the C string to be transcoded
+ * \param adopt Wheter the xmlbyte array must be saved in the handler memory
  *
  * \return An XMLByte array
  */
@@ -153,6 +157,7 @@ const XMLByte *XMLStringHandler::toXMLByteArray(const uint8_t *data, bool adopt)
  * \brief Transforms a XML byte array into a C binary array
  *
  * \param xmlbyte Pointer to the XML byte
+ * \param adopt Wheter the xmlbyte array must be saved in the handler memory
  *
  * \return Binary array
  */
@@ -167,5 +172,43 @@ const uint8_t *XMLStringHandler::toBinaryArray(const XMLByte *xmlbyte, bool adop
 
 	log->debug("XMLDocument::toCString(retVal=>%s) end", retVal);
 	return retVal;
+}
+
+/**
+ * \brief Converts a C string to a XMLByte array
+ *
+ * \param xmlch The input C string
+ *
+ * \return A pointer to an XMLByte array containing the same data.
+ */
+const XMLByte *XMLStringHandler::cStringToByteArray(const char *src, XMLByte *dst, uint64_t size) {
+	Logger *log = Logger::getInstance();
+	log->debug("XMLDocument::cStringToByteArray(src=>0x%x, dst=>0x%x, size=>%d) start", src, dst, size);
+
+	for(unsigned int i=0; i<size; i++) {
+		dst[i]=static_cast<XMLByte>(src[i]);
+	}
+
+	log->debug("XMLDocument::cStringToByteArray(dst=>0x%x) end", dst);
+	return dst;
+}
+
+/**
+ * \brief Converts a XMLByte array to a C string
+ *
+ * \param xmlch The input XMLByte byte array
+ *
+ * \return A pointer to a C string with the same data
+ */
+const char *XMLStringHandler::byteArrayToCString(const XMLByte *src, char *dst, uint64_t size) {
+	Logger *log = Logger::getInstance();
+	log->debug("XMLDocument::byteArrayToCString(src=>0x%x, dst=>0x%x, size=>%d) start", src, dst, size);
+
+	for(unsigned int i=0; i<size; i++) {
+		dst[i]=static_cast<char>(src[i]);
+	}
+
+	log->debug("XMLDocument::byteArrayToCString(dst=>0x%x) end", dst);
+	return dst;
 }
 }

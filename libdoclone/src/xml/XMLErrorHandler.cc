@@ -34,6 +34,9 @@ XERCES_CPP_NAMESPACE_USE
 XMLErrorHandler::XMLErrorHandler() : _errors() {
 }
 
+/**
+ * \brief Callback function for handling errors in XML parsing.
+ */
 bool XMLErrorHandler::handleError(const DOMError &domError) {
 	Logger *log = Logger::getInstance();
 	bool retVal = true;
