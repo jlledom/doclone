@@ -18,6 +18,7 @@
 
 #include <doclone/DataTransfer.h>
 
+#include <string.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -79,9 +80,11 @@ uint64_t DataTransfer::archiveToBuf(struct archive *arIn, std::string &target) t
 	log->loopDebug("DataTransfer::archiveToBuf(arIn=>0x%x, buff=>%s) start", arIn, target.c_str());
 
 	char buf[Doclone::BUFFER_SIZE];
+	memset(buf, 0, Doclone::BUFFER_SIZE);
+
 	unsigned int nbytes = Doclone::BUFFER_SIZE;
 	unsigned int totalNbytes = 0;
-	target = "";
+	target.clear();
 
 	while ((nbytes = archive_read_data(arIn, buf, Doclone::BUFFER_SIZE)) > 0) {
 		target.append(buf);
@@ -96,6 +99,8 @@ uint64_t DataTransfer::archiveToBuf(struct archive *arIn, std::string &target) t
 			this->notifyObservers(Doclone::TRANS_TRANSFERRED_BYTES,
 					this->_transferredBytes);
 		}
+
+		memset(buf, 0, Doclone::BUFFER_SIZE);
 	}
 
 	// If the transfer stopped due to an error
