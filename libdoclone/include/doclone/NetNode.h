@@ -129,7 +129,7 @@ const dcCommand C_RECEIVER_OK = 1 << 4;
 /**
  * \class NetNode
  * \brief Common methods and attributes for all network nodes
- * \date August, 2011
+ * \date May, 2015
  */
 class NetNode : public Node {
 public:

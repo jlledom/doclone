@@ -27,11 +27,11 @@
 namespace Doclone {
 
 /**
- * \class Local
+ * \class LocalNode
  * \brief Implementation of a local node.
  *
  * Methods and attributes to clone an image locally.
- * \date January, 2012
+ * \date May, 2015
  */
 class LocalNode : public Node {
 public:

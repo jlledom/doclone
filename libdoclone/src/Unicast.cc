@@ -316,6 +316,10 @@ void Unicast::sendFromDevice() throw(Exception) {
 	for(int i = 0;i<numPartitions;i++) {
 		tmpTotalSize += disk->getPartitions().at(i)->getMinSize();
 	}
+	DataTransfer *trns = DataTransfer::getInstance();
+	trns->setTotalSize(tmpTotalSize);
+
+	tmpTotalSize = htobe64(tmpTotalSize);
 	DataTransfer::sendData(this->_fds, &tmpTotalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 

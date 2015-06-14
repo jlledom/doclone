@@ -24,6 +24,7 @@
 #include <doclone/PartedDevice.h>
 #include <doclone/DiskLabel.h>
 #include <doclone/DlFactory.h>
+#include <doclone/DataTransfer.h>
 #include <doclone/Util.h>
 #include <doclone/exception/NoBlockDeviceException.h>
 #include <doclone/exception/CreateImageException.h>
@@ -81,6 +82,10 @@ void LocalNode::create() const throw(Exception) {
 
 	image.saveImageHeader();
 
+	// Initialize the counter of progress
+	DataTransfer *trns = DataTransfer::getInstance();
+	trns->setTotalSize(image.getSize());
+
 	image.readPartitionsData();
 
 	image.freeWriteArchive();
@@ -111,6 +116,10 @@ void LocalNode::restore() const throw(Exception) {
 	image.initDiskWriteArchive();
 
 	image.loadImageHeader();
+
+	// Initialize the counter of progress
+	DataTransfer *trns = DataTransfer::getInstance();
+	trns->setTotalSize(image.getSize());
 
 	if(image.canRestoreCheck(this->_device) == false) {
 		RestoreImageException ex;

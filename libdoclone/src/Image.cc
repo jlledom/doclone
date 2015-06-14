@@ -395,6 +395,7 @@ void Image::saveImageHeader() throw(Exception) {
 	for(int i = 0;i<numPartitions;i++) {
 		imageSize += this->_disk->getPartitions().at(i)->getMinSize();
 	}
+	this->_size = imageSize;
 
 	DOMElement *rootElem = doc.getRootElement();
 	doc.createElement(rootElem, "numPartitions", numPartitions);
@@ -732,10 +733,6 @@ void Image::readPartitionsData() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::readPartitionsData() start");
 
-	// Initialize the counter of progress
-	DataTransfer *trns = DataTransfer::getInstance();
-	trns->setTotalSize(this->_size);
-
 	for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
 		try {
 			this->readPartition(i);
@@ -757,10 +754,6 @@ void Image::readPartitionsData() throw(Exception) {
 void Image::writePartitionsData(const std::string &device) throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Image::writePartitionsData() start");
-
-	// Initialize the counter of progress
-	DataTransfer *trns = DataTransfer::getInstance();
-	trns->setTotalSize(this->_size);
 
 	if(!this->_noData) {
 		try {
