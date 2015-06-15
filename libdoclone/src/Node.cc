@@ -21,6 +21,7 @@
 #include <string>
 
 #include <doclone/Clone.h>
+#include <doclone/Image.h>
 
 namespace Doclone {
 
@@ -32,6 +33,28 @@ Node::Node(): _image(), _device() {
 
 	this->_image = dcl->getImage();
 	this->_device = dcl->getDevice();
+}
+
+/**
+ * \brief Opens an image header just for reading its size from the XML header
+ *
+ * \return The size of the image
+ */
+uint64_t Node::getImageSize(const int fd) throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Image::getImageSize(fd=>%d) start", fd);
+
+	Image dcImage;
+	dcImage.initFdReadArchive(fd);
+	dcImage.loadImageSizeFromHeader();
+
+	uint64_t retVal = dcImage.getSize();
+
+	dcImage.freeReadArchive();
+	lseek(fd, 0, SEEK_SET);
+
+	log->debug("Image::getImageSize(retVal=>%d) end", retVal);
+	return retVal;
 }
 
 }

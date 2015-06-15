@@ -20,6 +20,7 @@
 #define DLFACTORY_H_
 
 #include <doclone/DiskLabel.h>
+#include <doclone/exception/Exception.h>
 
 namespace Doclone {
 
@@ -34,7 +35,7 @@ namespace Doclone {
  */
 class DlFactory {
 public:
-	static DiskLabel *createDiskLabel();
+	static DiskLabel *createDiskLabel() throw(Exception);
 	static DiskLabel *createDiskLabel(diskLabelType dlType);
 };
 

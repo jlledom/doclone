@@ -75,6 +75,7 @@ public:
 	void freeReadArchive();
 	void freeWriteArchive();
 
+	void loadImageSizeFromHeader() throw(Exception);
 	void loadImageHeader() throw(Exception);
 	void saveImageHeader() throw(Exception);
 

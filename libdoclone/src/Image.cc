@@ -260,9 +260,37 @@ bool Image::fitInDisk() const throw(Exception) {
 }
 
 /**
+ * \brief Reads the size of the image from its XML header
+ *
+ * \return Image size
+ */
+void Image::loadImageSizeFromHeader() throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Image::loadImageSizeFromHeader() start");
+
+	DataTransfer *trns = DataTransfer::getInstance();
+	struct archive_entry *entry;
+	std::string xmlText;
+
+	if(archive_read_next_header(this->_archiveIn, &entry) != ARCHIVE_OK) {
+		ReadDataException ex;
+		throw ex;
+	}
+
+	trns->archiveToBuf(this->_archiveIn, xmlText);
+	XMLDocument doc;
+	doc.openFromMem(xmlText.c_str());
+
+	DOMElement *rootElement=doc.getRootElement();
+
+	this->_size = doc.getElementValueU64(rootElement, "imageSize");
+
+	log->debug("Image::loadImageSizeFromHeader() end");
+}
+
+/**
  * \brief Reads the all the necessary metadata from the image header.
  *
- * \return Number of bytes read
  */
 void Image::loadImageHeader() throw(Exception) {
 	Logger *log = Logger::getInstance();
@@ -380,7 +408,6 @@ void Image::loadImageHeader() throw(Exception) {
 /**
  * \brief Writes the necessary metadata in the image header.
  *
- * \return Number of bytes written
  */
 void Image::saveImageHeader() throw(Exception) {
 	Logger *log = Logger::getInstance();

@@ -223,10 +223,7 @@ void Unicast::sendFromImage() throw(Exception) {
 	 * If the system is little-endian, it is necessary to convert totalSize to
 	 * big-endian.
 	 */
-	Image dcImage;
-	dcImage.initFdReadArchive(fd);
-	dcImage.loadImageHeader();
-	uint64_t totalSize = dcImage.getSize();
+	uint64_t totalSize = this->getImageSize(fd);
 	DataTransfer *trns = DataTransfer::getInstance();
 	trns->setTotalSize(totalSize);
 
@@ -234,7 +231,6 @@ void Unicast::sendFromImage() throw(Exception) {
 	DataTransfer::sendData(this->_fds, &tmpTotalSize,
 			static_cast<size_t>(sizeof(uint64_t)));
 
-	lseek(fd, 0, SEEK_SET);
 	trns->copyData(fd, this->_fds);
 
 	dcl->markCompleted(Doclone::OP_TRANSFER_DATA, "");

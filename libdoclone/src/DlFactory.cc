@@ -36,7 +36,7 @@ namespace Doclone {
  * \brief Creates a disk label from a PartedDevice instance
  *
  */
-DiskLabel *DlFactory::createDiskLabel() {
+DiskLabel *DlFactory::createDiskLabel() throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("FsFactory::createFilesystem() start");
 

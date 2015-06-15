@@ -36,6 +36,8 @@ public:
 	virtual ~Node() {}
 
 protected:
+	uint64_t getImageSize(const int fd) throw(Exception);
+
 	/// The path of the image
 	std::string _image;
 

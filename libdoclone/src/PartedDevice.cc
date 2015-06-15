@@ -26,6 +26,7 @@
 
 #include <doclone/Logger.h>
 #include <doclone/exception/CommitException.h>
+#include <doclone/exception/NoAccessToDeviceException.h>
 
 namespace Doclone {
 
@@ -124,12 +125,17 @@ void PartedDevice::initialize(const std::string &device) {
  *
  * If it is opened, don't make anything.
  */
-void PartedDevice::open() {
+void PartedDevice::open() throw(Exception){
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::open() start");
 
 	if(!this->_pDevice) {
-		this->_pDevice = ped_device_get( this->_path.c_str() );
+		this->_pDevice = ped_device_get( this->_path.c_str());
+
+		if(!this->_pDevice) {
+			NoAccessToDeviceException ex(this->_path);
+			throw ex;
+		}
 	}
 
 	if(!this->_pDisk) {

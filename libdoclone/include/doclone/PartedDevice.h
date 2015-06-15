@@ -50,7 +50,7 @@ public:
 	uint64_t getDevSize() const;
 	uint64_t getPartitionSize(unsigned int numPartition) const;
 
-	void open();
+	void open() throw(Exception);
 	void commit() const throw(Exception);
 	void close();
 

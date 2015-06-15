@@ -142,11 +142,11 @@ public:
 protected:
 	virtual void closeConnection() throw(Exception) = 0;
 
-	void sendFromImage() throw(Exception);
-	void sendFromDevice() throw(Exception);
+	virtual void sendFromImage() throw(Exception) = 0;
+	virtual void sendFromDevice() throw(Exception) = 0;
 
-	void receiveToImage() throw(Exception);
-	void receiveToDevice() throw(Exception);
+	virtual void receiveToImage() throw(Exception) = 0;
+	virtual void receiveToDevice() throw(Exception) = 0;
 
 	/// Human readable server's IP (only for clients)
 	std::string _srcIP;
