@@ -313,6 +313,11 @@ PedConstraint *Disk::calcConstraint(const PedPartition* pPart,
 	PedConstraint *pConstraint = ped_constraint_new(startAlign, endAlign,
 			startRange, endRange, minSize, maxSize);
 
+	ped_geometry_destroy(startRange);
+	ped_geometry_destroy(endRange);
+	ped_alignment_destroy(startAlign);
+	ped_alignment_destroy(endAlign);
+
 	log->debug("Disk::calcConstraint(pedGeom=>0x%x) end", pConstraint);
 
 	return pConstraint;
@@ -403,6 +408,8 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 	}
 
 	pedDev->close();
+
+	ped_geometry_destroy(geom);
 
 	log->debug("Disk::writePartitionToDisk() end");
 }

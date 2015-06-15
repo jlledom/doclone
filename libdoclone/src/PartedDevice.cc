@@ -40,7 +40,17 @@ PartedDevice::PartedDevice(): _openings(0), _path(), _pDevice(0), _pDisk(0) {
  * \brief Closes the opened device
  */
 PartedDevice::~PartedDevice() {
-	this->close();
+
+	if(this->_pDisk) {
+		ped_disk_destroy( this->_pDisk );
+		this->_pDisk = 0;
+	}
+
+	if(this->_pDevice) {
+		ped_device_destroy( this->_pDevice );
+		this->_pDevice = 0;
+	}
+
 	this->_openings = 0;
 }
 
@@ -129,6 +139,11 @@ void PartedDevice::open() throw(Exception){
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::open() start");
 
+	if(this->_openings > 0) {
+		this->_openings++;
+		return;
+	}
+
 	if(!this->_pDevice) {
 		this->_pDevice = ped_device_get( this->_path.c_str());
 
@@ -142,7 +157,7 @@ void PartedDevice::open() throw(Exception){
 		this->_pDisk = ped_disk_new( this->_pDevice  );
 	}
 
-	this->_openings++;
+	this->_openings =1 ;
 
 	log->debug("PartedDevice::open() end");
 }

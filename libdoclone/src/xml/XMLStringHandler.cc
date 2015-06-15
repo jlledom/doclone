@@ -39,7 +39,7 @@ XERCES_CPP_NAMESPACE_USE
  * Initializes the attributtes
  */
 XMLStringHandler::XMLStringHandler() throw(Exception):
-		_listXmlchData(), _listXmlByteData() {
+		_listXmlchData(), _listXmlByteData(), _listCStrings() {
 	// Initialize the XML4C2 system.
 	try {
 		XMLPlatformUtils::Initialize();
@@ -64,11 +64,18 @@ XMLStringHandler::~XMLStringHandler() {
 	this->_listXmlchData.clear();
 
 	//Release the byte data
-	for (std::vector<const uint8_t*>::iterator it = this->_listXmlByteData.begin();
+	for (std::vector<const XMLByte*>::iterator it = this->_listXmlByteData.begin();
 			it!=this->_listXmlByteData.end(); ++it) {
-		delete[] *it;
+		delete *it;
 	}
 	this->_listXmlByteData.clear();
+
+	//Release the byte data
+	for (std::vector<const char*>::iterator it = this->_listCStrings.begin();
+			it!=this->_listCStrings.end(); ++it) {
+		delete[] *it;
+	}
+	this->_listCStrings.clear();
 
 	//Release the XML4C2 system.
 	XMLPlatformUtils::Terminate();
@@ -126,7 +133,7 @@ const char *XMLStringHandler::toCString(const XMLCh *xmlch) {
 	char *retVal = new char[size+1];
 	memset(retVal, 0, size+1);
 	this->byteArrayToCString(data, retVal, size);
-	this->_listXmlByteData.push_back(reinterpret_cast<uint8_t *>(retVal));
+	this->_listCStrings.push_back(retVal);
 
 	log->debug("XMLDocument::toCString(retVal=>%s) end", retVal);
 	return retVal;

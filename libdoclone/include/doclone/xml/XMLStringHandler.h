@@ -59,8 +59,11 @@ private:
 	///Storage for the transcoded strings
 	std::vector<const XMLCh*> _listXmlchData;
 
+	///Storage for the XMLByte pointers
+	std::vector<const XMLByte*> _listXmlByteData;
+
 	///Storage for the C strings
-	std::vector<const uint8_t*> _listXmlByteData;
+	std::vector<const char*> _listCStrings;
 };
 
 }

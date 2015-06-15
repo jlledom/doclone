@@ -57,6 +57,11 @@ void DiskLabel::makeLabel() const throw(Exception) {
 			throw ex;
 		}
 
+		PedDisk *oldpDisk = pedDev->getDisk();
+		if(oldpDisk) {
+			ped_disk_destroy(oldpDisk);
+		}
+
 		pedDev->setDisk(pDisk);
 		pedDev->commit();
 	}

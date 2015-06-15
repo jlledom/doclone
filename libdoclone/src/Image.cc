@@ -77,6 +77,13 @@ Image::Image(): _size(), _type(), _disk(), _archiveIn(), _archivesOut() {
 }
 
 /**
+ * \brief Free allocated memory
+ */
+Image::~Image() {
+	delete this->_disk;
+}
+
+/**
  * \brief Checks if the image entered by the user is really a doclone image.
  *
  * To determine if the passed file is a valid doclone image, this function amounts

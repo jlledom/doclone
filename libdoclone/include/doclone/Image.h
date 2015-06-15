@@ -63,6 +63,7 @@ enum imageType { IMAGE_DISK, IMAGE_PARTITION };
 class Image {
 public:
 	Image();
+	~Image();
 
 	bool isValid() const throw(Exception);
 

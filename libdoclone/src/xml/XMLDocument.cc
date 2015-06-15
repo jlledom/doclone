@@ -437,6 +437,8 @@ void XMLDocument::openFromMem(const char *buf) throw(Exception) {
 		}
 	}
 
+	input->release();
+
 	log->debug("XMLDocument::openFromMem() end");
 }
 
