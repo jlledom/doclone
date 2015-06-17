@@ -1,18 +1,3 @@
 # List of source files which contain translatable strings.
 
 src/ConsoleView/ConsoleView.cc
-src/CursesView/ActionPanel.cc
-src/CursesView/BaseScreen.cc
-src/CursesView/CursesView.cc
-src/CursesView/InsertFileForm.cc
-src/CursesView/InsertIpForm.cc
-src/CursesView/InsertNumOfClientsForm.cc
-src/CursesView/LanMenu.cc
-src/CursesView/LanRoleMenu.cc
-src/CursesView/LocalMenu.cc
-src/CursesView/ProgressScreen.cc
-src/CursesView/ScopeMenu.cc
-src/CursesView/SelectDeviceForm.cc
-src/CursesView/SelectFileForm.cc
-src/CursesView/SummaryScreen.cc
-src/CursesView/TargetMenu.cc

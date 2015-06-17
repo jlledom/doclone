@@ -15,6 +15,7 @@ include/doclone/exception/Exception.h
 include/doclone/exception/FileNotFoundException.h
 include/doclone/exception/FormatException.h
 include/doclone/exception/GrubException.h
+include/doclone/exception/InitializationException.h
 include/doclone/exception/InvalidImageException.h
 include/doclone/exception/MakeLabelException.h
 include/doclone/exception/MountException.h
@@ -44,3 +45,4 @@ include/doclone/exception/WriteErrorsInDirectoryException.h
 include/doclone/exception/WriteLabelException.h
 include/doclone/exception/WriteUuidException.h
 include/doclone/exception/WrongImageTypeException.h
+include/doclone/exception/XMLParseException.h

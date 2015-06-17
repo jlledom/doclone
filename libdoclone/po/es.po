@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2014-07-31 19:57+0200\n"
-"PO-Revision-Date: 2013-09-08 18:44+0100\n"
+"POT-Creation-Date: 2015-06-16 09:32+0200\n"
+"PO-Revision-Date: 2015-06-16 09:36+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
 
 #: include/doclone/exception/AlignPartitionException.h:41
 msgid "The partition cannot be aligned to MiB"
@@ -78,6 +79,10 @@ msgstr "No se pudo formatear la partición"
 #: include/doclone/exception/GrubException.h:37
 msgid "Can't install GRUB bootloader"
 msgstr "No se pudo instalar el cargador de arranque GRUB"
+
+#: include/doclone/exception/InitializationException.h:37
+msgid "Initialization of Doclone logic failed"
+msgstr "Ha fallado la inicialización de la lógica de Doclone"
 
 #: include/doclone/exception/InvalidImageException.h:39
 msgid "Invalid image"
@@ -236,6 +241,10 @@ msgstr "No se puede escribir el UUID"
 #: include/doclone/exception/WrongImageTypeException.h:40
 msgid "Wrong image type"
 msgstr "Imagen de tipo incorrecto"
+
+#: include/doclone/exception/XMLParseException.h:39
+msgid "Parse error in the XML header"
+msgstr "Error de análisis de la cabecera XML"
 
 #~ msgid "Not an MS-DOS disk label"
 #~ msgstr "No es una etiqueta de disco MS-DOS"

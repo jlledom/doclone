@@ -36,7 +36,7 @@ namespace Doclone {
 class XMLParseException : public ErrorException {
 public:
 	XMLParseException() throw() {
-		this->_msg=D_("");
+		this->_msg=D_("Parse error in the XML header");
 	}
 
 };

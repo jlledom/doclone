@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.1\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2014-07-31 19:57+0200\n"
+"POT-Creation-Date: 2015-06-16 09:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,6 +77,10 @@ msgstr ""
 
 #: include/doclone/exception/GrubException.h:37
 msgid "Can't install GRUB bootloader"
+msgstr ""
+
+#: include/doclone/exception/InitializationException.h:37
+msgid "Initialization of Doclone logic failed"
 msgstr ""
 
 #: include/doclone/exception/InvalidImageException.h:39
@@ -225,4 +229,8 @@ msgstr ""
 
 #: include/doclone/exception/WrongImageTypeException.h:40
 msgid "Wrong image type"
+msgstr ""
+
+#: include/doclone/exception/XMLParseException.h:39
+msgid "Parse error in the XML header"
 msgstr ""
