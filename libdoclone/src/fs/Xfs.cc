@@ -105,7 +105,7 @@ void Xfs::writeLabel(const std::string &dev) const throw(Exception) {
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
-	if (exitValue<0) {
+	if (exitValue!=0) {
 		WriteLabelException ex(dev);
 		throw ex;
 	}
@@ -133,7 +133,7 @@ void Xfs::writeUUID(const std::string &dev) const throw(Exception) {
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
-	if (exitValue<0) {
+	if (exitValue!=0) {
 		WriteUuidException ex(dev);
 		throw ex;
 	}

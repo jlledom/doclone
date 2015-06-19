@@ -805,13 +805,6 @@ void Image::writePartitionsData(const std::string &device) throw(Exception) {
 
 			this->writeDataToDisk();
 
-			Clone *dcl = Clone::getInstance();
-			dcl->markCompleted(Doclone::OP_WRITE_DATA, device);
-
-			//Restore Grub if this is a disk restoring
-			if(this->_type == Doclone::IMAGE_DISK) {
-				this->_disk->restoreGrub();
-			}
 		} catch (const Exception &ex) {
 			for(unsigned int i = 0;i<this->_disk->getPartitions().size(); i++) {
 				if(this->_disk->getPartitions().at(i)->getMinSize() != 0) {
@@ -826,6 +819,14 @@ void Image::writePartitionsData(const std::string &device) throw(Exception) {
 				this->_disk->getPartitions().at(i)->doUmount();
 			}
 		}
+	}
+
+	Clone *dcl = Clone::getInstance();
+	dcl->markCompleted(Doclone::OP_WRITE_DATA, device);
+
+	//Restore Grub if this is a disk restoring
+	if(this->_type == Doclone::IMAGE_DISK) {
+		this->_disk->restoreGrub();
 	}
 
 	log->debug("Image::writePartitionsData() end");
@@ -873,6 +874,10 @@ void Image::writePartitionTable(const std::string &device) throw(Exception) {
 		for (unsigned int i = 0;i<this->_disk->getPartitions().size() &&
 		this->_disk->getPartitions()[i]->getUsedPart() != 0; i++) {
 			Partition *part = this->_disk->getPartitions()[i];
+
+			if(part->getType() == Doclone::PARTITION_EXTENDED) {
+				continue;
+			}
 
 			std::stringstream target;
 			target << device << ", #" << (i+1);

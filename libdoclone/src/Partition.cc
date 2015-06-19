@@ -606,8 +606,8 @@ void Partition::format() const throw(Exception) {
 	int exitValue;
 	Util::spawn_command_line_sync(cmdline, &exitValue, 0);
 
-	if (exitValue<0) {
-		FormatException ex;
+	if (exitValue!=0) {
+		FormatException ex(this->_path);
 		throw ex;
 	}
 

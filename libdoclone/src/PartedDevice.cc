@@ -151,6 +151,11 @@ void PartedDevice::open() throw(Exception){
 			NoAccessToDeviceException ex(this->_path);
 			throw ex;
 		}
+
+		if(!ped_device_open(this->_pDevice)) {
+			NoAccessToDeviceException ex(this->_path);
+			throw ex;
+		}
 	}
 
 	if(!this->_pDisk) {
@@ -182,6 +187,7 @@ void PartedDevice::close() {
 	}
 
 	if(this->_pDevice) {
+		ped_device_close(this->_pDevice);
 		ped_device_destroy( this->_pDevice );
 		this->_pDevice = 0;
 	}

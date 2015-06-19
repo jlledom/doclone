@@ -33,10 +33,20 @@ namespace Doclone {
  */
 class FormatException : public WarningException {
 public:
-	FormatException() throw() {
-		this->_msg=D_("Can't format partition");
-	}
+	/// \param device The path of the partition
+	FormatException(const std::string &device) throw() : _device(device) {
+		// TO TRANSLATORS: looks like	Can't format partition: /dev/sdb1
+		std::string msg= D_("Can't format partition:");
+		msg.append(" ");
+		msg.append(this->_device);
 
+		this->_msg = msg;
+	}
+	~FormatException() throw() {}
+
+private:
+	/// The path of the partition
+	const std::string _device;
 };
 /**@}*/
 
