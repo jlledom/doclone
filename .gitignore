@@ -54,3 +54,6 @@ xmldocs.make
 Rules-quot
 */examples/README
 libdoclone/compile
+/ar-lib
+libdoclone/ar-lib
+/compile

@@ -4,11 +4,12 @@ dnl
 dnl See the file COPYING for copying conditions.
 
 AC_INIT([doclone],[0.7.1], [joanlluislledo@gmail.com])
-AM_INIT_AUTOMAKE([1.11 parallel-tests -Wall -Werror])
+AM_INIT_AUTOMAKE([1.14 parallel-tests -Wall -Werror])
 AM_SILENT_RULES
+AM_PROG_AR
 LT_INIT
 AC_PROG_CXX
-AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT_VERSION([0.19.3])
 AM_GNU_GETTEXT([external])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])

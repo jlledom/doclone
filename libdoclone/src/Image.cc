@@ -136,7 +136,7 @@ void Image::initFdReadArchive(const int fdin) throw(Exception) {
 
 	this->_archiveIn = archive_read_new();
 	archive_read_support_format_tar(this->_archiveIn);
-	archive_read_support_compression_gzip(this->_archiveIn);
+	archive_read_support_filter_gzip(this->_archiveIn);
 
 	if(archive_read_open_fd(this->_archiveIn,
 			fdin, Doclone::BUFFER_SIZE) != ARCHIVE_OK) {

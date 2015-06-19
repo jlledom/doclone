@@ -4,11 +4,12 @@ dnl
 dnl See the file COPYING for copying conditions.
 
 AC_INIT([libdoclone],[0.7.1], [joanlluislledo@gmail.com])
-AM_INIT_AUTOMAKE([1.11 parallel-tests -Wall -Werror])
+AM_INIT_AUTOMAKE([1.14 parallel-tests -Wall -Werror])
 AM_SILENT_RULES
+AM_PROG_AR
 LT_INIT
 AC_PROG_CXX
-AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT_VERSION([0.19.3])
 AM_GNU_GETTEXT([external])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
@@ -29,11 +30,11 @@ int main () {
 }
 ], [], AC_MSG_ERROR([The implementation is not IEEE-754 compliant]))
 
-PKG_CHECK_MODULES([PARTED], [libparted >= 2.2])
-PKG_CHECK_MODULES([E2FS], [ext2fs >= 1.41.3])
-PKG_CHECK_MODULES([UUID], [uuid >= 1.41.3])
-PKG_CHECK_MODULES([BLKID], [blkid >= 1.41.3])
-PKG_CHECK_MODULES([ARCHIVE], [libarchive >= 3.0.4])
+PKG_CHECK_MODULES([PARTED], [libparted >= 3.2])
+PKG_CHECK_MODULES([E2FS], [ext2fs >= 1.42.12])
+PKG_CHECK_MODULES([UUID], [uuid >= 2.25.0])
+PKG_CHECK_MODULES([BLKID], [blkid >= 2.25.0])
+PKG_CHECK_MODULES([ARCHIVE], [libarchive >= 3.1.2])
 PKG_CHECK_MODULES([XERCESC], [xerces-c >= 3.1.1])
 PKG_CHECK_MODULES([LOG4CPP], [log4cpp >= 1.0])
 
