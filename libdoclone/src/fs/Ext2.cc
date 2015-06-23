@@ -92,14 +92,15 @@ void Ext2::writeLabel(const std::string &dev) const throw(Exception) {
 	log->debug("Ext2::writeLabel(dev=>%s) start", dev.c_str());
 
 	ext2_filsys fs;
+	memset(&fs, 0, sizeof(fs));
 	ext2_super_block *sb;
 	dgrp_t i;
 	int set_csum = 0;
 
-	ext2fs_open2 (dev.c_str(), 0, EXT2_FLAG_RW | EXT2_FLAG_JOURNAL_DEV_OK,
-				  0, 0, unix_io_manager, &fs);
+	errcode_t retVal = ext2fs_open(dev.c_str(),
+			EXT2_FLAG_RW|EXT2_FLAG_JOURNAL_DEV_OK, 0, 0, unix_io_manager, &fs);
 
-	if (!fs) {
+	if (retVal) {
 		WriteLabelException ex(dev);
 		throw ex;
 	}

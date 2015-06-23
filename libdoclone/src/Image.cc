@@ -304,6 +304,7 @@ void Image::loadImageHeader() throw(Exception) {
 	log->debug("Image::loadImageHeader() start");
 
 	DataTransfer *trns = DataTransfer::getInstance();
+	Clone *dcl = Clone::getInstance();
 	struct archive_entry *entry;
 	std::string xmlText;
 
@@ -325,10 +326,10 @@ void Image::loadImageHeader() throw(Exception) {
 	this->_type = static_cast<Doclone::imageType>(
 			doc.getElementValueU8(rootElement, "imageType"));
 
-	this->_disk = DlFactory::createDiskLabel();
-	this->_disk->setLabelType(
-			static_cast<Doclone::diskLabelType>(
-					doc.getElementValueU8(rootElement, "diskType")));
+	diskLabelType dLabel =
+			static_cast<Doclone::diskLabelType>(doc.getElementValueU8(rootElement, "diskType"));
+	this->_disk = DlFactory::createDiskLabel(dLabel);
+	this->_disk->initFromPath(dcl->getDevice());
 
 	if(this->_type == Doclone::IMAGE_DISK) {
 		const uint8_t *bootCode =

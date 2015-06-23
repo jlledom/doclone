@@ -435,6 +435,11 @@ void Disk::writePartitions() const throw(Exception) {
 
 		this->writePartitionToDisk(part);
 
+		if(part->getType() != Doclone::PARTITION_EXTENDED) {
+			//Remove old superblocks and signatures if any
+			part->clearSignatures();
+		}
+
 		std::stringstream target;
 		target << this->_path << ", #" << (i+1);
 		dcl->markCompleted(Doclone::OP_CREATE_PARTITION, target.str());

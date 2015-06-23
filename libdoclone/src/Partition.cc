@@ -30,6 +30,7 @@
 #include <string>
 
 #include <blkid/blkid.h>
+#include <parted/parted.h>
 
 #include <doclone/Clone.h>
 #include <doclone/Logger.h>
@@ -589,6 +590,39 @@ bool Partition::isMounted() throw(Exception) {
 
 	log->debug("Partition::isMounted(retValue=>%d) end", retValue);
 	return retValue;
+}
+
+/**
+ * \brief Erases old signatures and superblocks of the previous filesystems
+ */
+void Partition::clearSignatures() throw(Exception) {
+	Logger *log = Logger::getInstance();
+	log->debug("Partition::clearSignatures() start");
+
+	PartedDevice *pedDev = PartedDevice::getInstance();
+	pedDev->open();
+
+	/*
+	 * The first 68KiB are enough to contain the superblocks of all the
+	 * filsystems supported by libdoclone
+	 */
+	uint64_t size = 1024*68;
+
+	//Ceil the size to a multiple of sector size
+	uint64_t sectorSize = pedDev->getDevice()->sector_size;
+	size = ((size + sectorSize - 1) / sectorSize) * sectorSize;
+
+	char buf[size];
+	memset(buf, 0, size);
+	PedPartition *pPart =
+			ped_disk_get_partition(pedDev->getDisk(), this->_partNum);
+
+	ped_geometry_write(&pPart->geom, buf, 0, size/sectorSize);
+	ped_device_sync(pedDev->getDevice());
+
+	pedDev->close();
+
+	log->debug("Partition::clearSignatures() end");
 }
 
 /**

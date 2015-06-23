@@ -159,7 +159,7 @@ void PartedDevice::open() throw(Exception){
 	}
 
 	if(!this->_pDisk) {
-		this->_pDisk = ped_disk_new( this->_pDevice  );
+		this->_pDisk = ped_disk_new(this->_pDevice);
 	}
 
 	this->_openings =1 ;
@@ -182,13 +182,13 @@ void PartedDevice::close() {
 	}
 
 	if(this->_pDisk) {
-		ped_disk_destroy( this->_pDisk );
+		ped_disk_destroy(this->_pDisk);
 		this->_pDisk = 0;
 	}
 
 	if(this->_pDevice) {
 		ped_device_close(this->_pDevice);
-		ped_device_destroy( this->_pDevice );
+		ped_device_destroy(this->_pDevice);
 		this->_pDevice = 0;
 	}
 
@@ -203,11 +203,6 @@ void PartedDevice::close() {
 void PartedDevice::commit() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::commit() start");
-
-	if(!ped_device_open(this->_pDevice)) {
-		CommitException ex;
-		throw ex;
-	}
 
 	if(!ped_disk_commit_to_dev(this->_pDisk)) {
 		CommitException ex;
@@ -236,11 +231,6 @@ void PartedDevice::commit() const throw(Exception) {
 			ex.logMsg();
 			throw ex;
 		}
-	}
-
-	if(!ped_device_close(this->_pDevice)) {
-		CommitException ex;
-		throw ex;
 	}
 
 	log->debug("PartedDevice::commit() end");
