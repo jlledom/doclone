@@ -83,6 +83,10 @@ PedDisk *PartedDevice::getDisk() {
 	return this->_pDisk;
 }
 
+PedPartition *PartedDevice::getPartition(unsigned int numPartition) const {
+	return ped_disk_get_partition(this->_pDisk, numPartition);
+}
+
 void PartedDevice::setDisk(PedDisk *pDisk) {
 	this->_pDisk = pDisk;
 }
@@ -111,7 +115,7 @@ uint64_t PartedDevice::getPartitionSize(unsigned int numPartition) const {
 	Logger *log = Logger::getInstance();
 	log->debug("PartedDevice::getPartitionSize(numPartition=>%d) start", numPartition);
 
-	PedPartition *pPart = ped_disk_get_partition(this->_pDisk, numPartition);
+	PedPartition *pPart = this->getPartition(numPartition);
 	uint64_t devSize=(pPart->geom.length * this->_pDevice->sector_size);
 
 	log->debug("PartedDevice::getPartitionSize(devSize=>%d) end", devSize);

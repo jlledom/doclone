@@ -371,9 +371,9 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 	if (pedPart) {
 		constraint = this->calcConstraint(pedPart, part->getMinSize());
 
-		if ( constraint ) {
+		if (constraint) {
 
-			if ( ped_disk_add_partition(pDisk, pedPart, constraint )) {
+			if (ped_disk_add_partition(pDisk, pedPart, constraint)) {
 				pedDev->commit();
 			}
 			else {
@@ -387,7 +387,7 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 				 */
 				constraint = ped_constraint_any(pDisk->dev);
 
-				if ( ped_disk_add_partition(pDisk, pedPart, constraint )) {
+				if (ped_disk_add_partition(pDisk, pedPart, constraint)) {
 					pedDev->commit();
 				} else {
 					// I give up

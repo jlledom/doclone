@@ -172,8 +172,7 @@ void Partition::initType() throw(Exception) {
 
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
-	PedDisk *pDisk = pedDev->getDisk();
-	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
+	PedPartition *pPart = pedDev->getPartition(this->_partNum);
 
 	switch (pPart->type) {
 		case PED_PARTITION_NORMAL: {
@@ -264,8 +263,7 @@ void Partition::initStartPos() throw(Exception) {
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
 	PedDevice *pDev = pedDev->getDevice();
-	PedDisk *pDisk = pedDev->getDisk();
-	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
+	PedPartition *pPart = pedDev->getPartition(this->_partNum);
 
 	this->_startPos = static_cast<double>(pPart->geom.start) / pDev->length;
 
@@ -284,8 +282,7 @@ void Partition::initUsedPart() throw(Exception) {
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
 	PedDevice *pDev = pedDev->getDevice();
-	PedDisk *pDisk = pedDev->getDisk();
-	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
+	PedPartition *pPart = pedDev->getPartition(this->_partNum);
 
 	this->_usedPart = static_cast<double>(pPart->geom.length) / pDev->length;
 
@@ -303,8 +300,7 @@ void Partition::initFlags() throw(Exception) {
 
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
-	PedDisk *pDisk = pedDev->getDisk();
-	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
+	PedPartition *pPart = pedDev->getPartition(this->_partNum);
 
 	this->_flags = 0;
 
@@ -614,8 +610,7 @@ void Partition::clearSignatures() throw(Exception) {
 
 	char buf[size];
 	memset(buf, 0, size);
-	PedPartition *pPart =
-			ped_disk_get_partition(pedDev->getDisk(), this->_partNum);
+	PedPartition *pPart = pedDev->getPartition(this->_partNum);
 
 	ped_geometry_write(&pPart->geom, buf, 0, size/sectorSize);
 	ped_device_sync(pedDev->getDevice());
@@ -681,8 +676,7 @@ void Partition::writeFlags() const throw(Exception) {
 
 	PartedDevice *pedDev = PartedDevice::getInstance();
 	pedDev->open();
-	PedDisk *pDisk = pedDev->getDisk();
-	PedPartition *pPart = ped_disk_get_partition(pDisk, this->_partNum);
+	PedPartition *pPart = pedDev->getPartition(this->_partNum);
 
 	dcFlag fBoot = this->_flags & Doclone::F_BOOT;
 	dcFlag fRoot = this->_flags & Doclone::F_ROOT;

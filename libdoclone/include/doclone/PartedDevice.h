@@ -46,6 +46,7 @@ public:
 	std::string getPath();
 	PedDevice *getDevice() ;
 	PedDisk *getDisk();
+	PedPartition *getPartition(unsigned int numPartition) const;
 	void setDisk(PedDisk *pDisk);
 	uint64_t getDevSize() const;
 	uint64_t getPartitionSize(unsigned int numPartition) const;
