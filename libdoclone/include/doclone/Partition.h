@@ -115,7 +115,7 @@ public:
 
 	void initFromPath(const std::string &path) throw(Exception);
 
-	void clearSignatures() throw(Exception);
+	void clearSignatures() const throw(Exception);
 	void format() const throw(Exception);
 	void writeLabel() const throw(Exception);
 	void writeUUID() const throw(Exception);

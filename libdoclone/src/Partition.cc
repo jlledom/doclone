@@ -591,7 +591,7 @@ bool Partition::isMounted() throw(Exception) {
 /**
  * \brief Erases old signatures and superblocks of the previous filesystems
  */
-void Partition::clearSignatures() throw(Exception) {
+void Partition::clearSignatures() const throw(Exception) {
 	Logger *log = Logger::getInstance();
 	log->debug("Partition::clearSignatures() start");
 

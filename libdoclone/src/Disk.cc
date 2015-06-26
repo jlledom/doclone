@@ -400,7 +400,7 @@ void Disk::writePartitionToDisk(Partition *part) const throw(Exception) {
 			part->setPartNum(pedPart->num);
 			part->setPath(Util::buildPartPath(this->_path, pedPart->num));
 
-			ped_constraint_destroy( constraint );
+			ped_constraint_destroy(constraint);
 		}
 	} else {
 		CreatePartitionException ex;
