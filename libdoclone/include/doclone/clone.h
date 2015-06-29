@@ -34,7 +34,7 @@
  * Libdoclone uses <a href="http://www.gnu.org/software/parted/">libparted</a>
  *
  * <h1>License</h1>
- * Copyright (C) 2013, 2014 Joan Lledó
+ * Copyright (C) 2013-2015 Joan Lledó
  * &lt;<a href="mailto:joanlluislledo@gmail.com">joanlluislledo@gmail.com</a>&gt;
  *
  * This program is free software; you can redistribute it and/or modify
