@@ -28,7 +28,7 @@
 #include <doclone/Clone.h>
 
 #define _(string) gettext(string)
-#define PACKAGE_VERSION "0.7.1"
+#define PACKAGE_VERSION "0.8.0"
 
 typedef enum dcConsoleFunction {
 	CONSOLE_NONE,

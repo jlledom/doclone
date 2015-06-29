@@ -1,4 +1,4 @@
-Doclone v0.7.0
+Doclone v0.8.0
 
 ===============================================================================
 Using doclone.
@@ -25,7 +25,7 @@ CONTENTS
     3.2 The partitions.
  4 Author
 
-Copyright (C)  2013 Joan Lledó.
+Copyright (C)  2013, 2015 Joan Lledó.
 Permission is granted to copy, distribute and/or modify this text under
 the terms of the Creative Commons Attribution-ShareAlike 3.0 Unported License.
 You can read the entire license following this link:
@@ -51,7 +51,7 @@ for formating or mounting it.
 Filesystem        	Needed software
 ext2                    mke2fs
 ext3                    mke2fs
-ext4					mke2fs
+ext4			mke2fs
 fat16                   mkdosfs
 fat32                   mkdosfs
 hfs                     mkfs.hfs
@@ -66,8 +66,8 @@ It is not necessary to have all tools avobe for work, but it is necessary to
 have the apropriate tool for the filesystems on which doclone will work.
 
 1.4 Required Software
-It is necessary to have the library libparted 2.2 or later installed. The
-libraries libe2fs, libuuid, libglibmm, libblkid, liblog4cpp and libselinux are
+It is necessary to have the library libparted 3.2 or later installed. The
+libraries libe2fs, libuuid, libblkid, libarchive, libxerces-c and liblog4cpp
 also required.
 
 1.5 Compliling doclone
@@ -83,12 +83,12 @@ And if you wish to install it on your system, execute as root:
 Before compile, is necessary to make sure you have the folowwing development
 libraries:
 
-- libglibmm-dev
 - libparted-dev
 - e2fslibs-dev
 - uuid-dev
-- libselinux1-dev
 - libblkid-dev
+- libarchive-dev
+- libxerces-c-dev
 - liblog4cpp-dev
 
 1.6 Supported Platforms
@@ -129,13 +129,15 @@ Here is detailed more thoroughly how to use doclone.
 Synopsis:
         doclone FUNCTION [ -d, --device DEVICE ] [ -f, --file FILE ]
 		[ -a, --address SERVER-IP-ADDRESS ] [ -n, --nodes NUMBER ]
+		[ -i, --interface IP-OF-WORKING-INTERFACE]
 		[ -e, --empty ] [ -F, --force]
 
 Arguments:
 -d, --device		The device you are going to use. Examples: "/dev/sda", "/dev/sdb2"
--f, --file			The file you are going to create or read. Example: "~/backups/hda.doclone"
+-f, --file		The file you are going to create or read. Example: "~/backups/hda.doclone"
 -a, --address 		IP address you are going to contact. Example: "192.168.1.3"
--n, --nodes			The number of receivers in multicast mode.
+-n, --nodes		The number of receivers in multicast mode.
+-i, --interface		The network interface for network modes.
 
 OPTIONS:
 

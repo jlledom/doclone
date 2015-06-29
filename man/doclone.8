@@ -1,4 +1,4 @@
-.TH DOCLONE 8 2012\-08\-11 "doclone 0.7.0"
+.TH DOCLONE 8 2015\-06\-29 "doclone 0.8.0"
 .SH NAME
 Doclone \- Tool to clone computers and make backups
 
@@ -8,32 +8,38 @@ FUNCTION [ \-d, \-\-device DEVICE ] [ \-f, \-\-file FILE ]
 .br
 [ \-a, \-\-address SERVER\-IP\-ADDRESS ] [ \-n, \-\-nodes NUMBER ]
 .br
+[ \-i, \-\-interface IP\-OF\-WORKING\-INTERFACE]
+.br
 [ \-e, \-\-empty ] [ \-F, \-\-force]
 
 .SH DESCRIPTION
-Doclone is a tool to create and restore backups of linux systems. It also
+Doclone is a tool for creating and restoring backups of linux systems. It also
 lets you clone computers over the network.
 .PP
 You can make copies of computers using the Unicast/Multicast mode, which
-creates a direct connection between two or more machines, or using the
-link mode, which creates a chain of nodes that sends information like a
-bus\-topology net.
+creates a direct connection between two or more machines, or using the link
+mode, which creates a chain of nodes that send the data in order from the first
+to the last one.
 .PP
-You can also make copies "on the fly", sending the data of a device
-directly to the network without creating a system image before.
+You may also make copies by sending the data of a device directly to the network
+without creating a system image before, or create an image of a running system.
 
 .SH OPTIONS
 .SS GENERAL OPTIONS:
-\-d, \-\-device	Path to the device.
+\-d, \-\-device		Path to the device.
 .br
-\-f, \-\-file	Path to the image file.
+\-f, \-\-file		Path to the image file.
 .br
 
-\-a, \-\-address	Server IP address (Unicast/Multicast mode).
+\-a, \-\-address		Server IP address (Unicast/Multicast mode).
 .br
-\-e, \-\-empty	Don't send data, only partition table.
+\-n, \-\-nodes		The number of receivers in multicast mode.
 .br
-\-F, \-\-force	Force the restoration of an image even if it doesn't fit in the device.
+\-i, \-\-interface	The network interface for network modes.
+.br
+\-e, \-\-empty		Don't send data, only partition table.
+.br
+\-F, \-\-force		Force the restoration of an image even if it doesn't fit in the device.
 
 .SS SPECIFIC OPTIONS:
 .SS For local work: (Implies the use of \-d and \-f)

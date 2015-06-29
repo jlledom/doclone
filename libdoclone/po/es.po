@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdoclone 0.7.0\n"
 "Report-Msgid-Bugs-To: joanlluislledo@gmail.com\n"
-"POT-Creation-Date: 2015-06-16 09:32+0200\n"
+"POT-Creation-Date: 2015-06-29 09:05+0200\n"
 "PO-Revision-Date: 2015-06-16 09:36+0100\n"
 "Last-Translator: Joan Lledó <joanlluislledo@gmail.com>\n"
 "Language-Team: Spanish\n"
@@ -72,8 +72,10 @@ msgstr "Error general"
 msgid "File not found:"
 msgstr "No se encuentra el fichero:"
 
-#: include/doclone/exception/FormatException.h:37
-msgid "Can't format partition"
+#. TO TRANSLATORS: looks like	Can't format partition: /dev/sdb1
+#: include/doclone/exception/FormatException.h:39
+#, fuzzy
+msgid "Can't format partition:"
 msgstr "No se pudo formatear la partición"
 
 #: include/doclone/exception/GrubException.h:37
