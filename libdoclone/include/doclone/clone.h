@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013-2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -428,6 +428,7 @@ int doclone_chain_link(const dc_doclone *dc_obj);
 void doclone_set_image(dc_doclone *dc_obj, const char *image);
 void doclone_set_device(dc_doclone *dc_obj, const char *device);
 void doclone_set_address(dc_doclone *dc_obj, const char *address);
+void doclone_set_interface(dc_doclone *dc_obj, const char *interface);
 void doclone_set_nodes_number(dc_doclone *dc_obj, unsigned int number);
 void doclone_set_empty(dc_doclone *dc_obj, unsigned short empty);
 void doclone_set_force(dc_doclone *dc_obj, unsigned short force);

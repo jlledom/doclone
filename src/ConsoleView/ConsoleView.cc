@@ -1,6 +1,6 @@
 /*
  * doclone - a frontend for libdoclone
- * Copyright (C) 2013 Joan Lledó <joanlluislledo@gmail.com>
+ * Copyright (C) 2013, 2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
