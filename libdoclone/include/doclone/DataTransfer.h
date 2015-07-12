@@ -49,8 +49,8 @@ const dcBuffSize BUFFER_SIZE = 10240;
 /**
  * \var UPDATE_QUOTIENT
  *
- * When the remainder of the current transferred bytes divided by
- * (BUFFER_SIZE * UPDATE_QUOTIENT) equals 0, it notifies the observer.
+ * The observer is notified every time the current amount of transferred data
+ * exceeds a multiple of (BUFFER_SIZE * UPDATE_QUOTIENT)
  */
 const unsigned int UPDATE_QUOTIENT = 15360;
 

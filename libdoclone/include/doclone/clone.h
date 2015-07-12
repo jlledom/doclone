@@ -186,6 +186,7 @@
  * 	void doclone_set_image(dc_doclone *dc_obj, const char *image);
  * 	void doclone_set_device(dc_doclone *dc_obj, const char *device);
  * 	void doclone_set_address(dc_doclone *dc_obj, const char *address);
+ * 	void doclone_set_interface(dc_doclone *dc_obj, const char *interface);
  * 	void doclone_set_nodes_number(dc_doclone *dc_obj, unsigned int number);
  * 	void doclone_set_empty(dc_doclone *dc_obj, unsigned short empty);
  * 	void doclone_set_force(dc_doclone *dc_obj, unsigned short force);

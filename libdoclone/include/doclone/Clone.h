@@ -129,6 +129,7 @@ namespace Doclone {
  * 	void setDevice(const std::string &device);
  * 	void setImage(const std::string &image);
  * 	void setAddress(const std::string &address);
+ * 	void setInterface(const std::string &interface);
  * 	void setForce(bool force);
  * \endcode
  *
