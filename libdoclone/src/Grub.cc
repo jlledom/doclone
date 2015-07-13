@@ -1,6 +1,6 @@
 /*
  *  libdoclone - library for cloning GNU/Linux systems
- *  Copyright (C) 2013, 2014 Joan Lledó <joanlluislledo@gmail.com>
+ *  Copyright (C) 2013-2015 Joan Lledó <joanlluislledo@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,22 +76,28 @@ void Grub::searchPartition() throw(Exception) {
 			part->doMount();
 
 			try {
-				std::string bootGrubPath = part->getMountPoint();
-				bootGrubPath.append("/boot/grub");
+				std::string relBoot = "/boot/";
+				std::string relBootGrub = relBoot.c_str();
+				relBootGrub.append(GRUB_DIR);
+				std::string bootAbPath = part->getMountPoint();
+				bootAbPath.append(relBootGrub);
 
-				std::string grubPath = part->getMountPoint();
-				grubPath.append("/grub");
+				std::string relRoot = "/";
+				std::string relRootGrub = relRoot.c_str();
+				relRootGrub.append(GRUB_DIR);
+				std::string rootAbPath = part->getMountPoint();
+				rootAbPath.append(relRootGrub);
 
-				std::ifstream bootGrubDir(bootGrubPath.c_str());
-				std::ifstream grubDir(grubPath.c_str());
+				std::ifstream bootGrubDir(bootAbPath.c_str());
+				std::ifstream grubDir(rootAbPath.c_str());
 
 				if(bootGrubDir) {
-					this->_grubParts[i] = "/boot/grub";
+					this->_grubParts[i] = relBoot;
 					bootGrubDir.close();
 				}
 
 				if(grubDir) {
-					this->_grubParts[i] = "/grub";
+					this->_grubParts[i] = relRoot;
 					grubDir.close();
 				}
 			} catch (const CancelException &ex) {
@@ -149,7 +155,7 @@ void Grub::install() throw(Exception) {
 				std::string grub_install_cmdline;
 
 				grub_install_cmdline = GRUB_COMMAND;
-				grub_install_cmdline.append(" -d ");
+				grub_install_cmdline.append(" --boot-directory ");
 				grub_install_cmdline.append(part->getMountPoint());
 				grub_install_cmdline.append(it->second);
 				grub_install_cmdline.append(" ");
@@ -172,7 +178,7 @@ void Grub::install() throw(Exception) {
 		}
 	}
 
-	if (exitValue<0) {
+	if (exitValue != 0) {
 		GrubException ex;
 		throw ex;
 	}

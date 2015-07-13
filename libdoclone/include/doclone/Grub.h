@@ -30,7 +30,16 @@
  *
  * External tool to restore grub.
  */
-#define GRUB_COMMAND "grub-setup"
+#define GRUB_COMMAND "grub-install"
+#endif
+
+#ifndef GRUB_DIR
+/**
+ * \def GRUB_DIR
+ *
+ * Name of the folder where Grub is installed on.
+ */
+#define GRUB_DIR "grub"
 #endif
 
 namespace Doclone {
