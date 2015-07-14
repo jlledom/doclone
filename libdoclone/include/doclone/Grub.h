@@ -19,6 +19,8 @@
 #ifndef GRUB_H_
 #define GRUB_H_
 
+#include <config.h>
+
 #include <map>
 
 #include <doclone/Disk.h>
