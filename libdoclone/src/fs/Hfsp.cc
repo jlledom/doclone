@@ -37,12 +37,12 @@ Hfsp::Hfsp() {
 
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="hfs+";
-	this->_mountName="hfsplus";
-	this->_mountOptions="";
-	this->_command="mkfs.hfsplus";
-	this->_formatOptions="";
-	this->_adminCommand="";
+	this->_docloneName = DCL_NAME_HFSP;
+	this->_mountName = MNT_NAME_HFSP;
+	this->_mountOptions = MNT_OPTIONS_HFSP;
+	this->_command = COMMAND_HFSP;
+	this->_formatOptions = COMMAND_OPTIONS_HFSP;
+	this->_adminCommand = ADMIN_HFSP;
 	this->_code = Doclone::FS_HFSP;
 
 	this->checkSupport();

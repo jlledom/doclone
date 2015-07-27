@@ -19,10 +19,64 @@
 #ifndef LINUXSWAP_H_
 #define LINUXSWAP_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
+
+/**
+ * \def DCLNAME_SWAP
+ *
+ * Internal name for linux-swap in libdoclone.
+ */
+#define DCL_NAME_SWAP "linux-swap"
+
+#ifndef MNT_NAME_SWAP
+/**
+ * \def MNT_NAME_SWAP
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_SWAP ""
+#endif
+
+#ifndef MNTOPTIONS_SWAP
+/**
+ * \def MNT_OPTIONS_SWAP
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_SWAP ""
+#endif
+
+#ifndef COMMAND_SWAP
+/**
+ * \def COMMAND_SWAP
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_SWAP "mkswap"
+#endif
+
+#ifndef COMMAND_OPTIONS_SWAP
+/**
+ * \def COMMAND_OPTIONS_SWAP
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_SWAP "-v1"
+#endif
+
+#ifndef ADMIN_SWAP
+/**
+ * \def ADMIN_SWAP
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_SWAP ""
+#endif
 
 namespace Doclone {
 

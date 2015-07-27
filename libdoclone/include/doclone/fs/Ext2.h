@@ -19,10 +19,64 @@
 #ifndef EXT2_H_
 #define EXT2_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
+
+/**
+ * \def DCLNAME_EXT2
+ *
+ * Internal name for ext2 in libdoclone.
+ */
+#define DCL_NAME_EXT2 "ext2"
+
+#ifndef MNT_NAME_EXT2
+/**
+ * \def MNT_NAME_EXT2
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_EXT2 "ext2"
+#endif
+
+#ifndef MNTOPTIONS_EXT2
+/**
+ * \def MNT_OPTIONS_EXT2
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_EXT2 ""
+#endif
+
+#ifndef COMMAND_EXT2
+/**
+ * \def COMMAND_EXT2
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_EXT2 "mke2fs"
+#endif
+
+#ifndef COMMAND_OPTIONS_EXT2
+/**
+ * \def COMMAND_OPTIONS_EXT2
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_EXT2 "-t ext2"
+#endif
+
+#ifndef ADMIN_EXT2
+/**
+ * \def ADMIN_EXT2
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_EXT2 ""
+#endif
 
 namespace Doclone {
 

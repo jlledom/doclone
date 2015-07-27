@@ -44,12 +44,12 @@ Fat32::Fat32() {
 
 	this->_type = Doclone::FSTYPE_DOS;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="fat32";
-	this->_mountName="vfat";
-	this->_mountOptions="";
-	this->_command="mkdosfs";
-	this->_formatOptions="-F 32";
-	this->_adminCommand="";
+	this->_docloneName = DCL_NAME_FAT32;
+	this->_mountName = MNT_NAME_FAT32;
+	this->_mountOptions = MNT_OPTIONS_FAT32;
+	this->_command = COMMAND_FAT32;
+	this->_formatOptions = COMMAND_OPTIONS_FAT32;
+	this->_adminCommand = ADMIN_FAT32;
 	this->_code = Doclone::FS_FAT32;
 
 	this->checkSupport();

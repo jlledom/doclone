@@ -40,12 +40,12 @@ Xfs::Xfs() {
 
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="xfs";
-	this->_mountName="xfs";
-	this->_mountOptions="";
-	this->_command="mkfs.xfs";
-	this->_formatOptions="-f";
-	this->_adminCommand="xfs_admin";
+	this->_docloneName = DCL_NAME_XFS;
+	this->_mountName = MNT_NAME_XFS;
+	this->_mountOptions = MNT_OPTIONS_XFS;
+	this->_command = COMMAND_XFS;
+	this->_formatOptions = COMMAND_OPTIONS_XFS;
+	this->_adminCommand = ADMIN_XFS;
 	this->_code = Doclone::FS_XFS;
 
 	this->checkSupport();

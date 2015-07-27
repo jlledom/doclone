@@ -37,12 +37,12 @@ Ext4::Ext4() {
 
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="ext4";
-	this->_mountName="ext4";
-	this->_mountOptions="";
-	this->_command="mke2fs";
-	this->_formatOptions="-t ext4 -O extent";
-	this->_adminCommand="";
+	this->_docloneName = DCL_NAME_EXT4;
+	this->_mountName = MNT_NAME_EXT4;
+	this->_mountOptions = MNT_OPTIONS_EXT4;
+	this->_command = COMMAND_EXT4;
+	this->_formatOptions = COMMAND_OPTIONS_EXT4;
+	this->_adminCommand = ADMIN_EXT4;
 	this->_code = Doclone::FS_EXT4;
 
 	this->checkSupport();

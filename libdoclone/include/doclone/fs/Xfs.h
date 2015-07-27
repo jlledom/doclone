@@ -19,10 +19,64 @@
 #ifndef XFS_H_
 #define XFS_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
+
+/**
+ * \def DCLNAME_XFS
+ *
+ * Internal name for xfs in libdoclone.
+ */
+#define DCL_NAME_XFS "xfs"
+
+#ifndef MNT_NAME_XFS
+/**
+ * \def MNT_NAME_XFS
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_XFS "xfs"
+#endif
+
+#ifndef MNTOPTIONS_XFS
+/**
+ * \def MNT_OPTIONS_XFS
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_XFS ""
+#endif
+
+#ifndef COMMAND_XFS
+/**
+ * \def COMMAND_XFS
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_XFS "mkfs.xfs"
+#endif
+
+#ifndef COMMAND_OPTIONS_XFS
+/**
+ * \def COMMAND_OPTIONS_XFS
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_XFS "-f"
+#endif
+
+#ifndef ADMIN_XFS
+/**
+ * \def ADMIN_XFS
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_XFS "xfs_admin"
+#endif
 
 namespace Doclone {
 

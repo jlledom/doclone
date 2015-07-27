@@ -42,12 +42,12 @@ LinuxSwap::LinuxSwap() {
 
 	this->_type = Doclone::FSTYPE_NONE;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="linux-swap";
-	this->_mountName="";
-	this->_mountOptions="";
-	this->_command="mkswap";
-	this->_formatOptions="-v1";
-	this->_adminCommand="";
+	this->_docloneName = DCL_NAME_SWAP;
+	this->_mountName = MNT_NAME_SWAP;
+	this->_mountOptions = MNT_OPTIONS_SWAP;
+	this->_command = COMMAND_SWAP;
+	this->_formatOptions = COMMAND_OPTIONS_SWAP;
+	this->_adminCommand = ADMIN_SWAP;
 	this->_code = Doclone::FS_LINUXSWAP;
 
 	this->checkSupport();

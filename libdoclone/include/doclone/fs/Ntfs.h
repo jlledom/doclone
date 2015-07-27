@@ -19,10 +19,64 @@
 #ifndef NTFS_H_
 #define NTFS_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
+
+/**
+ * \def DCLNAME_NTFS
+ *
+ * Internal name for ntfs in libdoclone.
+ */
+#define DCL_NAME_NTFS "ntfs"
+
+#ifndef MNT_NAME_NTFS
+/**
+ * \def MNT_NAME_SWAP
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_NTFS "ntfs"
+#endif
+
+#ifndef MNTOPTIONS_NTFS
+/**
+ * \def MNT_OPTIONS_NTFS
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_NTFS ""
+#endif
+
+#ifndef COMMAND_NTFS
+/**
+ * \def COMMAND_NTFS
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_NTFS "mkntfs"
+#endif
+
+#ifndef COMMAND_OPTIONS_NTFS
+/**
+ * \def COMMAND_OPTIONS_NTFS
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_NTFS "-Q"
+#endif
+
+#ifndef ADMIN_NTFS
+/**
+ * \def ADMIN_NTFS
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_NTFS "ntfslabel"
+#endif
 
 namespace Doclone {
 

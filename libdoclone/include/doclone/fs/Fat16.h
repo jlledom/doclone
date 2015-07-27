@@ -19,9 +19,63 @@
 #ifndef FAT16_H_
 #define FAT16_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
+
+/**
+ * \def DCLNAME_FAT16
+ *
+ * Internal name for fat16 in libdoclone.
+ */
+#define DCL_NAME_FAT16 "fat16"
+
+#ifndef MNT_NAME_FAT16
+/**
+ * \def MNT_NAME_FAT16
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_FAT16 "vfat"
+#endif
+
+#ifndef MNTOPTIONS_FAT16
+/**
+ * \def MNT_OPTIONS_FAT16
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_FAT16 ""
+#endif
+
+#ifndef COMMAND_FAT16
+/**
+ * \def COMMAND_FAT16
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_FAT16 "mkdosfs"
+#endif
+
+#ifndef COMMAND_OPTIONS_FAT16
+/**
+ * \def COMMAND_OPTIONS_FAT16
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_FAT16 "-F 16"
+#endif
+
+#ifndef ADMIN_FAT16
+/**
+ * \def ADMIN_FAT16
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_FAT16 ""
+#endif
 
 namespace Doclone {
 

@@ -19,10 +19,64 @@
 #ifndef REISERFS_H_
 #define REISERFS_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
+
+/**
+ * \def DCLNAME_REISERFS
+ *
+ * Internal name for reiserfs in libdoclone.
+ */
+#define DCL_NAME_REISERFS "reiserfs"
+
+#ifndef MNT_NAME_REISERFS
+/**
+ * \def MNT_NAME_REISERFS
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_REISERFS "reiserfs"
+#endif
+
+#ifndef MNTOPTIONS_REISERFS
+/**
+ * \def MNT_OPTIONS_REISERFS
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_REISERFS ""
+#endif
+
+#ifndef COMMAND_REISERFS
+/**
+ * \def COMMAND_REISERFS
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_REISERFS "mkreiserfs"
+#endif
+
+#ifndef COMMAND_OPTIONS_REISERFS
+/**
+ * \def COMMAND_OPTIONS_REISERFS
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_REISERFS "-f"
+#endif
+
+#ifndef ADMIN_REISERFS
+/**
+ * \def ADMIN_REISERFS
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_REISERFS "reiserfstune"
+#endif
 
 namespace Doclone {
 

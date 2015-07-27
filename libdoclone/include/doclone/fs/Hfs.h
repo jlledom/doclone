@@ -19,7 +19,61 @@
 #ifndef HFS_H_
 #define HFS_H_
 
+#include <config.h>
+
 #include <doclone/Filesystem.h>
+
+/**
+ * \def DCLNAME_HFS
+ *
+ * Internal name for hfs in libdoclone.
+ */
+#define DCL_NAME_HFS "hfs"
+
+#ifndef MNT_NAME_HFS
+/**
+ * \def MNT_NAME_HFS
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_HFS "hfs"
+#endif
+
+#ifndef MNTOPTIONS_HFS
+/**
+ * \def MNT_OPTIONS_HFS
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_HFS ""
+#endif
+
+#ifndef COMMAND_HFS
+/**
+ * \def COMMAND_HFS
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_HFS "mkfs.hfs"
+#endif
+
+#ifndef COMMAND_OPTIONS_HFS
+/**
+ * \def COMMAND_OPTIONS_HFS
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_HFS ""
+#endif
+
+#ifndef ADMIN_HFS
+/**
+ * \def ADMIN_HFS
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_HFS ""
+#endif
 
 namespace Doclone {
 

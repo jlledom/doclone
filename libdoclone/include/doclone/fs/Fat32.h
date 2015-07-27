@@ -19,10 +19,64 @@
 #ifndef FAT32_H_
 #define FAT32_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
+
+/**
+ * \def DCLNAME_FAT32
+ *
+ * Internal name for fat32 in libdoclone.
+ */
+#define DCL_NAME_FAT32 "fat32"
+
+#ifndef MNT_NAME_FAT32
+/**
+ * \def MNT_NAME_FAT16
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_FAT32 "vfat"
+#endif
+
+#ifndef MNTOPTIONS_FAT32
+/**
+ * \def MNT_OPTIONS_FAT32
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_FAT32 ""
+#endif
+
+#ifndef COMMAND_FAT32
+/**
+ * \def COMMAND_FAT32
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_FAT32 "mkdosfs"
+#endif
+
+#ifndef COMMAND_OPTIONS_FAT32
+/**
+ * \def COMMAND_OPTIONS_FAT32
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_FAT32 "-F 32"
+#endif
+
+#ifndef ADMIN_FAT32
+/**
+ * \def ADMIN_FAT32
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_FAT32 ""
+#endif
 
 namespace Doclone {
 

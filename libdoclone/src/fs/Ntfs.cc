@@ -44,12 +44,12 @@ Ntfs::Ntfs() {
 
 	this->_type = Doclone::FSTYPE_DOS;
 	this->_mountType = Doclone::MOUNT_EXTERNAL;
-	this->_docloneName="ntfs";
-	this->_mountName="ntfs";
-	this->_mountOptions="";
-	this->_command="mkntfs";
-	this->_formatOptions="-Q";
-	this->_adminCommand="ntfslabel";
+	this->_docloneName = DCL_NAME_NTFS;
+	this->_mountName = MNT_NAME_NTFS;
+	this->_mountOptions = MNT_OPTIONS_NTFS;
+	this->_command = COMMAND_NTFS;
+	this->_formatOptions = COMMAND_OPTIONS_NTFS;
+	this->_adminCommand = ADMIN_NTFS;
 	this->_code = Doclone::FS_NTFS;
 
 	this->checkSupport();

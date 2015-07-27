@@ -40,12 +40,12 @@ Jfs::Jfs() {
 
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="jfs";
-	this->_mountName="jfs";
-	this->_mountOptions="";
-	this->_command="jfs_mkfs";
-	this->_formatOptions="-q";
-	this->_adminCommand="jfs_tune";
+	this->_docloneName = DCL_NAME_JFS;
+	this->_mountName = MNT_NAME_JFS;
+	this->_mountOptions = MNT_OPTIONS_JFS;
+	this->_command = COMMAND_JFS;
+	this->_formatOptions = COMMAND_OPTIONS_JFS;
+	this->_adminCommand = ADMIN_JFS;
 	this->_code = Doclone::FS_JFS;
 
 	this->checkSupport();

@@ -19,7 +19,61 @@
 #ifndef HFSP_H_
 #define HFSP_H_
 
+#include <config.h>
+
 #include <doclone/Filesystem.h>
+
+/**
+ * \def DCLNAME_HFSP
+ *
+ * Internal name for hfs+ in libdoclone.
+ */
+#define DCL_NAME_HFSP "hfs+"
+
+#ifndef MNT_NAME_HFSP
+/**
+ * \def MNT_NAME_HFSP
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_HFSP "hfsplus"
+#endif
+
+#ifndef MNTOPTIONS_HFSP
+/**
+ * \def MNT_OPTIONS_HFSP
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_HFSP ""
+#endif
+
+#ifndef COMMAND_HFSP
+/**
+ * \def COMMAND_HFSP
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_HFSP "mkfs.hfsplus"
+#endif
+
+#ifndef COMMAND_OPTIONS_HFSP
+/**
+ * \def COMMAND_OPTIONS_HFSP
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_HFSP ""
+#endif
+
+#ifndef ADMIN_HFSP
+/**
+ * \def ADMIN_HFSP
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_HFSP ""
+#endif
 
 namespace Doclone {
 

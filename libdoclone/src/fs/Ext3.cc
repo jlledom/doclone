@@ -37,12 +37,12 @@ Ext3::Ext3() {
 
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="ext3";
-	this->_mountName="ext3";
-	this->_mountOptions="";
-	this->_command="mke2fs";
-	this->_formatOptions="-t ext3";
-	this->_adminCommand="";
+	this->_docloneName = DCL_NAME_EXT3;
+	this->_mountName = MNT_NAME_EXT3;
+	this->_mountOptions = MNT_OPTIONS_EXT3;
+	this->_command = COMMAND_EXT3;
+	this->_formatOptions = COMMAND_OPTIONS_EXT3;
+	this->_adminCommand = ADMIN_EXT3;
 	this->_code = Doclone::FS_EXT3;
 
 	this->checkSupport();

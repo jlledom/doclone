@@ -44,12 +44,12 @@ Fat16::Fat16() {
 
 	this->_type = Doclone::FSTYPE_DOS;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="fat16";
-	this->_mountName="vfat";
-	this->_mountOptions="";
-	this->_command="mkdosfs";
-	this->_formatOptions="-F 16";
-	this->_adminCommand="";
+	this->_docloneName = DCL_NAME_FAT16;
+	this->_mountName = MNT_NAME_FAT16;
+	this->_mountOptions = MNT_OPTIONS_FAT16;
+	this->_command = COMMAND_FAT16;
+	this->_formatOptions = COMMAND_OPTIONS_FAT16;
+	this->_adminCommand = ADMIN_FAT16;
 	this->_code = Doclone::FS_FAT16;
 
 	this->checkSupport();

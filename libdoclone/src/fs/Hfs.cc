@@ -37,12 +37,12 @@ Hfs::Hfs() {
 
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="hfs";
-	this->_mountName="hfs";
-	this->_mountOptions="";
-	this->_command="mkfs.hfs";
-	this->_formatOptions="";
-	this->_adminCommand="";
+	this->_docloneName = DCL_NAME_HFS;
+	this->_mountName = MNT_NAME_HFS;
+	this->_mountOptions = MNT_OPTIONS_HFS;
+	this->_command = COMMAND_HFS;
+	this->_formatOptions = COMMAND_OPTIONS_HFS;
+	this->_adminCommand = ADMIN_HFS;
 	this->_code = Doclone::FS_HFS;
 
 	this->checkSupport();

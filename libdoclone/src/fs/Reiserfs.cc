@@ -40,12 +40,12 @@ Reiserfs::Reiserfs() {
 
 	this->_type = Doclone::FSTYPE_UNIX;
 	this->_mountType = Doclone::MOUNT_NATIVE;
-	this->_docloneName="reiserfs";
-	this->_mountName="reiserfs";
-	this->_mountOptions="";
-	this->_command="mkreiserfs";
-	this->_formatOptions="-f";
-	this->_adminCommand="reiserfstune";
+	this->_docloneName = DCL_NAME_REISERFS;
+	this->_mountName = MNT_NAME_REISERFS;
+	this->_mountOptions = MNT_OPTIONS_REISERFS;
+	this->_command = COMMAND_REISERFS;
+	this->_formatOptions = COMMAND_OPTIONS_REISERFS;
+	this->_adminCommand = ADMIN_REISERFS;
 	this->_code = Doclone::FS_REISERFS;
 
 	this->checkSupport();

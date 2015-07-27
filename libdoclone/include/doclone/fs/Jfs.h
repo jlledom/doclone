@@ -19,10 +19,64 @@
 #ifndef JFS_H_
 #define JFS_H_
 
+#include <config.h>
+
 #include <string>
 
 #include <doclone/Filesystem.h>
 #include <doclone/exception/Exception.h>
+
+/**
+ * \def DCLNAME_JFS
+ *
+ * Internal name for jfs in libdoclone.
+ */
+#define DCL_NAME_JFS "jfs"
+
+#ifndef MNT_NAME_JFS
+/**
+ * \def MNT_NAME_JFS
+ *
+ * Name of the fs for the mount command.
+ */
+#define MNT_NAME_JFS "jfs"
+#endif
+
+#ifndef MNTOPTIONS_JFS
+/**
+ * \def MNT_OPTIONS_JFS
+ *
+ * Mounting options for this fs.
+ */
+#define MNT_OPTIONS_JFS ""
+#endif
+
+#ifndef COMMAND_JFS
+/**
+ * \def COMMAND_JFS
+ *
+ * Command for formatting this fs.
+ */
+#define COMMAND_JFS "jfs_mkfs"
+#endif
+
+#ifndef COMMAND_OPTIONS_JFS
+/**
+ * \def COMMAND_OPTIONS_JFS
+ *
+ * Parameters of the command for formatting.
+ */
+#define COMMAND_OPTIONS_JFS "-q"
+#endif
+
+#ifndef ADMIN_JFS
+/**
+ * \def ADMIN_JFS
+ *
+ * Administration command for this fs.
+ */
+#define ADMIN_JFS "jfs_tune"
+#endif
 
 namespace Doclone {
 
